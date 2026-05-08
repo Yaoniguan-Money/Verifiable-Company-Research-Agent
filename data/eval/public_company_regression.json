@@ -1,0 +1,194 @@
+{
+  "version": "2026-04-29",
+  "description": "A股公开资料研究回归集：官方巨潮年报优先，百度搜索补充。该文件不包含任何 API key。",
+  "cases": [
+    {
+      "company_name": "比亚迪",
+      "stock_code": "002594",
+      "cninfo_org_id": "gshk0001211",
+      "question": "近三年研发投入变化和经营风险",
+      "expected_metric_groups": [
+        "R&D_expenditure",
+        "revenue",
+        "net_profit_parent",
+        "revenue_segment",
+        "production_capacity",
+        "production_volume",
+        "sales_volume"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "比亚迪2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF"
+        },
+        {
+          "title": "比亚迪2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-03-25/1222881496.PDF"
+        },
+        {
+          "title": "比亚迪2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-03-27/1219412018.PDF"
+        },
+        {
+          "title": "比亚迪2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-03-29/1216246589.PDF"
+        }
+      ]
+    },
+    {
+      "company_name": "云南白药",
+      "stock_code": "000538",
+      "cninfo_org_id": "gssz0000538",
+      "question": "近三年研发投入和收入结构变化",
+      "expected_metric_groups": [
+        "R&D_expenditure",
+        "revenue",
+        "net_profit_parent",
+        "revenue_segment"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "云南白药2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF"
+        },
+        {
+          "title": "云南白药2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-04-01/1222975584.PDF"
+        },
+        {
+          "title": "云南白药2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-03-30/1219474052.PDF"
+        },
+        {
+          "title": "云南白药2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-03-31/1216280778.PDF"
+        }
+      ]
+    },
+    {
+      "company_name": "宁德时代",
+      "stock_code": "300750",
+      "cninfo_org_id": "GD165627",
+      "question": "研发投入、产能扩张和风险",
+      "expected_metric_groups": [
+        "R&D_expenditure",
+        "revenue",
+        "net_profit_parent",
+        "production_capacity",
+        "production_volume",
+        "sales_volume"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "宁德时代2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF"
+        },
+        {
+          "title": "宁德时代2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-03-15/1222806982.PDF"
+        },
+        {
+          "title": "宁德时代2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-03-16/1219313047.PDF"
+        },
+        {
+          "title": "宁德时代2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-03-10/1216084559.PDF"
+        }
+      ]
+    },
+    {
+      "company_name": "美的集团",
+      "stock_code": "000333",
+      "cninfo_org_id": "gssz0000333",
+      "question": "近三年研发投入、盈利能力、品类收入结构和主要产品产销变化",
+      "expected_metric_groups": [
+        "R&D_expenditure",
+        "revenue",
+        "net_profit_parent",
+        "revenue_segment",
+        "production_volume",
+        "sales_volume"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "美的集团2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF"
+        },
+        {
+          "title": "美的集团2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-03-31/1222933331.PDF"
+        },
+        {
+          "title": "美的集团2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-03-30/1219433331.PDF"
+        },
+        {
+          "title": "美的集团2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-03-31/1216233331.PDF"
+        }
+      ]
+    },
+    {
+      "company_name": "格力电器",
+      "stock_code": "000651",
+      "cninfo_org_id": "gssz0000651",
+      "question": "近三年研发投入、收入结构、归母净利润和空调产销变化",
+      "expected_metric_groups": [
+        "R&D_expenditure",
+        "revenue",
+        "net_profit_parent",
+        "revenue_segment",
+        "production_volume",
+        "sales_volume"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "格力电器2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF"
+        },
+        {
+          "title": "格力电器2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1222960651.PDF"
+        },
+        {
+          "title": "格力电器2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219460651.PDF"
+        },
+        {
+          "title": "格力电器2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-04-29/1216260651.PDF"
+        }
+      ]
+    },
+    {
+      "company_name": "五粮液",
+      "stock_code": "000858",
+      "cninfo_org_id": "gssz0000858",
+      "question": "近三年营业收入、归母净利润和产品收入结构变化",
+      "expected_metric_groups": [
+        "revenue",
+        "net_profit_parent",
+        "revenue_segment"
+      ],
+      "expected_cninfo_reports": [
+        {
+          "title": "五粮液2025年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF"
+        },
+        {
+          "title": "五粮液2024年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2025-04-29/1222960858.PDF"
+        },
+        {
+          "title": "五粮液2023年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2024-04-29/1219460858.PDF"
+        },
+        {
+          "title": "五粮液2022年年度报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216260858.PDF"
+        }
+      ]
+    }
+  ]
+}
