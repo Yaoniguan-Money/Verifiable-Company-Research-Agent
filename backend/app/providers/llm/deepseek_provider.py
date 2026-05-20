@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any
 
@@ -13,6 +14,7 @@ from app.schemas.report import ReportCreate, ReportRead
 from app.schemas.task import ResearchTaskRead
 from app.schemas.verification import VerificationResultRead
 from app.services.report_renderer import MockReportRenderer, ReportRenderInput
+from pydantic import ValidationError
 
 
 class DeepSeekLLMProvider(LLMProvider):
@@ -43,8 +45,38 @@ class DeepSeekLLMProvider(LLMProvider):
         question: str,
         chunks: list[EvidenceChunkRead],
     ) -> list[ExtractedFactCreate]:
-        # DeepSeek provider 当前不做隐式 mock fallback，避免真实模式“看起来成功但实际用了 mock”。
-        return []
+        if not chunks:
+            return []
+
+        chunk_lines = [
+            "\n".join(
+                [
+                    f"chunk_index={chunk.chunk_index}",
+                    f"source_id={chunk.source_id}",
+                    f"chunk_id={chunk.id}",
+                    f"text={self._truncate(chunk.text, 1200)}",
+                ]
+            )
+            for chunk in chunks[:8]
+        ]
+        prompt = "\n\n".join(
+            [
+                "请从给定公开资料片段中抽取与研究问题直接相关的结构化事实。",
+                "优先抽取可验证的定量事实，例如营业收入、净利润、研发投入、现金流、毛利率、费用、产销量、风险因素等。",
+                "只能返回严格 JSON，不要输出 Markdown、解释或自然语言前后缀。",
+                "JSON 格式必须是：",
+                '{"facts":[{"claim":"...","metric_name":"...","value":"...","period":"...","source_id":"...","chunk_id":"...","confidence":0.0}]}',
+                "要求：claim 必须来自片段内容；source_id 和 chunk_id 必须使用输入值；confidence 在 0 到 1 之间。",
+                "如果片段没有足够证据支撑事实，请返回 {\"facts\":[]}。",
+                f"task_id={task_id}",
+                f"company_name={company_name}",
+                f"question={question}",
+                "资料片段：",
+                *chunk_lines,
+            ]
+        )
+        text = self._chat(prompt, max_tokens=1200)
+        return self._parse_extracted_facts(text, task_id=task_id, chunks=chunks)
 
     def analyze_risks(
         self,
@@ -226,3 +258,57 @@ class DeepSeekLLMProvider(LLMProvider):
             if item.fact_id == fact.id:
                 return str(item.status)
         return "unknown"
+
+    def _parse_extracted_facts(
+        self,
+        text: str,
+        *,
+        task_id: str,
+        chunks: list[EvidenceChunkRead],
+    ) -> list[ExtractedFactCreate]:
+        raw_text = text.strip()
+        if raw_text.startswith("```"):
+            raw_text = raw_text.strip("`")
+            raw_text = raw_text.removeprefix("json").strip()
+        try:
+            raw = json.loads(raw_text)
+        except json.JSONDecodeError:
+            return []
+        if not isinstance(raw, dict) or not isinstance(raw.get("facts"), list):
+            return []
+
+        allowed_pairs = {(chunk.source_id, chunk.id) for chunk in chunks}
+        facts: list[ExtractedFactCreate] = []
+        seen: set[tuple[str, str, str | None, str | None, str | None]] = set()
+        for item in raw["facts"]:
+            if not isinstance(item, dict):
+                continue
+            source_id = str(item.get("source_id", "")).strip()
+            chunk_id = str(item.get("chunk_id", "")).strip()
+            if (source_id, chunk_id) not in allowed_pairs:
+                continue
+            try:
+                fact = ExtractedFactCreate(
+                    task_id=task_id,
+                    claim=str(item.get("claim", "")).strip(),
+                    metric_name=item.get("metric_name"),
+                    value=item.get("value"),
+                    period=item.get("period"),
+                    source_id=source_id,
+                    chunk_id=chunk_id,
+                    confidence=float(item.get("confidence", 0.55)),
+                )
+            except (TypeError, ValueError, ValidationError):
+                continue
+            key = (fact.source_id, fact.chunk_id, fact.metric_name, fact.period, fact.value)
+            if key in seen:
+                continue
+            seen.add(key)
+            facts.append(fact)
+        return facts
+
+    def _truncate(self, text: str, limit: int) -> str:
+        normalized = text.strip()
+        if len(normalized) <= limit:
+            return normalized
+        return normalized[:limit] + "..."

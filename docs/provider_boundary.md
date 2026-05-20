@@ -6,19 +6,19 @@
 
 本文说明 provider / repository / service 的边界。项目目标是通用企业公开信息研究系统，provider 可替换，不绑定默认示例厂商。
 
-## 2. 默认本地配置与可选 provider 示例
+## 2. 默认配置与可选 provider 示例
 
-本地默认示例配置（见 `.env.example`）：
+默认示例配置（见 `.env.example`）：
 
 ```text
 LLM_PROVIDER=mock
-SEARCH_PROVIDER=local_documents
+SEARCH_PROVIDER=public_sources
 EMBEDDING_PROVIDER=local_hashing
 VECTOR_STORE=in_memory
 WORKFLOW_ENGINE=langgraph
 ```
 
-可选 provider 示例（见 `.env.providers.example`）包括 DeepSeek、Qianfan、Baidu AI Search、DashScope、SiliconFlow 等。它们仅是可选配置示例，不代表架构限制。
+`public_sources` 默认走联网公开来源，不需要外部厂商 API key；Baidu AI Search、DeepSeek、Qianfan、DashScope、SiliconFlow 等可选 provider 示例见 `.env.providers.example`。它们仅是可选配置示例，不代表架构限制。
 
 ## 3. Current Provider Selection
 

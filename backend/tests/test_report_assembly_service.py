@@ -79,7 +79,7 @@ def test_report_assembly_buckets_all_verification_statuses(db: OrmSession) -> No
     assert "verified claim" in report.content
     assert "conflicted claim" in report.content
     assert "insufficient claim" in report.content
-    assert "status=outdated" in report.content
+    assert "来源或期间过旧" in report.content
     assert "outdated claim" in report.content
-    assert "status=rejected" in report.content
+    assert "字段异常或来源质量不足" in report.content
     assert "rejected claim" in report.content

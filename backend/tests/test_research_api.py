@@ -64,10 +64,10 @@ def test_create_get_run_report_flow(
     assert "citations" in rep
     assert rep.get("compliance_status")
     assert len(rep["citations"]) >= 1
-    assert "已验证事实" in rep["content"]
-    assert "存在冲突的事实" in rep["content"]
-    assert "信息缺口 / 证据不足" in rep["content"]
-    assert "公开资料来源 / Citations" in rep["content"]
+    assert "核心事实" in rep["content"]
+    assert "需要谨慎的地方" in rep["content"]
+    assert "可信度说明" in rep["content"]
+    assert "公开资料来源" in rep["content"]
     assert "## 来源质量摘要" in rep["content"]
     c0 = rep["citations"][0]
     for key in ("source_id", "chunk_id", "url", "title", "retrieved_at"):

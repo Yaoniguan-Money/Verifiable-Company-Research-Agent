@@ -18,9 +18,48 @@ def test_baidu_ai_search_payload_uses_clean_company_research_prompt() -> None:
     assert "年报" in query
     assert "半年报" in query
     assert "交易所公告" in query
+    assert payload["search_mode"] == "auto"
+    assert payload["enable_followup_query"] is False
+    assert "enable_followup_queries" not in payload
     assert "URL" in instruction
     for broken in ("鈥", "杩", "骞", "鐧", "æ"):
         assert broken not in combined
+
+
+def test_baidu_ai_search_provider_accepts_nested_references() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "content": "摘要",
+                            "references": [
+                                {
+                                    "title": "Demo Tech 2024 年年度报告",
+                                    "url": "https://example.com/report",
+                                    "content": "Demo Tech 2024年研发投入为100亿元。",
+                                    "type": "web",
+                                }
+                            ],
+                        }
+                    }
+                ],
+            },
+            request=request,
+        )
+
+    provider = BaiduAISearchProvider(
+        api_key="test-key",
+        fetch_reference_pages=False,
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    sources = provider.search("Demo Tech", "研发投入")
+
+    assert len(sources) == 1
+    assert sources[0].title == "Demo Tech 2024 年年度报告"
 
 
 def test_baidu_ai_search_provider_uses_reference_page_body() -> None:
@@ -204,6 +243,50 @@ def test_baidu_ai_search_provider_filters_irrelevant_references() -> None:
 
     assert len(sources) == 1
     assert sources[0].title == "Demo Tech 2023 年年度报告"
+
+
+def test_baidu_ai_search_provider_accepts_registry_background_with_normalized_company_name() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.method == "POST":
+            return httpx.Response(
+                200,
+                json={
+                    "references": [
+                        {
+                            "title": "测试鹰(深圳)科技有限公司",
+                            "url": "https://aiqicha.baidu.com/company_detail_123",
+                            "content": (
+                                "测试鹰(深圳)科技有限公司 企业信息显示，经营范围包括"
+                                "软件开发、技术服务和信息系统集成服务。"
+                            ),
+                            "type": "web",
+                        },
+                        {
+                            "title": "测试鹰(深圳)科技有限公司",
+                            "url": "https://www.jobui.com/company/123/interview/new/",
+                            "content": "测试鹰(深圳)科技有限公司 面试题与面试经验。",
+                            "type": "web",
+                        },
+                    ],
+                },
+                request=request,
+            )
+        return httpx.Response(403, request=request)
+
+    provider = BaiduAISearchProvider(
+        api_key="test-key",
+        fetch_reference_pages=False,
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    sources = provider.search("测试鹰（深圳）科技有限公司", "主要业务板块")
+
+    assert len(sources) == 1
+    assert sources[0].url == "https://aiqicha.baidu.com/company_detail_123"
+    assert sources[0].source_type == "other"
+    assert sources[0].credibility_score == 0.72
+    assert sources[0].source_metadata is not None
+    assert sources[0].source_metadata[SOURCE_LAYER_METADATA_KEY] == SourceLayer.THIRD_PARTY_BACKGROUND.value
 
 
 def test_baidu_ai_search_provider_requires_usable_references() -> None:

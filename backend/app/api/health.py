@@ -32,6 +32,8 @@ class HealthResponse(BaseModel):
 class ProvidersHealthResponse(BaseModel):
     llm_provider: str
     search_provider: str
+    search_mode: str
+    search_network_enabled: bool
     embedding_provider: str
     embedding_model: str
     embedding_api_key_configured: bool
@@ -64,9 +66,12 @@ def health_providers() -> ProvidersHealthResponse:
     em_host: str | None = None
     if settings.embedding_provider in ("dashscope", "siliconflow"):
         em_host = embedding_base_url_host(settings.resolved_embedding_base_url)
+    search_mode = _search_mode(settings.search_provider)
     return ProvidersHealthResponse(
         llm_provider=settings.llm_provider,
         search_provider=settings.search_provider,
+        search_mode=search_mode,
+        search_network_enabled=search_mode in ("online_discovery", "online_seeded"),
         embedding_provider=settings.embedding_provider,
         embedding_model=settings.health_embedding_model_display,
         embedding_api_key_configured=settings.has_embedding_api_key,
@@ -83,3 +88,13 @@ def health_providers() -> ProvidersHealthResponse:
             or settings.embedding_provider == "mock"
         ),
     )
+
+
+def _search_mode(search_provider: str) -> str:
+    if search_provider == "mock":
+        return "mock"
+    if search_provider == "local_documents":
+        return "local"
+    if search_provider == "official_urls":
+        return "online_seeded"
+    return "online_discovery"

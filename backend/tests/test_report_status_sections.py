@@ -47,7 +47,9 @@ def test_report_keeps_outdated_and_rejected_facts_out_of_insufficient_bucket() -
         rejected_facts=[_fact(fact_id="bad", claim="bad source fact")],
     )
 
-    assert "status=outdated" in report.content
+    assert "来源或期间过旧" in report.content
     assert "old source fact" in report.content
-    assert "status=rejected" in report.content
+    assert "字段异常或来源质量不足" in report.content
     assert "bad source fact" in report.content
+    assert "source_id=" not in report.content
+    assert "chunk_id=" not in report.content

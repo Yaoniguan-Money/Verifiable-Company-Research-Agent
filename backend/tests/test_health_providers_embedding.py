@@ -15,6 +15,8 @@ def test_providers_health_includes_embedding_fields(client) -> None:
     assert "embedding_base_url_host" in data
     assert "embedding_dimension_configured" in data
     assert "embedding_max_batch_size" in data
+    assert data["search_mode"] == "mock"
+    assert data["search_network_enabled"] is False
     assert data["embedding_max_batch_size"] == 10
     assert data["embedding_api_key_configured"] in (True, False)
 

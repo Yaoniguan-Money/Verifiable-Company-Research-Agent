@@ -44,7 +44,7 @@ This guide is for readers opening the repository for the first time.
 ## Boundaries To Keep In Mind
 
 - This is an open-source MVP / reference implementation, not a production research system.
-- The local default provider stack is `mock + local_documents + local_hashing`; DeepSeek + Baidu AI Search + DashScope embedding is only an optional real-provider smoke example.
+- The default provider stack is `mock + public_sources + local_hashing`; search uses online public sources by default, while DeepSeek + Baidu AI Search + DashScope embedding remains an optional real-provider smoke example.
 - `local_hashing` and `mock` are dev/test providers, not real semantic validation.
 - Vector storage remains `in_memory/sqlite`; no Qdrant/Chroma/Milvus is wired in.
 - The system does not provide investment advice.

@@ -22,7 +22,7 @@ def test_env_example_defaults_are_provider_neutral() -> None:
         if line and not line.startswith("#") and "=" in line
     }
     assert lines.get("LLM_PROVIDER") == "mock"
-    assert lines.get("SEARCH_PROVIDER") == "local_documents"
+    assert lines.get("SEARCH_PROVIDER") == "public_sources"
     assert lines.get("EMBEDDING_PROVIDER") == "local_hashing"
     assert lines.get("VECTOR_STORE") == "in_memory"
     assert lines.get("WORKFLOW_ENGINE") == "langgraph"

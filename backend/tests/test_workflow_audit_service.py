@@ -102,10 +102,10 @@ def test_build_workflow_audit_section_renders_decisions() -> None:
 
     section = service.build_workflow_audit_section(state)
 
-    assert "## 工作流审计提示" in section
-    assert "RecordVerificationRisk" in section
-    assert "conflicted_facts" in section
-    assert "conflicted=1" in section
+    assert "## 附录：处理记录" in section
+    assert "验证结果存在冲突" in section
+    assert "冲突 1 条" in section
+    assert "conflicted_facts" not in section
 
 
 def test_build_workflow_audit_section_returns_empty_without_decisions() -> None:

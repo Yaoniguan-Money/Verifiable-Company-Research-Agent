@@ -72,6 +72,12 @@ class FinancialTableExtractionService:
             metric_base, dimension = row_metric
             for idx, value_match in enumerate(values[: len(current_years)]):
                 value = value_match.value
+                if self._should_skip_table_value(
+                    metric_base=metric_base,
+                    dimension=dimension,
+                    value=value,
+                ):
+                    continue
                 period = current_years[idx]
                 metric_name = metric_with_optional_dimension(metric_base, dimension)
                 label = claim_label(metric_base, metric_name)
@@ -162,11 +168,13 @@ class FinancialTableExtractionService:
             return None
         if "研发费用" in line or "研发投入" in line:
             return "R&D_expenditure", None
-        if "营业收入" in line and "合计" in line:
+        if "营业总收入" in line or ("营业收入" in line and "合计" in line):
             return "revenue", None
         if "收入" in line or "销售收入" in line:
             segment = self._dimension_before_value(line)
             if segment and segment not in {"收入", "销售收入", "营业收入", "主营业务收入"}:
+                if self._is_noisy_revenue_dimension(segment):
+                    return None
                 return "revenue_segment", segment
         if "产能状况" in line or "产能" in line:
             return "production_capacity", self._dimension_before_keyword(line, ("产能状况", "产能"))
@@ -175,6 +183,47 @@ class FinancialTableExtractionService:
         if "快报销量" in line or "销量" in line:
             return "sales_volume", self._dimension_before_keyword(line, ("快报销量", "销量"))
         return None
+
+    def _should_skip_table_value(
+        self,
+        *,
+        metric_base: str,
+        dimension: str | None,
+        value: str,
+    ) -> bool:
+        if metric_base in {"revenue", "revenue_segment", "R&D_expenditure"} and value.endswith("%"):
+            return True
+        if metric_base == "revenue_segment" and self._is_noisy_revenue_dimension(dimension or ""):
+            return True
+        return False
+
+    def _is_noisy_revenue_dimension(self, dimension: str) -> bool:
+        cleaned = dimension.strip()
+        if cleaned.startswith(("其中", "加", "减", "一、", "二、", "三、", "四、")):
+            return True
+        noisy_tokens = (
+            "增值税",
+            "消费税",
+            "所得税",
+            "税率",
+            "税费",
+            "银行",
+            "存款",
+            "债券",
+            "利息",
+            "余额",
+            "期末",
+            "申购",
+            "支付总价",
+            "金融资产",
+            "保证金",
+            "营业成本",
+            "营业外",
+            "销售费用",
+            "管理费用",
+            "财务费用",
+        )
+        return any(token in cleaned for token in noisy_tokens)
 
     def _dimension_before_value(self, line: str) -> str | None:
         value_match = re.search(INLINE_VALUE_UNIT_PATTERN, line)

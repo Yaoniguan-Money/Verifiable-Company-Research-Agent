@@ -9,7 +9,7 @@
 - 后端测试通过：`pytest backend/tests -q`。
 - 代码风格检查通过：`ruff check backend scripts`。
 - 前端构建通过：`frontend npm run build`。
-- `verify_real_chain.py` 或固定回归样例（如 `--case Sample HK Public Company`）至少一次通过。
+- `verify_real_chain.py` 或固定回归样例（如 `--case sample_hk_public_company_case`）至少一次通过；固定样例从 `data/eval/live_public_company_cases.example.json` 读取。
 - README 明确项目是开源 MVP / reference implementation、非生产级、非投顾。
 - `sample_hk_public_company_case_002` / `SAMPLE_CN_PUBLIC_COMPANY` 不写成已真实验收。
 - demo 截图/GIF（如提供）不暴露 key、token、账号敏感信息。

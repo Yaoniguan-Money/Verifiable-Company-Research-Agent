@@ -29,6 +29,14 @@ if ($envFiles) {
     $failed = $true
 }
 
+$privateCaseFiles = $candidatePaths |
+    Where-Object { $_ -match "(^|[\\/])data[\\/]eval[\\/].*(local|private).*\.json$" }
+
+if ($privateCaseFiles) {
+    Write-Error "Local/private evaluation case files would be included in git:`n$($privateCaseFiles -join "`n")"
+    $failed = $true
+}
+
 $secretPatterns = @(
     "sk-[A-Za-z0-9_-]{16,}",
     "bce-v3/[A-Za-z0-9_./+=-]{16,}",

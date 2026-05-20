@@ -12,36 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
 DEFAULT_BASE_URL = "http://localhost:8000"
-
-FIXED_EVALUATION_CASES: dict[str, dict[str, Any]] = {
-    "sample_hk_public_company_case": {
-        "company_name": "小米集团",
-        "stock_code": "01810",
-        "question": (
-            "请基于公开资料分析小米集团最近的经营风险和公开披露一致性，"
-            "要求给出引用来源，不要给投资建议。"
-        ),
-        "status": "已真实验收",
-    },
-    "sample_hk_public_company_case_002": {
-        "company_name": "腾讯控股",
-        "stock_code": "00700",
-        "question": (
-            "请基于公开资料分析腾讯控股最近的经营风险和公开披露一致性，"
-            "要求给出引用来源，不要给投资建议。"
-        ),
-        "status": "设计样例/待真实验收",
-    },
-    "sample_cn_public_company_case": {
-        "company_name": "比亚迪",
-        "stock_code": "002594/1211.HK",
-        "question": (
-            "请基于公开资料分析比亚迪最近的经营风险和公开披露一致性，"
-            "要求给出引用来源，不要给投资建议。"
-        ),
-        "status": "设计样例/待真实验收",
-    },
-}
+DEFAULT_LIVE_CASES_FILE = "data/eval/live_public_company_cases.example.json"
 
 
 def _http_json(
@@ -66,24 +37,49 @@ def _http_json(
         raise RuntimeError(f"请求失败：{method} {path}，请确认后端已启动。") from exc
 
 
-def _list_fixed_cases() -> int:
+def _load_live_cases(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        raise SystemExit(f"live case file not found: {path}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    raw_cases = payload.get("cases") if isinstance(payload, dict) else payload
+    if not isinstance(raw_cases, list):
+        raise SystemExit("live case file must contain a JSON list or an object with a 'cases' list")
+
+    cases: dict[str, dict[str, Any]] = {}
+    for idx, item in enumerate(raw_cases, start=1):
+        if not isinstance(item, dict):
+            raise SystemExit(f"live case #{idx} must be an object")
+        case_id = str(item.get("id") or item.get("case_id") or "").strip()
+        company_name = str(item.get("company_name") or "").strip()
+        question = str(item.get("question") or "").strip()
+        if not case_id or not company_name or not question:
+            raise SystemExit(f"live case #{idx} requires id, company_name and question")
+        if case_id in cases:
+            raise SystemExit(f"duplicate live case id: {case_id}")
+        cases[case_id] = {**item, "company_name": company_name, "question": question}
+    if not cases:
+        raise SystemExit("live case file contains no cases")
+    return cases
+
+
+def _list_live_cases(cases: dict[str, dict[str, Any]]) -> int:
     print("固定评测样例")
-    print("这些真实公司样例只用于链路回归，不代表系统绑定特定企业，也不构成投资分析、评级、推荐或建议。")
-    for case_id, info in FIXED_EVALUATION_CASES.items():
+    print("这些真实公司样例从数据文件读取，只用于链路回归，不代表系统绑定特定企业，也不构成投资分析、评级、推荐或建议。")
+    for case_id, info in cases.items():
         print(
             f"- {case_id}: company_name={info['company_name']} "
-            f"stock_code={info['stock_code']} status={info['status']}"
+            f"stock_code={info.get('stock_code', '-')} status={info.get('status', '-')}"
         )
     print("\n默认不执行全量真实样例，避免外部 API 成本与波动。")
     return 0
 
 
-def _run_fixed_case(case_id: str, *, base_url: str) -> int:
-    if case_id not in FIXED_EVALUATION_CASES:
-        valid = ", ".join(sorted(FIXED_EVALUATION_CASES))
+def _run_live_case(case_id: str, *, base_url: str, cases: dict[str, dict[str, Any]]) -> int:
+    if case_id not in cases:
+        valid = ", ".join(sorted(cases))
         raise SystemExit(f"未知 case: {case_id}。可选值：{valid}")
 
-    case = FIXED_EVALUATION_CASES[case_id]
+    case = cases[case_id]
     providers = _http_json(base_url=base_url, method="GET", path="/health/providers", timeout_seconds=60.0)
 
     llm_provider = providers.get("llm_provider")
@@ -193,17 +189,22 @@ def main() -> None:
     parser.add_argument(
         "--list",
         action="store_true",
-        help="列出固定评测样例，不触发真实 API 调用。",
+        help="列出 live case 文件中的固定评测样例，不触发真实 API 调用。",
     )
     parser.add_argument(
         "--case",
-        choices=tuple(sorted(FIXED_EVALUATION_CASES)),
-        help="只运行一个固定评测样例（默认不跑全量真实 API）。",
+        metavar="CASE_ID",
+        help="只运行一个 live case 文件中的固定评测样例（默认不跑全量真实 API）。",
     )
     parser.add_argument(
         "--run-all-cases",
         action="store_true",
-        help="顺序运行所有固定样例（会产生真实 API 成本，且可能受外部波动影响）。",
+        help="顺序运行 live case 文件中的所有固定样例（会产生真实 API 成本，且可能受外部波动影响）。",
+    )
+    parser.add_argument(
+        "--live-cases-file",
+        default=DEFAULT_LIVE_CASES_FILE,
+        help="Live public-company case file used by --list, --case and --run-all-cases.",
     )
     parser.add_argument(
         "--base-url",
@@ -265,20 +266,29 @@ def main() -> None:
     )
     args = parser.parse_args()
     if args.list:
-        raise SystemExit(_list_fixed_cases())
+        live_cases = _load_live_cases(Path(args.live_cases_file))
+        raise SystemExit(_list_live_cases(live_cases))
 
     if args.case:
-        raise SystemExit(_run_fixed_case(args.case, base_url=str(args.base_url).rstrip("/")))
+        live_cases = _load_live_cases(Path(args.live_cases_file))
+        raise SystemExit(
+            _run_live_case(
+                args.case,
+                base_url=str(args.base_url).rstrip("/"),
+                cases=live_cases,
+            )
+        )
 
     if args.run_all_cases:
+        live_cases = _load_live_cases(Path(args.live_cases_file))
         print("[WARNING] 你正在运行所有固定真实样例，这会增加 API 成本且受外部波动影响。")
         exit_codes = [
-            _run_fixed_case(case_id, base_url=str(args.base_url).rstrip("/"))
-            for case_id in sorted(FIXED_EVALUATION_CASES)
+            _run_live_case(case_id, base_url=str(args.base_url).rstrip("/"), cases=live_cases)
+            for case_id in sorted(live_cases)
         ]
         raise SystemExit(0 if all(code == 0 for code in exit_codes) else 1)
 
-    print("[INFO] 默认进入离线回归模式（非固定真实样例）。使用 --list / --case 可走固定样例入口。")
+    print("[INFO] 默认进入离线回归模式（非固定真实样例）。使用 --list / --case 可走 live case 文件入口。")
     output_format = _resolve_output_format(args)
 
     payload = json.loads(Path(args.file).read_text(encoding="utf-8"))

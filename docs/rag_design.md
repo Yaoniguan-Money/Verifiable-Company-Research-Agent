@@ -4,7 +4,7 @@
 
 本文保留早期 RAG 工程骨架设计，部分阶段描述是历史状态。当前权威实现口径请以 `README.md`、`docs/provider_boundary.md`、`docs/workflow.md` 和 `docs/architecture.md` 为准。
 
-当前本地默认配置使用 `local_hashing` / `mock` 支持离线 dev/test；DashScope `text-embedding-v4`（OpenAI-compatible）只是可选真实链路语义 embedding provider 示例。向量存储仍是 `in_memory/sqlite` MVP，不宣称生产级检索质量。
+当前默认搜索使用 `public_sources` 联网公开来源；`local_hashing` / `mock` 仍用于本地 dev/test 的 embedding 与规则化文本路径。DashScope `text-embedding-v4`（OpenAI-compatible）只是可选真实链路语义 embedding provider 示例。向量存储仍是 `in_memory/sqlite` MVP，不宣称生产级检索质量。
 
 ## 早期已完成（历史 RAG 骨架）
 

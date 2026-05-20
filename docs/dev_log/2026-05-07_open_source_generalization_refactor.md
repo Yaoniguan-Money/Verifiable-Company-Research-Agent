@@ -7,10 +7,10 @@ The public release package had to stand on its own as a clean open-source reposi
 ## Key Decisions
 
 - Public name standardized to `Verifiable Company Research Agent` / `可溯源企业公开信息研究智能体`.
-- Local default route stays offline: `mock + local_documents + local_hashing`.
+- Historical note: this release originally kept the local default route offline as `mock + local_documents + local_hashing`; current default search now uses `public_sources`.
 - DeepSeek, Baidu AI Search, DashScope, Qianfan, and SiliconFlow are documented only as optional provider examples.
 - LangGraph is described as the default workflow engine, not as the project name or an architectural lock-in.
-- Real-company samples are limited to regression material: `data/eval/*`, `docs/evaluation_cases.md`, and `scripts/run_public_company_regression.py`.
+- Real-company samples are limited to regression material: `data/eval/*` and `docs/evaluation_cases.md`; regression scripts load case files instead of embedding company names.
 
 ## Errors Found And Fixed
 

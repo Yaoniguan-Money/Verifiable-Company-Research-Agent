@@ -165,27 +165,24 @@ class ReportEvidenceService:
                 layer_counts[SourceAuthority.LOW.value] += 1
         has_authoritative = counts[SourceAuthority.HIGH.value] > 0
         has_official_body = layer_counts["official_body"] > 0
-        limitation = (
-            "已包含官方披露正文或官方 PDF，可作为更高置信证据进入后续事实核验。"
-            if has_official_body
-            else (
-                "当前只有官方入口、未抓取到具体披露正文，本报告不能形成高置信财务事实结论。"
-                if has_authoritative
-                else "高权威来源不足，本报告只能作为低置信公开信息摘要；不应形成高置信已验证事实。"
-            )
-        )
+        if has_official_body:
+            evidence_strength = "较高"
+            limitation = "已经拿到官方披露正文或官方 PDF，可以支撑后续事实核验。"
+        elif has_authoritative:
+            evidence_strength = "中等"
+            limitation = "目前只有官方入口，缺少具体披露正文；财务和经营结论仍需补证。"
+        else:
+            evidence_strength = "偏低"
+            limitation = "高权威来源不足，现有材料更适合作线索，不适合作确定结论。"
         return "\n".join(
             [
                 "## 来源质量摘要",
-                f"- 高权威来源：{counts[SourceAuthority.HIGH.value]}",
-                f"- 中等来源：{counts[SourceAuthority.MEDIUM.value]}",
-                f"- 低可信来源：{counts[SourceAuthority.LOW.value]}",
-                f"- 官方正文来源：{layer_counts['official_body']}",
-                f"- 官方入口来源：{layer_counts[SourceLayer.OFFICIAL_ENTRY_PAGE.value]}",
-                f"- 第三方背景来源：{layer_counts[SourceLayer.THIRD_PARTY_BACKGROUND.value]}",
-                f"- 低可信来源数量：{layer_counts[SourceAuthority.LOW.value]}",
-                f"- 是否存在官方/交易所/监管来源：{'是' if has_authoritative else '否'}",
-                f"- 限制说明：{limitation}",
+                f"- 本次证据强度：{evidence_strength}。",
+                f"- 官方/监管/交易所正文：{layer_counts['official_body']} 条。",
+                f"- 官方入口但不是正文：{layer_counts[SourceLayer.OFFICIAL_ENTRY_PAGE.value]} 条。",
+                f"- 第三方背景材料：{layer_counts[SourceLayer.THIRD_PARTY_BACKGROUND.value]} 条。",
+                f"- 低可信来源：{layer_counts[SourceAuthority.LOW.value]} 条。",
+                f"- 解读：{limitation}",
             ]
         )
 

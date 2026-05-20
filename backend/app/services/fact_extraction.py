@@ -174,6 +174,8 @@ class FactExtractionService:
                 period = self._period_near_match(text=text, match_start=m.start())
                 value, unit = self._value_and_unit(m)
                 metric_name = self._metric_name_with_dimension(rule.metric_name, m)
+                if self._should_skip_rule_value(metric_name=metric_name, value=value):
+                    continue
                 metric_label = claim_label(rule.metric_name, metric_name)
                 claim = (
                     f"{period}年{metric_label}为{value}"
@@ -215,6 +217,19 @@ class FactExtractionService:
     def _value_and_unit(self, match: re.Match[str]) -> tuple[str, str]:
         # 部分规则会在同一表达式中出现两组命名捕获；取实际命中的那一组。
         return value_and_unit(match)
+
+    def _should_skip_rule_value(self, *, metric_name: str, value: str) -> bool:
+        if value.endswith("%"):
+            metric_base = metric_name.split(":", 1)[0]
+            return metric_base in {
+                "R&D_expenditure",
+                "revenue",
+                "revenue_segment",
+                "net_profit",
+                "net_profit_parent",
+                "net_profit_deducted",
+            }
+        return False
 
     def _period_near_match(self, *, text: str, match_start: int) -> str:
         # 高密度资料常在同一段同时出现多个年份，优先取指标前最近的年份，避免制造假冲突。

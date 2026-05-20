@@ -2,7 +2,7 @@
 
 这个目录收录项目设计、演示、评测、合规和开发日志文档。
 
-当前主口径：Verifiable Company Research Agent / 可溯源企业公开信息研究智能体。开源本地默认配置使用 `mock + local_documents + local_hashing`，便于无外部 key 启动；DeepSeek、Baidu AI Search、DashScope 等只作为可选真实 provider 示例。LangGraph 是默认 workflow engine。项目定位是开源 MVP / reference implementation，不是生产级投研系统，也不提供投资建议。
+当前主口径：Verifiable Company Research Agent / 可溯源企业公开信息研究智能体。默认配置使用 `mock + public_sources + local_hashing`；搜索默认访问联网公开来源且不需要外部厂商 API key。DeepSeek、Baidu AI Search、DashScope 等是可选真实 provider 示例。LangGraph 是默认 workflow engine。项目定位是开源 MVP / reference implementation，不是生产级投研系统，也不提供投资建议。
 
 ## 推荐阅读顺序
 
@@ -42,8 +42,8 @@
 
 - [固定评测样例](evaluation_cases.md)
 - `scripts/verify_real_chain.py`（单次真实链路验收）
-- `scripts/run_public_company_regression.py`（轻量回归入口，支持 `--list` / `--case`）
-- 固定真实公司样例仅用于链路回归，不代表系统绑定特定企业。
+- `scripts/run_public_company_regression.py`（轻量回归入口，支持从 case 文件读取的 `--list` / `--case`）
+- 固定真实公司样例仅用于链路回归，不代表系统绑定特定企业，也不应写死在生产代码里。
 
 ## Demo
 

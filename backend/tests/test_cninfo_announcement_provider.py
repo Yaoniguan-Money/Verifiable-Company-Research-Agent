@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from urllib.parse import parse_qs
+
 import httpx
 import pytest
 from app.providers.search import cninfo_announcements
@@ -87,3 +89,44 @@ def test_cninfo_provider_raises_when_company_cannot_be_resolved() -> None:
 
     with pytest.raises(ValueError, match="Cannot resolve"):
         provider.search("不存在公司", "研发")
+
+
+def test_cninfo_provider_uses_shanghai_plate_for_shanghai_codes() -> None:
+    seen_form: dict[str, list[str]] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url).endswith("/new/data/szse_stock.json"):
+            return httpx.Response(
+                200,
+                json={
+                    "stockList": [
+                        {"code": "600519", "orgId": "gssh0600519", "zwjc": "SH Sample"},
+                    ]
+                },
+                request=request,
+            )
+        if str(request.url).endswith("/new/hisAnnouncement/query"):
+            seen_form.update(parse_qs(request.content.decode()))
+            return httpx.Response(200, json={"announcements": []}, request=request)
+        raise AssertionError(f"Unexpected request: {request.url}")
+
+    provider = CninfoAnnouncementProvider(
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
+    )
+
+    with pytest.raises(ValueError, match="no readable"):
+        provider.search("600519", "revenue profit")
+
+    assert seen_form["column"] == ["sse"]
+    assert seen_form["plate"] == ["sh"]
+
+
+def test_cninfo_provider_does_not_duplicate_company_name_in_title() -> None:
+    assert (
+        cninfo_announcements._announcement_display_title("贵州茅台", "贵州茅台2024年年度报告")
+        == "贵州茅台2024年年度报告"
+    )
+    assert (
+        cninfo_announcements._announcement_display_title("样例股份", "2024年年度报告")
+        == "样例股份2024年年度报告"
+    )

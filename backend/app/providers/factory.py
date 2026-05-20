@@ -67,23 +67,16 @@ class ProviderFactory:
                 timeout_seconds=self.settings.official_url_timeout_seconds,
             )
         if self.settings.search_provider == "baidu_ai_search":
-            return self._create_baidu_ai_search_provider()
-        if self.settings.search_provider == "cninfo_announcements":
-            return CninfoAnnouncementProvider(
-                timeout_seconds=self.settings.cninfo_timeout_seconds,
-                top_k=self.settings.cninfo_top_k,
-                lookback_years=self.settings.cninfo_lookback_years,
-                max_source_chars=self.settings.cninfo_max_source_chars,
+            return HybridPublicSearchProvider(
+                [
+                    self._create_cninfo_announcement_provider(),
+                    self._create_baidu_ai_search_provider(),
+                ]
             )
+        if self.settings.search_provider == "cninfo_announcements":
+            return self._create_cninfo_announcement_provider()
         if self.settings.search_provider == "public_sources":
-            providers: list[SearchProvider] = [
-                CninfoAnnouncementProvider(
-                    timeout_seconds=self.settings.cninfo_timeout_seconds,
-                    top_k=self.settings.cninfo_top_k,
-                    lookback_years=self.settings.cninfo_lookback_years,
-                    max_source_chars=self.settings.cninfo_max_source_chars,
-                )
-            ]
+            providers: list[SearchProvider] = [self._create_cninfo_announcement_provider()]
             if self.settings.has_baidu_ai_search_api_key:
                 providers.append(self._create_baidu_ai_search_provider())
             return HybridPublicSearchProvider(providers)
@@ -134,6 +127,14 @@ class ProviderFactory:
             fetch_reference_pages=self.settings.baidu_ai_search_fetch_reference_pages,
             enable_deep_search=self.settings.baidu_ai_search_enable_deep_search,
             allowed_domains=self.settings.official_url_domain_list,
+        )
+
+    def _create_cninfo_announcement_provider(self) -> CninfoAnnouncementProvider:
+        return CninfoAnnouncementProvider(
+            timeout_seconds=self.settings.cninfo_timeout_seconds,
+            top_k=self.settings.cninfo_top_k,
+            lookback_years=self.settings.cninfo_lookback_years,
+            max_source_chars=self.settings.cninfo_max_source_chars,
         )
 
     def _embedding_api_key(self, provider_key: str) -> str:

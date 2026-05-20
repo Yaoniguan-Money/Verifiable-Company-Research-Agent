@@ -43,7 +43,7 @@ class Settings(BaseSettings):
         "baidu_ai_search",
         "cninfo_announcements",
         "public_sources",
-    ] = Field(default="mock")
+    ] = Field(default="public_sources")
     local_documents_dir: str = Field(default="./data/imports")
     official_url_allowed_domains: str = Field(default="")
     official_url_timeout_seconds: float = Field(default=15.0, gt=0)
@@ -57,11 +57,11 @@ class Settings(BaseSettings):
     baidu_ai_search_fetch_reference_pages: bool = Field(default=True)
     baidu_ai_search_enable_deep_search: bool = Field(default=False)
     cninfo_timeout_seconds: float = Field(default=30.0, gt=0)
-    cninfo_top_k: int = Field(default=6, ge=1, le=12)
+    cninfo_top_k: int = Field(default=4, ge=1, le=12)
     cninfo_lookback_years: int = Field(default=4, ge=1, le=10)
-    cninfo_max_source_chars: int = Field(default=300_000, ge=10_000)
+    cninfo_max_source_chars: int = Field(default=80_000, ge=10_000)
     embedding_provider: Literal["mock", "local_hashing", "dashscope", "siliconflow"] = Field(
-        default="mock"
+        default="local_hashing"
     )
     embedding_api_key: SecretStr | None = Field(default=None)
     embedding_base_url: str | None = Field(default=None)
@@ -77,8 +77,8 @@ class Settings(BaseSettings):
     # ---------- Workflow ----------
     # Default orchestration is LangGraph; service remains only as a legacy fallback.
     workflow_engine: Literal["service", "langgraph"] = Field(default="langgraph")
-    workflow_chunk_size: int = Field(default=900, ge=20)
-    workflow_chunk_overlap: int = Field(default=120, ge=0)
+    workflow_chunk_size: int = Field(default=1600, ge=20)
+    workflow_chunk_overlap: int = Field(default=180, ge=0)
     retrieval_top_k: int = Field(default=5, ge=1)
 
     # ---------- DeepSeek LLM ----------

@@ -26,7 +26,7 @@ from app.providers.search import SearchProvider
 from app.repositories import ResearchArtifactRepository
 from app.schemas.chunk import Citation, EvidenceChunkRead
 from app.schemas.common import ComplianceStatus
-from app.schemas.fact import ExtractedFactRead
+from app.schemas.fact import ExtractedFactCreate, ExtractedFactRead
 from app.schemas.report import ReportCreate
 from app.schemas.verification import VerificationResultRead
 from app.schemas.workflow import WorkflowState, WorkflowStepResult
@@ -147,6 +147,12 @@ class WorkflowStepExecutor:
             question=task.question,
             chunks=chunk_reads,
         )
+        extracted_facts = extraction.facts
+        if not extracted_facts and self.settings.llm_provider != "mock":
+            extracted_facts = self._extract_facts_with_llm_fallback(
+                task=task,
+                chunks=chunk_reads,
+            )
         facts = [
             ExtractedFact(
                 task_id=item.task_id,
@@ -158,10 +164,28 @@ class WorkflowStepExecutor:
                 chunk_id=item.chunk_id,
                 confidence=item.confidence,
             )
-            for item in extraction.facts
+            for item in extracted_facts
         ]
         self.artifacts.add_facts(facts)
         self.db.commit()
+
+    def _extract_facts_with_llm_fallback(
+        self,
+        *,
+        task: ResearchTask,
+        chunks: list[EvidenceChunkRead],
+    ) -> list[ExtractedFactCreate]:
+        try:
+            return self.llm_provider.extract_facts(
+                task_id=task.id,
+                company_name=task.company_name,
+                question=task.question,
+                chunks=chunks,
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                "LLM fact extraction failed while deterministic extraction produced no facts."
+            ) from exc
 
     def _verify_facts(self, task: ResearchTask) -> None:
         fact_rows = self.artifacts.list_facts(task.id)
@@ -236,11 +260,26 @@ class WorkflowStepExecutor:
             key = getattr(item.status, "value", str(item.status))
             counts[key] = counts.get(key, 0) + 1
         fact_preview = "；".join(item.claim for item in facts[:5]) or "当前未抽取到结构化事实"
+        verification_summary = self._format_verification_counts(counts)
         return (
             f"LLM 风险分析暂时不可用，系统已降级为规则摘要。企业：{task.company_name}。"
-            f"研究问题：{task.question}。已抽取事实 {len(facts)} 条，验证状态统计：{counts or {'none': 0}}。"
+            f"研究问题：{task.question}。已抽取事实 {len(facts)} 条，验证状态统计：{verification_summary}。"
             f"事实摘要：{fact_preview}。风险观察应以已验证事实为主；对冲突或证据不足的事实只做信息缺口提示，"
             "不形成确定性结论，也不提供投资建议。"
+        )
+
+    def _format_verification_counts(self, counts: dict[str, int]) -> str:
+        if not counts:
+            return "无校验结果"
+        labels = {
+            "verified": "已验证",
+            "conflicted": "冲突",
+            "insufficient": "证据不足",
+            "outdated": "过时",
+            "rejected": "已排除",
+        }
+        return "；".join(
+            f"{labels.get(key, key)} {value} 条" for key, value in sorted(counts.items())
         )
 
     def _generate_report(self, task: ResearchTask, state: WorkflowState) -> None:
@@ -259,7 +298,7 @@ class WorkflowStepExecutor:
             report_schema.content
             + "\n\n"
             + source_quality_summary
-            + "\n\n## 证据摘要（Grounded）\n"
+            + "\n\n## 证据摘录\n"
             + grounded_content
             + self.audit.build_workflow_audit_section(state)
         )

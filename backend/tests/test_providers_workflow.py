@@ -27,6 +27,10 @@ def test_mock_search_provider_returns_sources() -> None:
     assert 2 <= len(sources) <= 3
     assert all(item.title for item in sources)
     assert all(item.raw_content for item in sources)
+    assert all(item.title.startswith("[MOCK 演示占位]") for item in sources)
+    assert all((item.url or "").startswith("mock://local/") for item in sources)
+    assert all((item.source_metadata or {}).get("mock") is True for item in sources)
+    assert all("不是联网搜索结果" in item.raw_content for item in sources)
 
 
 def test_mock_llm_provider_returns_structured_facts() -> None:
@@ -121,23 +125,25 @@ def test_report_uses_verification_status_sections(db: OrmSession) -> None:
     report = service.get_report(task.id)
     assert report is not None
     content = report.content
-    assert "## 已验证事实" in content
-    assert "## 存在冲突的事实 / 数据冲突提示" in content
-    assert "## 信息缺口 / 证据不足" in content
+    assert "## 核心事实：能直接回答问题的内容" in content
+    assert "## 可信度说明" in content
+    assert "## 需要谨慎的地方" in content
     # 冲突与不足必须是审慎表达，不写成单一确定结论。
     verifications = service.list_verification_results(task.id)
     has_conflicted = any(getattr(v.status, "value", str(v.status)) == "conflicted" for v in verifications)
     has_insufficient = any(
         getattr(v.status, "value", str(v.status)) == "insufficient" for v in verifications
     )
+    has_excluded = any(
+        getattr(v.status, "value", str(v.status)) in {"outdated", "rejected"}
+        for v in verifications
+    )
     if has_conflicted:
-        assert "不同来源存在冲突" in content
-    else:
-        assert "当前未发现明显数据冲突" in content
+        assert "不同来源说法不一致" in content
     if has_insufficient:
-        assert "缺少独立来源验证" in content
-    else:
-        assert "当前未发现明显证据不足项" in content
+        assert "还需要更权威或第二个独立来源" in content
+    if not has_conflicted and not has_insufficient and not has_excluded:
+        assert "暂未发现需要单独提示的证据冲突" in content
 
 
 def test_report_mainchain_includes_grounded_section(db: OrmSession) -> None:
@@ -147,9 +153,9 @@ def test_report_mainchain_includes_grounded_section(db: OrmSession) -> None:
     assert result.success
     report = service.get_report(task.id)
     assert report is not None
-    assert "## 证据摘要（Grounded）" in report.content
-    assert "围绕问题" in report.content
-    assert "来源《" in report.content
+    assert "## 证据摘录" in report.content
+    assert "系统优先回看了这些来源片段" in report.content
+    assert "《" in report.content
 
 
 def test_workflow_degrades_when_llm_risk_analysis_fails(db: OrmSession) -> None:
@@ -168,9 +174,10 @@ def test_workflow_degrades_when_llm_risk_analysis_fails(db: OrmSession) -> None:
     )
     report = service.get_report(task.id)
     assert report is not None
-    assert "LLM risk analysis is unavailable" in report.content
-    assert "## 工作流审计提示" in report.content
-    assert "llm_risk_analysis_degraded" in report.content
+    assert "LLM 风险分析暂时不可用" in report.content
+    assert "## 附录：处理记录" in report.content
+    assert "LLM 风险分析" in report.content
+    assert "规则摘要" in report.content
 
 
 def test_generate_report_must_call_grounding_in_mainchain(db: OrmSession) -> None:
@@ -182,7 +189,7 @@ def test_generate_report_must_call_grounding_in_mainchain(db: OrmSession) -> Non
     assert "build_report_node" in [step.step_name for step in result.state.steps]
     report = service.get_report(task.id)
     assert report is not None
-    assert "Grounded" in report.content
+    assert "证据摘录" in report.content
 
 
 def test_compliance_check_blocks_obvious_violation() -> None:

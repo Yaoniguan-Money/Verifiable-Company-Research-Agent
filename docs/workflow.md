@@ -68,7 +68,7 @@ Graph node 只做状态映射，例如把 `domain.extract_facts(task_id)` 的结
 
 ## 4. Provider Configuration
 
-本地默认配置是 `mock + local_documents + local_hashing`。DeepSeek、Baidu AI Search、DashScope 是可选真实链路示例配置，不是 workflow 依赖。
+默认配置是 `mock + public_sources + local_hashing`，其中搜索默认走联网公开来源。DeepSeek、Baidu AI Search、DashScope 是可选真实链路示例配置，不是 workflow 依赖。
 
 Workflow 只认识接口：
 

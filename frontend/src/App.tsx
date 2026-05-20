@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   chatWithTask,
   createResearchTask,
   getFacts,
+  getProviderHealth,
   getResearchReport,
   getResearchTask,
   getSources,
@@ -13,13 +14,22 @@ import {
 import {
   ChatPanel,
   EvidencePanel,
+  ProviderHealthPanel,
   ReportPanel,
   ResearchForm,
   TaskStatusPanel,
   VerificationPanel,
 } from "./components/ResearchPanels";
 import { RegressionEvalPanel } from "./components/RegressionEvalPanel";
-import type { ChatResponse, Fact, Report, ResearchTask, Source, VerificationResult } from "./types";
+import type {
+  ChatResponse,
+  Fact,
+  ProviderHealth,
+  Report,
+  ResearchTask,
+  Source,
+  VerificationResult,
+} from "./types";
 
 function App() {
   const [companyName, setCompanyName] = useState("");
@@ -29,12 +39,34 @@ function App() {
   const [sources, setSources] = useState<Source[]>([]);
   const [facts, setFacts] = useState<Fact[]>([]);
   const [verifications, setVerifications] = useState<VerificationResult[]>([]);
+  const [providerHealth, setProviderHealth] = useState<ProviderHealth | null>(null);
+  const [providerHealthError, setProviderHealthError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [chatResult, setChatResult] = useState<ChatResponse | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getProviderHealth()
+      .then((nextHealth) => {
+        if (!cancelled) {
+          setProviderHealth(nextHealth);
+          setProviderHealthError(null);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          const message = err instanceof Error ? err.message : "读取 provider 状态失败。";
+          setProviderHealthError(message);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function loadResearchArtifacts(taskId: string) {
     const [nextReport, sourceList, factList, verificationList] = await Promise.all([
@@ -110,11 +142,20 @@ function App() {
 
   return (
     <main className="app-shell">
-      <h1>可溯源企业公开信息研究智能体</h1>
-      <p className="page-desc">
-        基于公开资料导入、证据追溯、事实验证、合规输出与报告追问，演示企业信息研究主链路。
-      </p>
+      <header className="hero">
+        <div className="section-eyebrow">Verifiable company research</div>
+        <h1>可溯源企业公开信息研究智能体</h1>
+        <p className="page-desc">
+          基于公开资料检索、证据追溯、事实验证、合规输出与报告追问，生成可回查 citations 的企业研究报告。
+        </p>
+        <div className="hero-metrics" aria-label="核心能力">
+          <span>公开来源优先</span>
+          <span>source / chunk 绑定</span>
+          <span>冲突与证据不足显式标注</span>
+        </div>
+      </header>
 
+      <ProviderHealthPanel health={providerHealth} error={providerHealthError} />
       <RegressionEvalPanel />
       <ResearchForm
         companyName={companyName}

@@ -4,14 +4,12 @@ import pytest
 from app.core.config import Settings
 from app.providers.embedding import (
     LocalHashingEmbeddingProvider,
-    MockEmbeddingProvider,
     OpenAICompatibleEmbeddingProvider,
 )
 from app.providers.factory import ProviderFactory
 from app.providers.llm import DeepSeekLLMProvider, MockLLMProvider
 from app.providers.qianfan_llm_provider import QianfanLLMProvider
 from app.providers.search import (
-    BaiduAISearchProvider,
     CninfoAnnouncementProvider,
     HybridPublicSearchProvider,
     LocalDocumentSearchProvider,
@@ -21,13 +19,34 @@ from app.providers.search import (
 from app.vectorstores import InMemoryVectorStore, SQLiteVectorStore
 
 
-def test_provider_factory_returns_current_mock_implementations() -> None:
-    factory = ProviderFactory(Settings(llm_provider="mock"))
+def test_provider_factory_defaults_to_online_public_search_and_local_embedding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("SEARCH_PROVIDER", raising=False)
+    monkeypatch.delenv("EMBEDDING_PROVIDER", raising=False)
+    factory = ProviderFactory(
+        Settings(
+            llm_provider="mock",
+            search_provider="public_sources",
+            embedding_provider="local_hashing",
+            baidu_ai_search_api_key=None,
+        )
+    )
 
     assert isinstance(factory.create_llm_provider(), MockLLMProvider)
-    assert isinstance(factory.create_search_provider(), MockSearchProvider)
-    assert isinstance(factory.create_embedding_provider(), MockEmbeddingProvider)
+    search_provider = factory.create_search_provider()
+    assert isinstance(search_provider, HybridPublicSearchProvider)
+    assert [type(item).__name__ for item in search_provider.providers] == [
+        "CninfoAnnouncementProvider"
+    ]
+    assert isinstance(factory.create_embedding_provider(), LocalHashingEmbeddingProvider)
     assert isinstance(factory.create_vector_store(), InMemoryVectorStore)
+
+
+def test_provider_factory_can_create_explicit_mock_search_provider() -> None:
+    factory = ProviderFactory(Settings(search_provider="mock"))
+
+    assert isinstance(factory.create_search_provider(), MockSearchProvider)
 
 
 def test_provider_factory_can_create_local_hashing_embedding_provider() -> None:
@@ -80,7 +99,13 @@ def test_provider_factory_can_create_baidu_ai_search_provider_with_key() -> None
         )
     )
 
-    assert isinstance(factory.create_search_provider(), BaiduAISearchProvider)
+    provider = factory.create_search_provider()
+
+    assert isinstance(provider, HybridPublicSearchProvider)
+    assert [type(item).__name__ for item in provider.providers] == [
+        "CninfoAnnouncementProvider",
+        "BaiduAISearchProvider",
+    ]
 
 
 def test_provider_factory_can_create_cninfo_announcement_provider() -> None:

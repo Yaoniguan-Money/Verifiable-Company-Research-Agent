@@ -25,6 +25,8 @@ class CninfoSecurity:
     code: str
     org_id: str
     name: str
+    column: str
+    plate: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,7 +95,14 @@ class CninfoAnnouncementProvider(SearchProvider):
             if normalized_query in {code.lower(), name.lower()} or normalized_query in name.lower():
                 org_id = str(item.get("orgId") or "")
                 if code and name and org_id:
-                    return CninfoSecurity(code=code, org_id=org_id, name=name)
+                    column, plate = _market_params_for_code(code)
+                    return CninfoSecurity(
+                        code=code,
+                        org_id=org_id,
+                        name=name,
+                        column=column,
+                        plate=plate,
+                    )
         raise ValueError(f"Cannot resolve {company_name!r} in CNINFO stock list")
 
     def _query_announcements(
@@ -108,11 +117,11 @@ class CninfoAnnouncementProvider(SearchProvider):
                 "pageNum": "1",
                 "pageSize": str(max(self.top_k * 4, 20)),
                 "tabName": "fulltext",
-                "column": "szse",
+                "column": security.column,
                 "stock": f"{security.code},{security.org_id}",
                 "searchkey": "",
                 "secid": "",
-                "plate": "sz",
+                "plate": security.plate,
                 "category": "category_ndbg_szsh;category_bndbg_szsh;",
                 "trade": "",
                 "seDate": self._date_range(),
@@ -135,7 +144,7 @@ class CninfoAnnouncementProvider(SearchProvider):
             seen_urls.add(url)
             candidates.append(
                 CninfoAnnouncement(
-                    title=f"{security.name}{title}",
+                    title=_announcement_display_title(security.name, title),
                     url=url,
                     published_at=self._parse_cninfo_time(item.get("announcementTime")),
                     source_type=SourceType.ANNUAL_REPORT if "年度报告" in title else SourceType.ANNOUNCEMENT,
@@ -274,3 +283,20 @@ def _focus_report_content(
                 seen_ranges.add(window_key)
             start = normalized.find(keyword, start + len(keyword))
     return _normalize_text("\n\n".join(windows))[:max_chars]
+
+
+def _market_params_for_code(code: str) -> tuple[str, str]:
+    normalized = code.strip()
+    if normalized.startswith(("6", "9")):
+        return "sse", "sh"
+    if normalized.startswith(("4", "8")):
+        return "bj", "bj"
+    return "szse", "sz"
+
+
+def _announcement_display_title(company_name: str, title: str) -> str:
+    normalized_company = company_name.strip()
+    normalized_title = title.strip()
+    if normalized_company and normalized_title.startswith(normalized_company):
+        return normalized_title
+    return f"{normalized_company}{normalized_title}"

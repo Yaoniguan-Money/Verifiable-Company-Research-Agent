@@ -45,6 +45,29 @@ def test_extract_single_chunk_to_structured_fact() -> None:
     assert 0.0 <= fact.confidence <= 1.0
 
 
+def test_fact_extraction_skips_percentage_values_for_monetary_metrics() -> None:
+    svc = FactExtractionService()
+    chunk = EvidenceChunkRead(
+        id="chunk_1",
+        source_id="source_1",
+        task_id="task_1",
+        chunk_index=0,
+        text="公司披露2024年研发投入占营业收入比例为1.02%，营业收入同比增长5.5%。",
+        metadata={"section": "财务"},
+        embedding_id="emb_1",
+        created_at=datetime.now(timezone.utc),
+    )
+
+    out = svc.extract_from_chunks(
+        task_id="task_1",
+        company_name="测试公司",
+        question="研发投入和收入",
+        chunks=[chunk],
+    )
+
+    assert out.facts == []
+
+
 def test_official_entry_page_chunk_does_not_enter_high_confidence_fact_extraction() -> None:
     svc = FactExtractionService()
     chunk = EvidenceChunkRead(

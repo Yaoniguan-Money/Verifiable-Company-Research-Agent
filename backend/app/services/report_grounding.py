@@ -78,10 +78,10 @@ class ReportGroundingService:
 
         if not evidences:
             return GroundedReportSection(
-                title="证据摘要（Grounded）",
+                title="证据摘录",
                 content=(
-                    f"围绕问题“{q}”，当前检索结果证据不足，暂不形成带来源支持的细化结论。"
-                    "建议补充公开资料后再进行下一轮检索。"
+                    f"围绕问题“{q}”，当前检索结果证据不足，还不够支撑细化结论。"
+                    "建议补充公开披露正文、公告或年报后再检索。"
                 ),
                 citations=[],
             )
@@ -96,16 +96,14 @@ class ReportGroundingService:
             reverse=True,
         )
         picked = ranked[: max(1, max_items)]
-        lines = [f"围绕问题“{q}”，检索到以下可追溯证据片段：", ""]
+        lines = [f"为了回答“{q}”，系统优先回看了这些来源片段：", ""]
         for idx, ev in enumerate(picked, start=1):
             snippet = ev.text.strip().replace("\n", " ")
             if len(snippet) > 80:
                 snippet = snippet[:80] + "..."
-            lines.append(
-                f"{idx}. 来源《{ev.source_title}》片段（score={ev.score:.3f}）：{snippet}"
-            )
+            lines.append(f"{idx}. 《{ev.source_title}》：{snippet}")
         lines.append("")
-        lines.append("注：以上为公开资料证据摘要，不构成投资建议。")
+        lines.append("注：以上只是原始公开资料摘录，结论仍以事实校验结果为准。")
 
         content = "\n".join(lines)
         lowered = content.lower()
@@ -113,7 +111,7 @@ class ReportGroundingService:
             raise ValueError("grounded section 命中违规词，请调整模板文案")
 
         return GroundedReportSection(
-            title="证据摘要（Grounded）",
+            title="证据摘录",
             content=content,
             citations=self.format_citations(picked),
         )

@@ -97,20 +97,18 @@ class WorkflowAuditService:
         lines = [
             "",
             "",
-            "## 工作流审计提示",
+            "## 附录：处理记录",
             "",
-            "以下提示来自可控 workflow 节点，仅说明证据链状态，不构成投资建议。",
+            "以下记录用于解释为什么某些内容没有形成结论。",
         ]
         for item in decisions:
-            node = item.node
-            reason = item.reason
-            message = item.message
-            lines.append(f"- {node}: {message}（reason={reason}）")
+            lines.append(f"- {item.message}")
             if item.status_counts:
-                compact = "，".join(
-                    f"{key}={value}" for key, value in sorted(item.status_counts.items())
+                compact = "；".join(
+                    f"{self._status_label(key)} {value} 条"
+                    for key, value in sorted(item.status_counts.items())
                 )
-                lines.append(f"  验证状态统计：{compact}")
+                lines.append(f"- 校验统计：{compact}")
         return "\n".join(lines)
 
     def verification_status_summary(self, task_id: str) -> dict[str, int]:
@@ -129,3 +127,13 @@ class WorkflowAuditService:
         if summary.get("insufficient", 0) and not summary.get("verified", 0):
             reasons.append("only_insufficient_facts")
         return reasons
+
+    def _status_label(self, status: str) -> str:
+        labels = {
+            "verified": "已验证",
+            "conflicted": "冲突",
+            "insufficient": "证据不足",
+            "outdated": "过时",
+            "rejected": "已排除",
+        }
+        return labels.get(status, status)

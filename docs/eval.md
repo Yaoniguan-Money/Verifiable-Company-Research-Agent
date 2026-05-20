@@ -63,7 +63,7 @@ npm run build
 ## 公开资料回归集量化指标
 
 `data/eval/public_company_regression.json` 固化一组公开公司回归样例。  
-`data/eval/public_company_regression_fixtures.json` 提供离线 fixture，避免每次评测都实时下载 PDF；这些节选只作为稳定回归样本，不声明为真实最新公开数据。固定真实公司名称只应出现在 `data/eval/*`、`docs/evaluation_cases.md` 和 `scripts/run_public_company_regression.py`。
+`data/eval/public_company_regression_fixtures.json` 提供离线 fixture，避免每次评测都实时下载 PDF；这些节选只作为稳定回归样本，不声明为真实最新公开数据。固定真实公司名称只应出现在 `data/eval/*` 和 `docs/evaluation_cases.md`；脚本从 case 文件读取，不在代码中内置公司名。
 
 当前覆盖的核心指标组包括研发投入、营业收入、归母净利润、收入结构、产能、产量和销量等。具体样例名称见 `docs/evaluation_cases.md` 与 `data/eval/*`。
 

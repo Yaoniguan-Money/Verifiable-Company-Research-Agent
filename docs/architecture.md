@@ -1,6 +1,6 @@
 # 系统架构
 
-当前状态：可溯源企业公开信息研究智能体，开源 MVP / reference implementation。本地默认 provider 可离线启动；可选真实链路 provider 可以跑真实 API，但系统架构不绑定任何具体厂商、企业或样例。
+当前状态：可溯源企业公开信息研究智能体，开源 MVP / reference implementation。默认 SearchProvider 走联网公开来源；可选真实链路 provider 可以跑真实 API，但系统架构不绑定任何具体厂商、企业或样例。
 
 ## 1. Top-level Overview
 
@@ -81,7 +81,7 @@ backend/app/
 
 ## 4. Provider Boundary
 
-`ProviderFactory` centralizes provider creation. 本地默认示例是 `mock + local_documents + local_hashing`；DeepSeek、Baidu AI Search、DashScope 只是可选真实链路示例配置，不是系统架构限制。
+`ProviderFactory` centralizes provider creation. 默认示例是 `mock + public_sources + local_hashing`；DeepSeek、Baidu AI Search、DashScope 是可选真实链路示例配置，不是系统架构限制。
 
 业务层面依赖接口：
 

@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-当前 API 属于开源 MVP / reference implementation，用于演示可溯源企业公开信息研究流程。后端基于 FastAPI；本地默认配置使用 `mock + local_documents + local_hashing`，不需要外部 key。DeepSeek LLM + Baidu AI Search + DashScope `text-embedding-v4` 只是可选真实链路示例 provider 组合，vector store 仍是 `in_memory/sqlite` 本地工程实现。
+当前 API 属于开源 MVP / reference implementation，用于演示可溯源企业公开信息研究流程。后端基于 FastAPI；默认配置使用 `mock + public_sources + local_hashing`，搜索会访问公开网络来源且不需要外部厂商 API key。DeepSeek LLM + Baidu AI Search + DashScope `text-embedding-v4` 是可选真实链路 provider 组合，vector store 仍是 `in_memory/sqlite` 本地工程实现。
 
 所有接口都不是生产级接口，不包含完整鉴权、权限系统、生产级限流或审计。
 
@@ -17,16 +17,16 @@
 
 ## 1.2 Provider 配置口径
 
-本地默认配置：
+默认配置：
 
 ```text
 LLM_PROVIDER=mock
-SEARCH_PROVIDER=local_documents
+SEARCH_PROVIDER=public_sources
 EMBEDDING_PROVIDER=local_hashing
 mock_enabled=true
 ```
 
-可选真实链路示例可切换到 DeepSeek、Baidu AI Search、DashScope 等 provider。真实链路验收需要本地 `.env` 中配置对应 key，并显式传入待研究公司与问题。具体统计受上游返回波动影响，以本地 `verify_real_chain.py` 实时结果为准。
+`mock_enabled=true` 只表示 LLM/Embedding 里仍可能有 mock；是否联网搜索应看 `search_network_enabled`。可选真实链路示例可切换到 DeepSeek、Baidu AI Search、DashScope 等 provider。真实链路验收需要本地 `.env` 中配置对应 key，并显式传入待研究公司与问题。具体统计受上游返回波动影响，以本地 `verify_real_chain.py` 实时结果为准。
 
 ## 2. Base URL
 
@@ -66,7 +66,9 @@ http://127.0.0.1:8000
 ```json
 {
   "llm_provider": "mock",
-  "search_provider": "local_documents",
+  "search_provider": "public_sources",
+  "search_mode": "online_discovery",
+  "search_network_enabled": true,
   "embedding_provider": "local_hashing",
   "embedding_model": "local_hashing",
   "embedding_api_key_configured": false,

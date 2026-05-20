@@ -100,7 +100,8 @@ def test_grounded_section_contains_citation_and_traceable_ids(db: OrmSession) ->
         evidences=[ev],
         max_items=2,
     )
-    assert "证据片段" in section.content
+    assert "来源片段" in section.content
+    assert "score=" not in section.content
     assert len(section.citations) == 1
     cit = section.citations[0]
 
@@ -295,10 +296,10 @@ def test_report_source_quality_summary_counts_official_body_and_entry(db: OrmSes
 
     summary = ReportEvidenceService(db).build_source_quality_summary(task.id)
 
-    assert "- 官方正文来源：1" in summary
-    assert "- 官方入口来源：1" in summary
-    assert "- 第三方背景来源：1" in summary
-    assert "- 低可信来源数量：1" in summary
+    assert "- 官方/监管/交易所正文：1 条。" in summary
+    assert "- 官方入口但不是正文：1 条。" in summary
+    assert "- 第三方背景材料：1 条。" in summary
+    assert "- 低可信来源：1 条。" in summary
 
 
 def test_report_citations_sort_official_pdf_before_low_authority(db: OrmSession) -> None:

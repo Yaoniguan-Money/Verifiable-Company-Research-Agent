@@ -217,6 +217,53 @@ def test_financial_table_extractor_maps_business_revenue_table_with_multiple_seg
     assert ("revenue_segment:中药资源事业部", "2022", "38.00亿元") in facts
 
 
+def test_financial_table_extractor_filters_tax_and_financial_income_noise() -> None:
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "单位：元",
+                "项目 2024年 2023年",
+                "一、营业总收入 150560330316.45 127553959355.97",
+                "增值税 商品销售收入税率 13% 13%",
+                "A.公司在贵州银行的期末存款余额为 2409693.12 2300000.00",
+                "本期确认利息收入 70.68 65.00",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value) for item in result.facts}
+    assert ("revenue", "2024", "150560330316.45元") in facts
+    assert all("增值税" not in item.metric_name for item in result.facts)
+    assert all("银行" not in item.metric_name for item in result.facts)
+    assert all(not item.value.endswith("%") for item in result.facts)
+
+
+def test_financial_table_extractor_filters_accounting_line_noise_and_rd_ratios() -> None:
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "其中 营业收入 40033300814.72元 39111292156.00元",
+                "加 营业外收入 1165403.30元 1000000.00元",
+                "研发投入占营业收入比例 1.02% 0.94%",
+                "研发费用 5.12亿元 4.80亿元",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value) for item in result.facts}
+    assert ("R&D_expenditure", "2024", "5.12亿元") in facts
+    assert all("其中" not in item.metric_name for item in result.facts)
+    assert all("营业外" not in item.metric_name for item in result.facts)
+    assert all(not item.value.endswith("%") for item in result.facts)
+
+
 def test_financial_table_extractor_maps_capacity_production_and_sales_volume_rows() -> None:
     """模拟年报产能 / 产量 / 销量表：产品行按年度横向披露运营指标。"""
     result = FinancialTableExtractionService().extract(

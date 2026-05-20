@@ -74,6 +74,8 @@ python scripts/run_public_company_regression.py --list
 python scripts/run_public_company_regression.py --case sample_hk_public_company_case
 ```
 
+`--list`、`--case` 和 `--run-all-cases` 默认读取 `data/eval/live_public_company_cases.example.json`。如需本地私有样例，请传 `--live-cases-file data/eval/live_public_company_cases.local.json`；`*.local*.json` 已被 `.gitignore` 忽略。
+
 默认不建议一次跑多个真实公司样例，避免成本和外部 API 波动扩大。
 
 ## 6. 后续升级计划

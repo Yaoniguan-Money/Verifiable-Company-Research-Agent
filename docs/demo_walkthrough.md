@@ -1,6 +1,6 @@
 # Demo Walkthrough
 
-本文是浏览器 demo 与真实链路前端联调的详细操作手册，也可在本地 Quick Start 启动完成后作为离线 demo 走查。本文每节都从项目根目录开始，不要求先读其他文档。
+本文是浏览器 demo 与真实链路前端联调的详细操作手册，也可在本地 Quick Start 启动完成后做默认联网搜索走查。本文每节都从项目根目录开始，不要求先读其他文档。
 
 ## 1. Demo 目标
 
@@ -20,11 +20,11 @@ Copy-Item .env.example .env
 
 ## 3. Provider 配置
 
-本地默认配置（来自 `.env.example`）：
+默认配置（来自 `.env.example`）：
 
 ```text
 LLM_PROVIDER=mock
-SEARCH_PROVIDER=local_documents
+SEARCH_PROVIDER=public_sources
 EMBEDDING_PROVIDER=local_hashing
 WORKFLOW_ENGINE=langgraph
 ```
@@ -45,9 +45,11 @@ Docker Compose 会同时启动 backend 与 frontend，端口映射为 `8000:8000
 Invoke-RestMethod http://localhost:8000/health/providers
 ```
 
-本地默认配置下重点确认：
+默认配置下重点确认：
 
 - `mock_enabled=true`
+- `search_provider=public_sources`
+- `search_network_enabled=true`
 - provider 与 `.env.example` 一致
 
 可选真实链路 smoke 需要先在本地 `.env` 中配置真实 provider 组合与对应 API key，并确认：
@@ -63,8 +65,8 @@ Invoke-RestMethod http://localhost:8000/health/providers
 
 ```powershell
 $bodyObj = @{
-  company_name = "demo tech"
-  question = "请基于本地公开资料分析该企业最近的经营风险和公开披露一致性，要求给出引用来源，不要给投资建议。"
+  company_name = "贵州茅台"
+  question = "请基于公开公告资料分析该公司近三年营业收入、净利润变化和主要经营风险，要求给出引用来源，不要给投资建议。"
 }
 
 $bodyJson = $bodyObj | ConvertTo-Json -Depth 10
@@ -79,7 +81,7 @@ $task = Invoke-RestMethod `
 $task
 ```
 
-`demo tech` 对应仓库内 `data/imports/demo_tech` 的离线公开资料样例，不代表真实企业，也不构成投资分析、评级、推荐或建议。可选真实链路 smoke 请在本地 `.env` 配置真实 provider key 后，显式传入待研究公司和问题。
+默认 `public_sources` 面向真实公开来源。若要使用仓库内 `data/imports/demo_tech` 离线样例，请显式改为 `SEARCH_PROVIDER=local_documents`；该样例不代表真实企业，也不构成投资分析、评级、推荐或建议。
 
 ## 7. 运行任务
 
@@ -125,7 +127,7 @@ $report.citations | ForEach-Object {
 
 - PowerShell 中文 body 建议使用 `ConvertTo-Json + UTF8 bytes`。
 - 启用真实 provider 时必须配置对应 key。
-- `mock_enabled=true` 表示当前不是真实 provider 链路。
+- `mock_enabled=true` 表示至少一个非搜索 provider 仍为 mock；是否联网搜索以 `search_network_enabled` 为准。
 - 外部 provider 超时、限流、认证失败不会 fallback 到 mock。
 - `official_entry_page` 只能证明入口存在，不能单独作为高置信事实来源。
 

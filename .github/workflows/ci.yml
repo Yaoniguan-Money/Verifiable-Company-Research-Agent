@@ -49,6 +49,12 @@ jobs:
             echo "$disallowed"
             exit 1
           fi
+          private_cases="$(find data/eval -type f \( -name '*local*.json' -o -name '*private*.json' \) 2>/dev/null || true)"
+          if [ -n "$private_cases" ]; then
+            echo "$private_cases"
+            echo "Local/private evaluation case files must not be committed."
+            exit 1
+          fi
       - name: Scan working tree and history for common key patterns
         shell: bash
         run: |

@@ -21,6 +21,9 @@
 - [ ] 运行后端测试：`.\.venv\Scripts\python -m pytest backend\tests -q`
 - [ ] 运行后端 lint：`.\.venv\Scripts\python -m ruff check backend scripts`
 - [ ] 运行前端构建：`cd frontend && npm run build`
+- [ ] 运行密钥扫描：`powershell -ExecutionPolicy Bypass -File scripts\verify_secrets.ps1`
+- [ ] 查看 `git status --ignored --short`，确认 `.env`、`data/dev.db`、缓存、`frontend/node_modules/` 只留在本地 ignored 文件里，不被提交或手动打包。
+- [ ] 如需本地真实 live case，使用 `data/eval/*local*.json` 或 `data/eval/*private*.json`，不要把私有客户样例写进 tracked 文件。
 - [ ] 阅读 `docs/eval.md`，理解这些测试能证明什么、不能证明什么。
 
 注意：测试通过不代表真实搜索质量、真实 LLM 推理质量或生产级事实审计质量。

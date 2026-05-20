@@ -63,7 +63,7 @@ class BaiduAISearchProvider(SearchProvider):
             response.raise_for_status()
             data = response.json()
             logger.info("Baidu AI Search response keys: %s", list(data.keys()))
-            references = data.get("references") or []
+            references = self._extract_references(data)
             logger.info("Baidu AI Search raw references count: %s", len(references))
             for idx, item in enumerate(references[:3], start=1):
                 if not isinstance(item, dict):
@@ -121,7 +121,10 @@ class BaiduAISearchProvider(SearchProvider):
                 client.close()
 
         if not sources:
-            raise ValueError("Baidu AI search returned no usable references")
+            raise ValueError(
+                "Baidu AI search returned no usable references"
+                f" (raw_references={len(references)}, {self._response_error_summary(data)})"
+            )
         return sources
 
     def _headers(self) -> dict[str, str]:
@@ -154,10 +157,10 @@ class BaiduAISearchProvider(SearchProvider):
             "stream": False,
             "model": self.model,
             "search_source": "baidu_search_v2",
-            "search_mode": "required",
+            "search_mode": "auto",
             "resource_type_filter": [{"type": "web", "top_k": self.top_k}],
             "enable_deep_search": self.enable_deep_search,
-            "enable_followup_queries": False,
+            "enable_followup_query": False,
             "enable_corner_markers": True,
             "enable_reasoning": False,
             "instruction": instruction,
@@ -166,3 +169,48 @@ class BaiduAISearchProvider(SearchProvider):
             "max_completion_tokens": 1024,
             "max_refer_search_items": self.top_k,
         }
+
+    def _extract_references(self, data: dict[str, object]) -> list[object]:
+        """Return references from known Baidu response layouts.
+
+        The public API documents `references` at the top level, but SDK/proxy
+        wrappers sometimes nest it under choices/message. Accepting both keeps
+        provider failures diagnosable instead of silently treating valid
+        responses as empty.
+        """
+
+        candidates: list[object] = [data.get("references")]
+        choices = data.get("choices")
+        if isinstance(choices, list):
+            for choice in choices:
+                if not isinstance(choice, dict):
+                    continue
+                candidates.append(choice.get("references"))
+                message = choice.get("message")
+                if isinstance(message, dict):
+                    candidates.append(message.get("references"))
+                    metadata = message.get("metadata")
+                    if isinstance(metadata, dict):
+                        candidates.append(metadata.get("references"))
+
+        references: list[object] = []
+        seen_urls: set[str] = set()
+        for candidate in candidates:
+            if not isinstance(candidate, list):
+                continue
+            for item in candidate:
+                if not isinstance(item, dict):
+                    continue
+                url = str(item.get("url") or "")
+                key = url or f"{item.get('title')}-{item.get('id')}"
+                if key in seen_urls:
+                    continue
+                seen_urls.add(key)
+                references.append(item)
+        return references
+
+    def _response_error_summary(self, data: dict[str, object]) -> str:
+        request_id = data.get("request_Id") or data.get("request_id") or "-"
+        code = data.get("code") or "-"
+        message = data.get("message") or "-"
+        return f"request_id={request_id}, code={code}, message={message}"

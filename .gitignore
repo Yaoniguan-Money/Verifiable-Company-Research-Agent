@@ -54,6 +54,8 @@ data/*
 !data/eval/
 !data/eval/**
 data/eval/*cache*.json
+data/eval/*local*.json
+data/eval/*private*.json
 storage/
 chroma_db/
 qdrant_storage/

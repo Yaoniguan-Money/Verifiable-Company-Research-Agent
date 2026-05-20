@@ -8,7 +8,7 @@
 
 当前口径：开源 MVP / reference implementation。
 - 默认 workflow engine 是 LangGraph，service engine 仅作为 legacy regression fallback。
-- 本地默认 provider 可离线运行；真实 provider 通过配置显式启用。
+- 默认 SearchProvider 走联网公开来源；外部付费/带 key provider 通过配置显式启用。
 - 当前实现不是生产级投研系统，也不提供投资建议。
 """
 

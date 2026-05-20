@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import pytest
 from app.providers.llm.deepseek_provider import DeepSeekLLMProvider
+from app.schemas.chunk import EvidenceChunkRead
 
 
 class _FakeResponse:
@@ -101,6 +103,41 @@ def test_deepseek_request_uses_bearer_authorization(monkeypatch) -> None:
     assert captured["json"]["stream"] is False
     assert captured["json"]["temperature"] == 0.2
     assert captured["timeout"] == 11
+
+
+def test_deepseek_extract_facts_parses_strict_json_and_keeps_traceability(monkeypatch) -> None:
+    chunk = EvidenceChunkRead(
+        id="chunk-1",
+        source_id="source-1",
+        task_id="task-1",
+        chunk_index=0,
+        text="样例公司2024年营业收入为100亿元。",
+        metadata=None,
+        embedding_id=None,
+        created_at=datetime.now(timezone.utc),
+    )
+
+    monkeypatch.setattr(
+        DeepSeekLLMProvider,
+        "_chat",
+        lambda self, prompt, *, max_tokens: (
+            '{"facts":['
+            '{"claim":"2024年营业收入为100亿元","metric_name":"revenue",'
+            '"value":"100亿元","period":"2024","source_id":"source-1",'
+            '"chunk_id":"chunk-1","confidence":0.81},'
+            '{"claim":"伪造事实","metric_name":"revenue","value":"1亿元",'
+            '"period":"2024","source_id":"bad-source","chunk_id":"bad-chunk","confidence":0.9}'
+            "]} "
+        ),
+    )
+    provider = DeepSeekLLMProvider(api_key="unit-test-token")
+
+    facts = provider.extract_facts("task-1", "样例公司", "近三年收入变化", [chunk])
+
+    assert len(facts) == 1
+    assert facts[0].claim == "2024年营业收入为100亿元"
+    assert facts[0].source_id == "source-1"
+    assert facts[0].chunk_id == "chunk-1"
 
 
 def test_deepseek_provider_example_uses_chat_model() -> None:

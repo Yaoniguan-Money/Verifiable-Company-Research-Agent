@@ -127,3 +127,21 @@ export interface RegressionEvalSummary {
   total_fact_count: number;
   cases: RegressionEvalCase[];
 }
+
+export interface ProviderHealth {
+  llm_provider: string;
+  search_provider: string;
+  search_mode: string;
+  search_network_enabled: boolean;
+  embedding_provider: string;
+  embedding_model: string;
+  embedding_api_key_configured: boolean;
+  embedding_base_url_configured: boolean;
+  embedding_base_url_host: string | null;
+  embedding_dimension_configured: boolean;
+  embedding_max_batch_size: number;
+  qianfan_api_key_configured: boolean;
+  deepseek_api_key_configured: boolean;
+  baidu_ai_search_api_key_configured: boolean;
+  mock_enabled: boolean;
+}

@@ -19,7 +19,7 @@ from app.schemas.common import (
     source_quality_counts,
     source_quality_insufficient,
 )
-from app.schemas.fact import ExtractedFactRead
+from app.schemas.fact import ExtractedFactCreate, ExtractedFactRead
 from app.schemas.report import ReportCreate
 from app.schemas.retrieval import RetrievedEvidence
 from app.schemas.source import SourceRead
@@ -170,6 +170,14 @@ class ResearchDomainServices:
             question=task.question,
             chunks=chunk_reads,
         )
+        extracted_facts = extraction.facts
+        if not extracted_facts and self.settings.llm_provider != "mock":
+            extracted_facts = self._extract_facts_with_llm_fallback(
+                task_id=task.id,
+                company_name=task.company_name,
+                question=task.question,
+                chunks=chunk_reads,
+            )
         facts = [
             ExtractedFact(
                 task_id=item.task_id,
@@ -181,11 +189,31 @@ class ResearchDomainServices:
                 chunk_id=item.chunk_id,
                 confidence=item.confidence,
             )
-            for item in extraction.facts
+            for item in extracted_facts
         ]
         self.artifacts.add_facts(facts)
         self.db.commit()
         return [ExtractedFactRead.model_validate(item) for item in self.artifacts.list_facts(task.id)]
+
+    def _extract_facts_with_llm_fallback(
+        self,
+        *,
+        task_id: str,
+        company_name: str,
+        question: str,
+        chunks: list[EvidenceChunkRead],
+    ) -> list[ExtractedFactCreate]:
+        try:
+            return self.llm_provider.extract_facts(
+                task_id=task_id,
+                company_name=company_name,
+                question=question,
+                chunks=chunks,
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                "LLM fact extraction failed while deterministic extraction produced no facts."
+            ) from exc
 
     def verify_facts(self, task_id: str) -> list[VerificationResultRead]:
         fact_rows = self.artifacts.list_facts(task_id)
@@ -223,8 +251,7 @@ class ResearchDomainServices:
             node="record_evidence_gap_node",
             reason="no_extracted_facts",
             message=(
-                "Fact extraction produced no structured facts; verification is skipped "
-                "and the report should describe an evidence gap."
+                "没有抽取到结构化事实，已跳过事实校验；报告只能说明证据缺口。"
             ),
             task_id=task_id,
         )
@@ -236,8 +263,7 @@ class ResearchDomainServices:
             node="record_verification_risk_node",
             reason=",".join(reasons) or "verification_review_required",
             message=(
-                "Verification results include conflicts, rejected facts, or only "
-                "insufficient facts; report conclusions must stay cautious."
+                "校验结果存在冲突、被排除事实或证据不足，报告结论必须保持审慎。"
             ),
             task_id=task_id,
             status_counts=summary,
@@ -279,7 +305,7 @@ class ResearchDomainServices:
                 WorkflowDecision(
                     node="analyze_risks_node",
                     reason="llm_risk_analysis_degraded",
-                    message="Risk analysis degraded to deterministic summary in mock mode.",
+                    message="LLM 风险分析失败，已改用规则摘要；报告不能超出已验证事实和证据缺口。",
                     task_id=task_id,
                 )
                 if record_decision
@@ -321,7 +347,7 @@ class ResearchDomainServices:
             report_schema.content
             + "\n\n"
             + source_quality_text
-            + "\n\n## 证据摘要（Grounded）\n"
+            + "\n\n## 证据摘录\n"
             + grounded_content
             + self.audit.build_workflow_audit_section(workflow_state)
         )
@@ -417,11 +443,25 @@ class ResearchDomainServices:
         for item in verification_results:
             key = getattr(item.status, "value", str(item.status))
             counts[key] = counts.get(key, 0) + 1
-        fact_preview = "; ".join(item.claim for item in facts[:5]) or "no structured facts"
+        fact_preview = "；".join(item.claim for item in facts[:5]) or "当前没有结构化事实"
+        verification_summary = self._format_verification_counts(counts)
         return (
-            f"LLM risk analysis is unavailable in mock mode. Company: {task.company_name}. "
-            f"Question: {task.question}. Extracted facts: {len(facts)}. "
-            f"Verification summary: {counts or {'none': 0}}. Fact preview: {fact_preview}. "
-            "The report should stay within verified facts and evidence gaps, without "
-            "investment advice."
+            f"LLM 风险分析暂时不可用，系统已改用规则摘要。企业：{task.company_name}。"
+            f"研究问题：{task.question}。已抽取事实 {len(facts)} 条。"
+            f"校验统计：{verification_summary}。事实预览：{fact_preview}。"
+            "报告只能围绕已验证事实和证据缺口表达，不提供投资建议。"
+        )
+
+    def _format_verification_counts(self, counts: dict[str, int]) -> str:
+        if not counts:
+            return "无校验结果"
+        labels = {
+            "verified": "已验证",
+            "conflicted": "冲突",
+            "insufficient": "证据不足",
+            "outdated": "过时",
+            "rejected": "已排除",
+        }
+        return "；".join(
+            f"{labels.get(key, key)} {value} 条" for key, value in sorted(counts.items())
         )

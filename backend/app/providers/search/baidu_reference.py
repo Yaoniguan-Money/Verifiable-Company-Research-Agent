@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import re
+import unicodedata
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import httpx
-from app.providers.search.official_urls import _normalize_text
+from app.providers.search.official_urls import (
+    _extract_pdf_text,
+    _normalize_text,
+    _ReadableHTMLParser,
+)
 from app.schemas.common import (
     CONTENT_FETCH_STATUS_METADATA_KEY,
     SOURCE_LAYER_METADATA_KEY,
@@ -15,6 +21,86 @@ from app.schemas.common import (
     source_quality_insufficient,
 )
 from app.schemas.source import SourceCreate
+
+AUTHORITATIVE_DOMAINS = frozenset(
+    {
+        "hkexnews.hk",
+        "hkex.com.hk",
+        "sse.com.cn",
+        "szse.cn",
+        "cninfo.com.cn",
+        "gov.cn",
+    }
+)
+
+LOW_AUTHORITY_DOMAINS = frozenset(
+    {
+        "baijiahao.baidu.com",
+        "zhihu.com",
+        "xueqiu.com",
+        "mp.weixin.qq.com",
+        "wjx.cn",
+        "11467.com",
+    }
+)
+
+BUSINESS_REGISTRY_DOMAINS = frozenset(
+    {
+        "aiqicha.baidu.com",
+        "qcc.com",
+        "tianyancha.com",
+        "gsxt.gov.cn",
+    }
+)
+
+BLOCKED_PAGE_KEYWORDS = (
+    "考试题",
+    "试卷",
+    "题库",
+    "培训",
+    "课程",
+    "论文下载",
+    "问卷",
+    "问答社区",
+    "面试题",
+    "interview",
+)
+
+EVIDENCE_KEYWORDS = (
+    "年报",
+    "年度报告",
+    "半年报",
+    "季报",
+    "研发",
+    "研发费用",
+    "研发投入",
+    "营收",
+    "营业收入",
+    "净利润",
+    "经营风险",
+    "风险因素",
+    "财务",
+    "业绩",
+    "公告",
+    "投资者关系",
+    "监管",
+    "交易所",
+    "企业信息",
+    "企业信用",
+    "工商",
+    "经营范围",
+    "法定代表人",
+    "注册资本",
+    "成立日期",
+    "统一社会信用代码",
+    "公司简介",
+    "公司介绍",
+    "主营",
+    "主要业务",
+    "业务板块",
+    "产品",
+    "服务",
+)
 
 
 class BaiduReferenceProcessor:
@@ -34,33 +120,6 @@ class BaiduReferenceProcessor:
         self.company_name = company_name
         self.allowed_domains = allowed_domains
         self.fetch_reference_pages = fetch_reference_pages
-        self._authoritative_domains = {
-            "hkexnews.hk",
-            "hkex.com.hk",
-            "sse.com.cn",
-            "szse.cn",
-            "cninfo.com.cn",
-            "gov.cn",
-        }
-        self._low_authority_domains = {
-            "baijiahao.baidu.com",
-            "zhihu.com",
-            "xueqiu.com",
-            "mp.weixin.qq.com",
-            "wjx.cn",
-            "11467.com",
-        }
-        self._blocked_page_keywords = (
-            "考试题",
-            "试卷",
-            "题库",
-            "培训",
-            "课程",
-            "论文下载",
-            "问卷",
-            "问答社区",
-            "面试题",
-        )
 
     def authority_label(self, source: SourceCreate) -> str:
         return authority_label(source.credibility_score).value
@@ -125,26 +184,18 @@ class BaiduReferenceProcessor:
         return sorted(out, key=lambda item: item.credibility_score or 0, reverse=True)
 
     def _looks_relevant(self, *, title: str, url: str, raw_content: str) -> bool:
-        text = f"{title}\n{url}\n{raw_content[:2000]}".lower()
-        if any(keyword in text for keyword in self._blocked_page_keywords):
+        text = _normalize_match_text(f"{title}\n{url}\n{raw_content[:2000]}")
+        if any(keyword in text for keyword in BLOCKED_PAGE_KEYWORDS):
             return False
-        company = self.company_name.strip().lower()
-        compact_company = company.replace(" ", "")
-        has_company = bool(company and (company in text or compact_company in text.replace(" ", "")))
-        evidence_keywords = (
-            "年报",
-            "年度报告",
-            "半年报",
-            "研发",
-            "营收",
-            "净利润",
-            "经营风险",
-            "公告",
-            "投资者关系",
-            "监管",
-            "交易所",
-        )
-        return has_company and any(keyword in text for keyword in evidence_keywords)
+        company = _normalize_match_text(self.company_name)
+        compact_company = _compact_identity(self.company_name)
+        compact_text = _compact_identity(text)
+        has_company = bool(company and (company in text or compact_company in compact_text))
+        if has_company and any(keyword in text for keyword in EVIDENCE_KEYWORDS):
+            return True
+        # Official disclosure pages are often sparse landing pages whose title or
+        # snippet carries the evidence signal while the fetched body is generic.
+        return has_company and self._is_authoritative_url(url)
 
     def _fetch_reference_body(self, *, client: httpx.Client, url: str) -> str:
         try:
@@ -153,9 +204,10 @@ class BaiduReferenceProcessor:
         except httpx.HTTPError:
             return ""
         content_type = response.headers.get("content-type", "").lower()
+        url_path = urlparse(str(response.url)).path.lower()
+        if "pdf" in content_type or url_path.endswith(".pdf"):
+            return _extract_pdf_text(response.content)
         if "html" in content_type:
-            from app.providers.search.official_urls import _ReadableHTMLParser
-
             parser = _ReadableHTMLParser()
             parser.feed(response.text)
             body = _normalize_text(parser.text())
@@ -163,7 +215,10 @@ class BaiduReferenceProcessor:
                 return ""
             return body
         if "text" in content_type or "json" in content_type:
-            return _normalize_text(response.text)
+            body = _normalize_text(response.text)
+            if "百度安全验证" in body or "网络不给力" in body:
+                return ""
+            return body
         return ""
 
     def _domain_allowed(self, url: str) -> bool:
@@ -173,6 +228,7 @@ class BaiduReferenceProcessor:
         return any(host == domain or host.endswith(f".{domain}") for domain in self.allowed_domains)
 
     def _infer_source_type(self, *, title: str, url: str, raw_type: object) -> SourceType:
+        host = (urlparse(url).hostname or "").lower()
         text = f"{title} {url} {raw_type or ''}".lower()
         if "annual" in text or "年报" in text or "年度报告" in text:
             return SourceType.ANNUAL_REPORT
@@ -180,6 +236,10 @@ class BaiduReferenceProcessor:
             return SourceType.ANNOUNCEMENT
         if "gov" in text or "政府" in text or "监管" in text:
             return SourceType.GOVERNMENT
+        if any(mark in text for mark in ("招聘", "hiring", "job", "career")):
+            return SourceType.HIRING
+        if self._host_matches(host, BUSINESS_REGISTRY_DOMAINS):
+            return SourceType.OTHER
         if "news" in text or "新闻" in text or raw_type == "web":
             return SourceType.NEWS
         return SourceType.OTHER
@@ -196,10 +256,12 @@ class BaiduReferenceProcessor:
     def _credibility_for(self, *, title: str, url: str) -> float:
         host = (urlparse(url).hostname or "").lower()
         text = f"{title} {host}".lower()
-        if any(host == domain or host.endswith(f".{domain}") for domain in self._authoritative_domains):
+        if any(host == domain or host.endswith(f".{domain}") for domain in AUTHORITATIVE_DOMAINS):
             return 0.96
-        if host in self._low_authority_domains:
+        if self._host_matches(host, LOW_AUTHORITY_DOMAINS):
             return 0.46
+        if self._host_matches(host, BUSINESS_REGISTRY_DOMAINS):
+            return 0.72
         if any(mark in text for mark in ("官网", "official", "investor", "ir.", "investor-relations")):
             return 0.84
         if any(mark in text for mark in ("年报", "年度报告", "交易所", "监管披露", "公告")):
@@ -210,14 +272,21 @@ class BaiduReferenceProcessor:
         host = (urlparse(url).hostname or "").lower()
         text = f"{title} {url}".lower()
         if "pdf" in text and any(
-            host == domain or host.endswith(f".{domain}") for domain in self._authoritative_domains
+            host == domain or host.endswith(f".{domain}") for domain in AUTHORITATIVE_DOMAINS
         ):
             return SourceLayer.OFFICIAL_PDF
-        if any(host == domain or host.endswith(f".{domain}") for domain in self._authoritative_domains):
+        if any(host == domain or host.endswith(f".{domain}") for domain in AUTHORITATIVE_DOMAINS):
             return SourceLayer.OFFICIAL_DISCLOSURE_PAGE
-        if host in self._low_authority_domains:
+        if self._host_matches(host, LOW_AUTHORITY_DOMAINS):
             return SourceLayer.THIRD_PARTY_BACKGROUND
         return SourceLayer.THIRD_PARTY_BACKGROUND
+
+    def _is_authoritative_url(self, url: str) -> bool:
+        host = (urlparse(url).hostname or "").lower()
+        return self._host_matches(host, AUTHORITATIVE_DOMAINS)
+
+    def _host_matches(self, host: str, domains: frozenset[str]) -> bool:
+        return any(host == domain or host.endswith(f".{domain}") for domain in domains)
 
 
 def merge_reference_text(*, snippet: str, body: str) -> str:
@@ -226,3 +295,12 @@ def merge_reference_text(*, snippet: str, body: str) -> str:
     if normalized_snippet and normalized_body and normalized_snippet not in normalized_body:
         return f"{normalized_snippet}\n\n{normalized_body}"
     return normalized_body or normalized_snippet
+
+
+def _normalize_match_text(value: str) -> str:
+    return unicodedata.normalize("NFKC", value).lower()
+
+
+def _compact_identity(value: str) -> str:
+    normalized = _normalize_match_text(value)
+    return re.sub(r"[\W_]+", "", normalized)

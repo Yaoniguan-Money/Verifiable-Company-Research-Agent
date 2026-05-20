@@ -4,6 +4,7 @@ import type {
   CreateTaskRequest,
   CreateTaskResponse,
   FactListResponse,
+  ProviderHealth,
   Report,
   ResearchTask,
   RunTaskResponse,
@@ -67,4 +68,8 @@ export function chatWithTask(payload: ChatRequest): Promise<ChatResponse> {
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export function getProviderHealth(): Promise<ProviderHealth> {
+  return request<ProviderHealth>("/api/health/providers");
 }
