@@ -15,7 +15,7 @@ jobs:
           python-version: "3.10"
           cache: pip
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install -r requirements-dev.txt
       - run: python -m ruff check backend scripts
       - run: python -m pytest backend/tests -q
 
@@ -44,7 +44,7 @@ jobs:
       - name: Ensure env files are not committed
         shell: bash
         run: |
-          disallowed="$(find . -path './.git' -prune -o -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -print)"
+          disallowed="$(find . -path './.git' -prune -o -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' ! -name '.env.providers.example' -print)"
           if [ -n "$disallowed" ]; then
             echo "$disallowed"
             exit 1
@@ -67,7 +67,7 @@ jobs:
           if grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=node_modules --exclude-dir=dist '^(export[[:space:]]+)?(DEEPSEEK_API_KEY|QIANFAN_API_KEY|BAIDU_AI_SEARCH_API_KEY|EMBEDDING_API_KEY|DASHSCOPE_API_KEY|API_KEY)[[:space:]]*=[[:space:]]*[A-Za-z0-9_./+=-]{8,}' .; then
             exit 1
           fi
-          disallowed_history="$(git log --all --name-only --pretty=format: -- .env '.env.*' | sort -u | grep -Ev '^$|^\.env\.example$' || true)"
+          disallowed_history="$(git log --all --name-only --pretty=format: -- .env '.env.*' | sort -u | grep -Ev '^$|^\.env\.example$|^\.env\.providers\.example$' || true)"
           if [ -n "$disallowed_history" ]; then
             echo "$disallowed_history"
             echo "A real env file exists in git history. Rotate exposed keys and rewrite history before opening source."
