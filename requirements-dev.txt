@@ -1,0 +1,5 @@
+# 开发与测试依赖（在运行依赖基础上追加）
+-r requirements.txt
+
+pytest==8.3.3
+ruff==0.7.1

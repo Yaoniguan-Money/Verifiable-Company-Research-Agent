@@ -1,0 +1,34 @@
+{
+  "name": "sample_consumer_2025_profit",
+  "company_name": "某A股消费品上市公司",
+  "question": "2025年利润是多少？",
+  "assertions": [
+    "optional_context excludes unrelated R&D/capacity facts for strict profit questions",
+    "followup for 2025 R&D does not claim the report lacks data when ambiguity exists",
+    "conflicted R&D values are described as metric ambiguity instead of parallel core bullets"
+  ],
+  "facts": [
+    {
+      "claim": "2025年归母净利润为100亿元",
+      "metric_name": "net_profit_parent",
+      "value": "100亿元",
+      "period": "2025",
+      "status": "verified"
+    },
+    {
+      "claim": "2025年研发投入为10亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "10亿元",
+      "period": "2025",
+      "status": "conflicted"
+    },
+    {
+      "claim": "2025年研发投入为12亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "12亿元",
+      "period": "2025",
+      "status": "conflicted"
+    }
+  ]
+}
+

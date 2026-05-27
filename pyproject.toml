@@ -1,0 +1,32 @@
+# ============================================================
+# 注意：本文件【仅用于工具配置】（ruff / pytest），
+# 依赖管理统一走 requirements.txt / requirements-dev.txt。
+# ============================================================
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["data", "storage", "chroma_db", ".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # 行长由 formatter 控制，不做硬限制
+    # FastAPI 依赖注入约定：在路由/依赖工厂形参上写 `Depends(get_db)` / `Depends(get_xxx_service)`。
+    # 这是官方推荐写法（Default 在声明时由框架解析，并非可变默认参数陷阱）。flake8-bugbear B008
+    # 会误报，故对全项目关闭；若新增非 FastAPI 的可变默认参数，仍应用 None + 在函数体赋值等方式避免。
+    "B008",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["backend/tests"]
+addopts = "-ra -q"
+pythonpath = ["backend"]

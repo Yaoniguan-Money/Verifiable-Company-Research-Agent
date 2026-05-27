@@ -1,0 +1,112 @@
+# ============================================================
+# 警告：本文件中的所有密码和密钥均为本地开发默认值，
+# 仅用于本地快速启动，切勿直接用于生产环境或公网部署。
+# 生产部署前请务必替换所有默认密码和密钥。
+# Admin API (/api/admin/flags) 无鉴权，仅允许本地访问，勿暴露到公网。
+# ============================================================
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: vcra
+      POSTGRES_USER: vcra
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vcra_dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vcra -d vcra"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - .env
+    environment:
+      APP_ENV: dev
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      HF_ENDPOINT: ${HF_ENDPOINT:-https://huggingface.co}
+      DATABASE_URL: postgresql+psycopg2://vcra:${DB_PASSWORD:-vcra_dev_password}@postgres:5432/vcra
+      REDIS_URL: redis://redis:6379/0
+      VECTOR_STORE: pgvector
+      USE_ALEMBIC_ON_STARTUP: "true"
+    volumes:
+      - ./.env:/app/.env
+      - ./data:/app/data
+      - ./backend:/app/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import http.client; c=http.client.HTTPConnection('127.0.0.1',8000,timeout=2); c.request('GET','/api/health'); r=c.getresponse(); raise SystemExit(0 if r.status < 500 else 1)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      VITE_PROXY_TARGET: http://backend:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      # 开发时挂载源码，改前端无需每次 rebuild 镜像
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  langfuse:
+    image: langfuse/langfuse:2
+    ports:
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgresql://vcra:${DB_PASSWORD:-vcra_dev_password}@postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3001
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-dev-langfuse-secret-at-least-32-chars}
+      SALT: ${LANGFUSE_SALT:-dev-langfuse-salt-change-me-now}
+      TELEMETRY_ENABLED: "false"
+      LANGFUSE_INIT_ORG_ID: dev-org
+      LANGFUSE_INIT_ORG_NAME: "Dev Organization"
+      LANGFUSE_INIT_PROJECT_ID: dev-project
+      LANGFUSE_INIT_PROJECT_NAME: "Dev Project"
+      LANGFUSE_INIT_USER_EMAIL: admin@dev.local
+      LANGFUSE_INIT_USER_NAME: "Dev Admin"
+      LANGFUSE_INIT_USER_PASSWORD: devadmin123
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  frontend_node_modules:

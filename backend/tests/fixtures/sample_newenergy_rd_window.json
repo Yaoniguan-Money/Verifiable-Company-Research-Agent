@@ -1,0 +1,27 @@
+{
+  "name": "sample_newenergy_rd_window",
+  "company_name": "某A股新能源上市公司",
+  "question": "近一年研发投入是多少？",
+  "assertions": [
+    "time scope keeps facts inside the one-year window",
+    "summary focuses on R&D facts",
+    "older years are not mixed into the primary answer"
+  ],
+  "facts": [
+    {
+      "claim": "2025年研发投入为180亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "180亿元",
+      "period": "2025",
+      "status": "verified"
+    },
+    {
+      "claim": "2023年研发投入为120亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "120亿元",
+      "period": "2023",
+      "status": "verified"
+    }
+  ]
+}
+

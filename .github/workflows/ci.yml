@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m ruff check backend scripts
+      - run: python -m pytest backend/tests -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - working-directory: frontend
+        run: npm ci
+      - working-directory: frontend
+        run: npm run typecheck
+      - working-directory: frontend
+        run: npm test
+      - working-directory: frontend
+        run: npm run build
+
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python scripts/run_evaluation.py --threshold 0.75
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure env files are not committed
+        shell: bash
+        run: |
+          disallowed="$(find . -path './.git' -prune -o -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' ! -name '.env.providers.example' -print)"
+          if [ -n "$disallowed" ]; then
+            echo "$disallowed"
+            exit 1
+          fi
+          private_cases="$(find data/eval -type f \( -name '*local*.json' -o -name '*private*.json' \) 2>/dev/null || true)"
+          if [ -n "$private_cases" ]; then
+            echo "$private_cases"
+            echo "Local/private evaluation case files must not be committed."
+            exit 1
+          fi
+      - name: Scan working tree and history for common key patterns
+        shell: bash
+        run: |
+          if grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=node_modules --exclude-dir=dist 'sk-[A-Za-z0-9_-]{16,}' .; then
+            exit 1
+          fi
+          if grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=node_modules --exclude-dir=dist 'bce-v3/[A-Za-z0-9_./+=-]{16,}' .; then
+            exit 1
+          fi
+          if grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=node_modules --exclude-dir=dist '^(export[[:space:]]+)?(DEEPSEEK_API_KEY|QIANFAN_API_KEY|BAIDU_AI_SEARCH_API_KEY|EMBEDDING_API_KEY|DASHSCOPE_API_KEY|API_KEY)[[:space:]]*=[[:space:]]*[A-Za-z0-9_./+=-]{8,}' .; then
+            exit 1
+          fi
+          disallowed_history="$(git log --all --name-only --pretty=format: -- .env '.env.*' | sort -u | grep -Ev '^$|^\.env\.example$|^\.env\.providers\.example$' || true)"
+          if [ -n "$disallowed_history" ]; then
+            echo "$disallowed_history"
+            echo "A real env file exists in git history. Rotate exposed keys and rewrite history before opening source."
+            exit 1
+          fi

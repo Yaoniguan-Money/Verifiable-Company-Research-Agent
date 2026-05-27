@@ -1,0 +1,36 @@
+# 后端运行依赖（runtime）
+fastapi==0.115.4
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.6.1
+
+# ORM
+sqlalchemy==2.0.36
+
+# HTTP 客户端
+httpx==0.27.2
+
+# PDF 正文抽取
+pypdf==5.1.0
+
+# Workflow graph 编排
+langgraph==0.2.76
+
+# 数据库迁移与基础设施（升级计划 Phase 1）
+alembic==1.14.0
+psycopg2-binary==2.9.10
+redis==5.2.1
+
+# RAG 升级（Phase 2，纯 CPU）
+rank-bm25==0.2.2
+jieba==0.42.1
+pdfplumber==0.11.4
+structlog==24.4.0
+
+# 可选：PDF 导出 / LangFuse / ONNX 模型 / 图表
+# weasyprint==62.3
+langfuse==2.57.0
+optimum[onnxruntime]>=1.23.0
+transformers>=4.46.0
+# optimum[onnxruntime]==1.23.3
+# matplotlib==3.9.2
