@@ -123,8 +123,8 @@ def test_cninfo_provider_uses_shanghai_plate_for_shanghai_codes() -> None:
 
 def test_cninfo_provider_does_not_duplicate_company_name_in_title() -> None:
     assert (
-        cninfo_announcements._announcement_display_title("贵州茅台", "贵州茅台2024年年度报告")
-        == "贵州茅台2024年年度报告"
+        cninfo_announcements._announcement_display_title("样例股份", "样例股份2024年年度报告")
+        == "样例股份2024年年度报告"
     )
     assert (
         cninfo_announcements._announcement_display_title("样例股份", "2024年年度报告")

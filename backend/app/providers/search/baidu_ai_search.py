@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 import httpx
 from app.providers.search.baidu_reference import BaiduReferenceProcessor
+from app.services.question_time_scope import parse_research_time_scope
 from app.providers.search.base import SearchProvider
 from app.schemas.common import (
     SOURCE_LAYER_METADATA_KEY,
@@ -137,12 +138,16 @@ class BaiduAISearchProvider(SearchProvider):
         }
 
     def _payload(self, *, company_name: str, question: str) -> dict[str, object]:
+        time_scope = parse_research_time_scope(question)
+        time_hint = (
+            f"\n时间倾向：{time_scope.cninfo_search_hint()}"
+            if time_scope is not None
+            else ""
+        )
         query = (
             f"公司名称：{company_name}\n"
-            f"研究问题：{question}\n"
-            "请检索该公司的公开资料，优先使用：公司官网、港交所/上交所/深交所公告、"
-            "交易所公告、年报、半年报、监管披露、官方新闻稿。"
-            "重点关注：最近三年经营风险、收入结构、研发投入、净利润、公开披露一致性。"
+            f"研究问题：{question}{time_hint}\n"
+            "请检索与上述研究问题直接相关的公开资料，优先：交易所公告、年报、半年报、监管披露。"
             "不要返回投资建议、股票推荐、培训资料、考试题、无关新闻、百科问答。"
         )
         instruction = (

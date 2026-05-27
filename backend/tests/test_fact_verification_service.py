@@ -172,7 +172,7 @@ def test_same_metric_period_but_different_value_should_be_conflicted() -> None:
     assert all(r.reason for r in out.results)
 
 
-def test_single_source_fact_should_be_insufficient_not_verified() -> None:
+def test_single_source_third_party_should_be_insufficient_not_verified() -> None:
     svc = FactVerificationService()
     out = svc.verify_facts(
         task_id="task_1",
@@ -186,6 +186,13 @@ def test_single_source_fact_should_be_insufficient_not_verified() -> None:
                 source_id="s1",
             )
         ],
+        source_context={
+            "s1": (
+                None,
+                0.7,
+                {SOURCE_LAYER_METADATA_KEY: SourceLayer.THIRD_PARTY_BACKGROUND.value},
+            ),
+        },
     )
     assert len(out.results) == 1
     result = out.results[0]
@@ -193,6 +200,70 @@ def test_single_source_fact_should_be_insufficient_not_verified() -> None:
     assert result.reason
     assert result.reason_code == "single_source_only"
     assert result.status.value != "verified"
+
+
+def test_single_source_official_pdf_should_be_verified() -> None:
+    svc = FactVerificationService()
+    out = svc.verify_facts(
+        task_id="task_1",
+        facts=[
+            _fact(
+                fact_id="f1",
+                task_id="task_1",
+                metric_name="r_and_d",
+                period="2023",
+                value="57978105000.00元",
+                source_id="s1",
+            )
+        ],
+        source_context={
+            "s1": (
+                None,
+                0.92,
+                {SOURCE_LAYER_METADATA_KEY: SourceLayer.OFFICIAL_PDF.value},
+            ),
+        },
+    )
+    assert len(out.results) == 1
+    result = out.results[0]
+    assert result.status.value == "verified"
+    assert result.reason_code == "official_disclosure_single_source"
+
+
+def test_single_source_same_period_different_values_should_be_conflicted() -> None:
+    svc = FactVerificationService()
+    out = svc.verify_facts(
+        task_id="task_1",
+        facts=[
+            _fact(
+                fact_id="f1",
+                task_id="task_1",
+                metric_name="r_and_d",
+                period="2024",
+                value="10亿元",
+                source_id="s1",
+            ),
+            _fact(
+                fact_id="f2",
+                task_id="task_1",
+                metric_name="r_and_d",
+                period="2024",
+                value="12亿元",
+                source_id="s1",
+            ),
+        ],
+        source_context={
+            "s1": (
+                None,
+                0.92,
+                {SOURCE_LAYER_METADATA_KEY: SourceLayer.OFFICIAL_PDF.value},
+            ),
+        },
+    )
+
+    assert len(out.results) == 2
+    assert all(r.status.value == "conflicted" for r in out.results)
+    assert {r.reason_code for r in out.results} == {"same_period_value_divergence"}
 
 
 def test_official_entry_page_only_should_not_be_verified() -> None:
@@ -437,4 +508,3 @@ def test_all_five_statuses_are_executable() -> None:
     out = svc.verify_facts(task_id="task_1", facts=facts)
     statuses = {r.status.value for r in out.results}
     assert {"verified", "conflicted", "insufficient", "outdated", "rejected"} <= statuses
-

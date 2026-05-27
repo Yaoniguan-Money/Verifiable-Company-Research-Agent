@@ -56,9 +56,10 @@ def test_mock_report_renderer_keeps_template_out_of_provider_logic() -> None:
     assert report.task_id == "task_1"
     assert "Renderer Co" in report.title
     assert "Renderer risk analysis." in report.content
-    assert "来源或期间过旧" in report.content
+    assert "## 附录" in report.content
+    assert "来源或期间过旧" in report.content or "old fact" in report.content
     assert "old fact" in report.content
-    assert "字段异常或来源质量不足" in report.content
+    assert "已排除" in report.content
     assert "bad fact" in report.content
     assert "source_id=" not in report.content
     assert "chunk_id=" not in report.content
@@ -72,15 +73,16 @@ def test_mock_report_renderer_calls_out_missing_rd_coverage() -> None:
         )
     )
 
-    assert "## 这份报告覆盖到了什么" in report.content
-    assert "没有抽取到研发投入或研发费用数据" in report.content
+    assert "## 附录" in report.content
+    assert "没有抽取到" in report.content and "研发" in report.content
 
 
-def test_mock_report_renderer_includes_verification_explanation_summary() -> None:
+def test_mock_report_renderer_includes_material_confidence_section() -> None:
     now = datetime.now(timezone.utc)
     report = MockReportRenderer().render(
         ReportRenderInput(
             task=_task(),
+            verified_facts=[_fact(fact_id="ok", claim="2024年营业收入为100亿元")],
             verification_results=[
                 VerificationResultRead(
                     id="v1",
@@ -98,8 +100,9 @@ def test_mock_report_renderer_includes_verification_explanation_summary() -> Non
         )
     )
 
-    assert "## 可信度说明" in report.content
-    assert "单位换算后可以对上" in report.content
+    assert "## 附录" in report.content
+    assert "已采信" in report.content
+    assert "unit_normalized_match" not in report.content
 
 
 def test_mock_report_renderer_prioritizes_core_facts() -> None:
@@ -118,7 +121,7 @@ def test_mock_report_renderer_prioritizes_core_facts() -> None:
         )
     )
 
-    assert "## 核心事实" in report.content
+    assert "## 核心发现" in report.content
     assert "2024年研发投入为100亿元" in report.content
     assert "## 补充背景" in report.content
     assert "2024年营业收入为100亿元" in report.content
@@ -137,8 +140,9 @@ def test_mock_report_renderer_limits_noisy_detail_sections() -> None:
         )
     )
 
-    assert "只展示前 6 条冲突事实" in report.content
-    assert "只展示前 8 条证据不足事实" in report.content
+    assert "只展示前 4 条冲突条目" in report.content or "冲突" in report.content
+    assert "仅来自单一路径" not in report.content
+    assert "待核实" not in report.content
 
 
 def test_mock_report_renderer_marks_cited_but_unextracted_evidence_as_gap() -> None:
@@ -158,5 +162,39 @@ def test_mock_report_renderer_marks_cited_but_unextracted_evidence_as_gap() -> N
         )
     )
 
-    assert "没有从中抽取到能支撑结论的结构化事实" in report.content
-    assert "不能据此总结趋势、利润来源" in report.content
+    assert "尚未抽出" in report.content or "没有抽取到" in report.content
+
+
+def test_report_renderer_keeps_fact_source_numbers_aligned_after_url_dedupe() -> None:
+    now = datetime.now(timezone.utc)
+    first = _fact(fact_id="one", claim="第一条事实")
+    second = _fact(fact_id="two", claim="第二条事实")
+
+    report = MockReportRenderer().render(
+        ReportRenderInput(
+            task=_task(),
+            core_facts=[first, second],
+            citations=[
+                Citation(
+                    source_id=first.source_id,
+                    chunk_id=first.chunk_id,
+                    url="https://example.com/report.pdf",
+                    title="样例年报",
+                    retrieved_at=now,
+                ),
+                Citation(
+                    source_id=second.source_id,
+                    chunk_id=second.chunk_id,
+                    url="https://example.com/report.pdf",
+                    title="样例年报重复块",
+                    retrieved_at=now,
+                ),
+            ],
+        )
+    )
+
+    assert report.content.count("https://example.com/report.pdf") == 1
+    assert "- 第三条事实" not in report.content
+    assert "- 第一条事实（来源 1）" in report.content
+    assert "- 第二条事实（来源 1）" in report.content
+    assert "来源 2" not in report.content

@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-mist text-ink antialiased;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm;
+}
+
+.btn-primary {
+  @apply rounded-xl bg-accent px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:opacity-50;
+}

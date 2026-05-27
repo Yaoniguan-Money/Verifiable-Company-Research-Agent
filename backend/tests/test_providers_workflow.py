@@ -125,9 +125,9 @@ def test_report_uses_verification_status_sections(db: OrmSession) -> None:
     report = service.get_report(task.id)
     assert report is not None
     content = report.content
-    assert "## 核心事实：能直接回答问题的内容" in content
-    assert "## 可信度说明" in content
-    assert "## 需要谨慎的地方" in content
+    assert "## 核心发现" in content
+    assert "## 总结" in content
+    assert "## 附录" in content
     # 冲突与不足必须是审慎表达，不写成单一确定结论。
     verifications = service.list_verification_results(task.id)
     has_conflicted = any(getattr(v.status, "value", str(v.status)) == "conflicted" for v in verifications)
@@ -140,10 +140,8 @@ def test_report_uses_verification_status_sections(db: OrmSession) -> None:
     )
     if has_conflicted:
         assert "不同来源说法不一致" in content
-    if has_insufficient:
-        assert "还需要更权威或第二个独立来源" in content
     if not has_conflicted and not has_insufficient and not has_excluded:
-        assert "暂未发现需要单独提示的证据冲突" in content
+        assert "附录" in content
 
 
 def test_report_mainchain_includes_grounded_section(db: OrmSession) -> None:
@@ -153,8 +151,9 @@ def test_report_mainchain_includes_grounded_section(db: OrmSession) -> None:
     assert result.success
     report = service.get_report(task.id)
     assert report is not None
-    assert "## 证据摘录" in report.content
-    assert "系统优先回看了这些来源片段" in report.content
+    assert "## 附录" in report.content
+    assert "### 材料与处理说明" in report.content
+    assert "公开资料摘录" in report.content
     assert "《" in report.content
 
 
@@ -175,6 +174,8 @@ def test_workflow_degrades_when_llm_risk_analysis_fails(db: OrmSession) -> None:
     report = service.get_report(task.id)
     assert report is not None
     assert "LLM 风险分析暂时不可用" in report.content
+    assert "## 附录" in report.content
+    assert "### 材料与处理说明" in report.content
     assert "## 附录：处理记录" in report.content
     assert "LLM 风险分析" in report.content
     assert "规则摘要" in report.content
@@ -189,7 +190,8 @@ def test_generate_report_must_call_grounding_in_mainchain(db: OrmSession) -> Non
     assert "build_report_node" in [step.step_name for step in result.state.steps]
     report = service.get_report(task.id)
     assert report is not None
-    assert "证据摘录" in report.content
+    assert "## 附录" in report.content
+    assert "### 材料与处理说明" in report.content
 
 
 def test_compliance_check_blocks_obvious_violation() -> None:

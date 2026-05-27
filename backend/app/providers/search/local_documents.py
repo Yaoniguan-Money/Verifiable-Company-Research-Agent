@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from math import isfinite
 from pathlib import Path
 
 from app.providers.search.base import SearchProvider
@@ -96,9 +97,12 @@ class LocalDocumentSearchProvider(SearchProvider):
         if not raw:
             return 0.8
         try:
-            return max(0.0, min(1.0, float(raw)))
+            score = float(raw)
         except ValueError:
             return 0.8
+        if not isfinite(score):
+            return 0.8
+        return max(0.0, min(1.0, score))
 
     def _slug(self, value: str) -> str:
         return value.strip().lower().replace(" ", "_")

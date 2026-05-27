@@ -1,26 +1,61 @@
+"""百度千帆 chat completions provider。
+
+只接入 LLM 局部能力；搜索、embedding、vector store 和本地合规规则保持现有工程边界。
+"""
+
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
 from typing import Any
 
 import httpx
-from app.compliance import ComplianceAction, evaluate_compliance_text
-from app.providers.llm.base import ComplianceCheckResult, LLMProvider
+from pydantic import ValidationError
+
+from app.providers.llm.base import LLMProvider
 from app.schemas.chunk import Citation, EvidenceChunkRead
-from app.schemas.common import ComplianceStatus
 from app.schemas.fact import ExtractedFactCreate, ExtractedFactRead
 from app.schemas.report import ReportCreate, ReportRead
 from app.schemas.task import ResearchTaskRead
 from app.schemas.verification import VerificationResultRead
-from pydantic import ValidationError
+from app.services.answer_pipeline import AnswerContext
+from app.services.followup_answer import FollowupPayload
+from app.services.followup_prompt import build_followup_llm_prompt
+from app.services.report_reader_text import (
+    RISK_ANALYSIS_OUTPUT_RULES,
+    extract_report_section,
+    fact_status_suffix_for_reader,
+)
+from app.services.report_renderer import ReportDocumentRenderer, ReportRenderInput
+
+# 与 DeepSeek 一致的"非投资建议"边界声明。
+_SYSTEM_PROMPT = "你是审慎的企业公开信息研究助手，必须遵守非投资建议边界。"
+_FACT_SYSTEM_PROMPT = "你是企业公开资料事实抽取器，只返回机器可解析的严格 JSON。"
+_REPORT_SYSTEM_PROMPT = "你是企业公开信息研究报告撰写助手，只能基于用户提供的证据写作。"
+
+_MAX_FACT_CHUNKS = 8
+_CHUNK_TEXT_LIMIT = 1200
+_MAX_FACT_LINES_FOR_RISK = 12
+
+
+def _truncate(text: str, limit: int) -> str:
+    normalized = text.strip()
+    if len(normalized) <= limit:
+        return normalized
+    return normalized[:limit] + "..."
+
+
+def _status_for_fact(
+    fact: ExtractedFactRead,
+    verification_results: list[VerificationResultRead],
+) -> str:
+    for item in verification_results:
+        if item.fact_id == fact.id:
+            return str(item.status)
+    return "unknown"
 
 
 class QianfanLLMProvider(LLMProvider):
-    """百度千帆 chat completions provider。
-
-    真实模型只接入 LLM 局部能力；搜索、embedding、vector store 和本地合规规则仍保持现有工程边界。
-    """
+    """百度千帆 chat completions provider。"""
 
     def __init__(
         self,
@@ -37,6 +72,7 @@ class QianfanLLMProvider(LLMProvider):
         self.model = model
         self.timeout_seconds = timeout_seconds
 
+    # ---------- 业务能力 ----------
     def extract_facts(
         self,
         task_id: str,
@@ -53,10 +89,10 @@ class QianfanLLMProvider(LLMProvider):
                     f"chunk_index={chunk.chunk_index}",
                     f"source_id={chunk.source_id}",
                     f"chunk_id={chunk.id}",
-                    f"text={self._truncate(chunk.text, 1200)}",
+                    f"text={_truncate(chunk.text, _CHUNK_TEXT_LIMIT)}",
                 ]
             )
-            for chunk in chunks[:8]
+            for chunk in chunks[:_MAX_FACT_CHUNKS]
         ]
         prompt = "\n\n".join(
             [
@@ -72,16 +108,7 @@ class QianfanLLMProvider(LLMProvider):
                 *chunk_lines,
             ]
         )
-        text = self._chat(
-            [
-                {
-                    "role": "system",
-                    "content": "你是企业公开资料事实抽取器，只返回机器可解析的严格 JSON。",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=1024,
-        )
+        text = self._chat_with_system(_FACT_SYSTEM_PROMPT, prompt, max_tokens=1024)
         return self._parse_extracted_facts(text, task_id=task_id, chunks=chunks)
 
     def analyze_risks(
@@ -91,31 +118,25 @@ class QianfanLLMProvider(LLMProvider):
         facts: list[ExtractedFactRead],
         verification_results: list[VerificationResultRead],
     ) -> str:
-        fact_lines = [
-            f"- {item.claim} | status={self._status_for_fact(item, verification_results)}"
-            for item in facts[:12]
-        ] or ["- 当前没有可用结构化事实。"]
+        fact_lines: list[str] = []
+        for item in facts[:_MAX_FACT_LINES_FOR_RISK]:
+            label = fact_status_suffix_for_reader(_status_for_fact(item, verification_results))
+            suffix = f"（{label}）" if label else ""
+            fact_lines.append(f"- {item.claim}{suffix}")
+        if not fact_lines:
+            fact_lines = ["- 当前没有可引用的结构化事实。"]
         prompt = "\n".join(
             [
-                "你是企业公开信息研究助手，只能基于给定事实做经营、财务、披露和风险分析。",
+                "你是企业公开信息研究助手，只能基于下列事实写「风险观察」小节。",
                 "禁止输出买入、卖出、目标价、收益承诺、个性化投资建议。",
                 f"企业：{company_name}",
                 f"研究问题：{question}",
-                "事实与验证状态：",
+                "事实与核对情况：",
                 *fact_lines,
-                "请用中文输出一段审慎的风险观察，必须说明证据不足、冲突或来源限制。",
+                RISK_ANALYSIS_OUTPUT_RULES,
             ]
         )
-        return self._chat(
-            [
-                {
-                    "role": "system",
-                    "content": "你是审慎的企业公开信息研究助手，必须遵守非投资建议边界。",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=700,
-        )
+        return self._chat_with_system(_SYSTEM_PROMPT, prompt, max_tokens=700)
 
     def generate_report(
         self,
@@ -131,12 +152,39 @@ class QianfanLLMProvider(LLMProvider):
         core_facts: list[ExtractedFactRead] | None = None,
         supporting_facts: list[ExtractedFactRead] | None = None,
         relevance_intents: list[str] | None = None,
+        reader_summary: str | None = None,
+        answer_context: AnswerContext | None = None,
     ) -> ReportCreate:
+        return ReportDocumentRenderer().render(
+            ReportRenderInput(
+                task=task,
+                core_facts=core_facts or [],
+                supporting_facts=supporting_facts or [],
+                relevance_intents=relevance_intents or [],
+                verified_facts=verified_facts,
+                conflicted_facts=conflicted_facts,
+                insufficient_facts=insufficient_facts,
+                verification_results=verification_results,
+                risk_analysis=risk_analysis,
+                citations=citations,
+                outdated_facts=outdated_facts or [],
+                rejected_facts=rejected_facts or [],
+                reader_summary=reader_summary,
+                answer_context=answer_context,
+            )
+        ).model_copy(update={"title": f"{task.company_name} 公开信息研究报告（Qianfan 辅助）"})
+        summary_hint = (
+            f"报告「总结」段必须以此为准（可润色但不得改变数字与结论）：{reader_summary}"
+            if reader_summary
+            else ""
+        )
         prompt = "\n\n".join(
             [
-                "请基于给定证据生成中文 Markdown 研究报告。",
+                "请基于给定证据生成中文 Markdown 研究报告，面向普通读者阅读。",
                 "硬性要求：不得编造来源、不得补充未给出的事实、不得输出买入/卖出/目标价/收益承诺/个性化投资建议。",
                 "如果证据不足或事实冲突，必须明确标注限制，不要强行给结论。",
+                "禁止出现：根据您提供、请注意、INSUFFICIENT、status=、系统流程说明、思考过程式长文。",
+                "用简洁小节与短句呈现，不要写编号小节或 ### 标题堆砌。",
                 f"企业：{task.company_name}",
                 f"研究问题：{task.question}",
                 f"核心事实：{self._facts_for_prompt(core_facts or [])}",
@@ -150,18 +198,11 @@ class QianfanLLMProvider(LLMProvider):
                 f"引用来源：{self._citations_for_prompt(citations)}",
                 f"风险分析：{risk_analysis}",
                 f"问题意图：{', '.join(relevance_intents or []) or '未提供'}",
+                summary_hint,
             ]
         )
-        content = self._chat(
-            [
-                {
-                    "role": "system",
-                    "content": "你是企业公开信息研究报告撰写助手，只能基于用户提供的证据写作。",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=1024,
-        )
+        content = self._chat_with_system(_REPORT_SYSTEM_PROMPT, prompt, max_tokens=1024)
+        # 最终输出仍受本地合规判定兜底，确保模型输出不会绕过规则层。
         check = self.check_compliance(content)
         return ReportCreate(
             task_id=task.id,
@@ -179,60 +220,24 @@ class QianfanLLMProvider(LLMProvider):
         report: ReportRead,
         fact_count: int,
         verification_counts: dict[str, int],
+        followup_payload: FollowupPayload | None = None,
     ) -> str:
-        report_brief = self._truncate(report.content.strip().replace("\n", " "), 1800)
-        prompt = "\n".join(
-            [
-                "你是企业公开信息研究助手。回答必须严格基于当前报告，不得补充报告外信息。",
-                "禁止买入、卖出、加仓、减仓、目标价、收益承诺、个股推荐、个性化投资建议。",
-                f"企业：{task.company_name}",
-                f"用户追问：{message}",
-                f"事实数量：{fact_count}",
-                f"验证状态统计：{verification_counts}",
-                f"报告摘要：{report_brief}",
-                "请用中文回答，并说明依据来自当前报告。",
-            ]
+        prompt = build_followup_llm_prompt(
+            task=task,
+            message=message,
+            report=report,
+            followup_payload=followup_payload,
         )
+        return self._chat_with_system(_SYSTEM_PROMPT, prompt, max_tokens=800)
+
+    # ---------- HTTP ----------
+    def _chat_with_system(self, system_prompt: str, user_prompt: str, *, max_tokens: int) -> str:
         return self._chat(
             [
-                {
-                    "role": "system",
-                    "content": "你是审慎的企业公开信息研究助手，必须遵守非投资建议边界。",
-                },
-                {"role": "user", "content": prompt},
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
             ],
-            max_tokens=800,
-        )
-
-    def check_compliance(self, text: str) -> ComplianceCheckResult:
-        # 合规检查必须优先走本地 deterministic rule-based 规则，不能交给远端模型决定。
-        decision = evaluate_compliance_text(text)
-        violations = [h.matched_snippet for h in decision.hits]
-        if decision.action == ComplianceAction.ALLOW:
-            return ComplianceCheckResult(
-                is_compliant=True,
-                status=ComplianceStatus.PASSED,
-                violations=[],
-                checked_at=datetime.now(timezone.utc),
-            )
-        if decision.action == ComplianceAction.REWRITE:
-            rewritten = text
-            for phrase in violations:
-                rewritten = rewritten.replace(phrase, "【已移除违规表达】")
-            rewritten += "\n\n合规提示：本系统不提供证券投资导向结论。"
-            status = ComplianceStatus.REWRITTEN
-        else:
-            rewritten = (
-                "当前请求涉及投资建议或个性化投融导向信息，已按合规策略拒绝。"
-                "你可以继续询问企业经营、财务变化、信息披露一致性、供应链稳定性等公开信息问题。"
-            )
-            status = ComplianceStatus.BLOCKED
-        return ComplianceCheckResult(
-            is_compliant=False,
-            status=status,
-            violations=violations,
-            rewritten_text=rewritten,
-            checked_at=datetime.now(timezone.utc),
+            max_tokens=max_tokens,
         )
 
     def _chat(self, messages: list[dict[str, str]], *, max_tokens: int) -> str:
@@ -267,6 +272,7 @@ class QianfanLLMProvider(LLMProvider):
             raise RuntimeError("Qianfan API returned an empty response")
         return text
 
+    # ---------- 解析 ----------
     def _parse_extracted_facts(
         self,
         text: str,
@@ -307,7 +313,9 @@ class QianfanLLMProvider(LLMProvider):
                 continue
         return facts
 
-    def _facts_for_prompt(self, facts: list[ExtractedFactRead]) -> str:
+    # ---------- prompt 辅助 ----------
+    @staticmethod
+    def _facts_for_prompt(facts: list[ExtractedFactRead]) -> str:
         if not facts:
             return "[]"
         return json.dumps(
@@ -325,7 +333,8 @@ class QianfanLLMProvider(LLMProvider):
             ensure_ascii=False,
         )
 
-    def _verifications_for_prompt(self, results: list[VerificationResultRead]) -> str:
+    @staticmethod
+    def _verifications_for_prompt(results: list[VerificationResultRead]) -> str:
         if not results:
             return "[]"
         return json.dumps(
@@ -342,7 +351,8 @@ class QianfanLLMProvider(LLMProvider):
             ensure_ascii=False,
         )
 
-    def _citations_for_prompt(self, citations: list[Citation]) -> str:
+    @staticmethod
+    def _citations_for_prompt(citations: list[Citation]) -> str:
         if not citations:
             return "[]"
         return json.dumps(
@@ -358,19 +368,3 @@ class QianfanLLMProvider(LLMProvider):
             ],
             ensure_ascii=False,
         )
-
-    def _status_for_fact(
-        self,
-        fact: ExtractedFactRead,
-        verification_results: list[VerificationResultRead],
-    ) -> str:
-        for item in verification_results:
-            if item.fact_id == fact.id:
-                return str(item.status)
-        return "unknown"
-
-    def _truncate(self, text: str, limit: int) -> str:
-        normalized = text.strip()
-        if len(normalized) <= limit:
-            return normalized
-        return normalized[:limit] + "..."

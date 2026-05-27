@@ -53,6 +53,14 @@ class ResearchTaskRepository:
     def get(self, task_id: str) -> ResearchTask | None:
         return self.db.query(ResearchTask).filter(ResearchTask.id == task_id).one_or_none()
 
+    def list_recent(self, *, limit: int = 50) -> list[ResearchTask]:
+        return (
+            self.db.query(ResearchTask)
+            .order_by(ResearchTask.updated_at.desc())
+            .limit(max(1, min(limit, 200)))
+            .all()
+        )
+
     def session_belongs_to_user(self, *, session_id: str, user_id: str) -> bool:
         sess = self.db.query(SessionOrm).filter(SessionOrm.id == session_id).one_or_none()
         return sess is not None and sess.user_id == user_id
@@ -114,13 +122,36 @@ class ResearchArtifactRepository:
                 retrieved_at=item.retrieved_at,
                 raw_content=item.raw_content,
                 credibility_score=item.credibility_score,
-                source_metadata=item.source_metadata,
+                source_metadata=self._source_metadata_with_disclosure_kind(item),
             )
             for item in sources
         ]
         if rows:
             self.db.add_all(rows)
         return rows
+
+    def _source_metadata_with_disclosure_kind(self, item: SourceCreate) -> dict:
+        metadata = dict(item.source_metadata or {})
+        metadata.setdefault(
+            "disclosure_kind",
+            self._infer_disclosure_kind(
+                title=item.title,
+                source_type=str(getattr(item.source_type, "value", item.source_type)),
+            ),
+        )
+        return metadata
+
+    def _infer_disclosure_kind(self, *, title: str, source_type: str) -> str:
+        text = (title or "").lower()
+        if "年度报告" in text or "年报" in text or "annual" in text:
+            return "annual"
+        if "半年度" in text or "半年报" in text or "semi" in text:
+            return "semi_annual"
+        if "季度" in text or "一季报" in text or "三季报" in text or "临时" in text:
+            return "interim"
+        if source_type in {"news", "other"}:
+            return "media"
+        return "interim"
 
     def add_facts(self, facts: list[ExtractedFact]) -> None:
         if facts:

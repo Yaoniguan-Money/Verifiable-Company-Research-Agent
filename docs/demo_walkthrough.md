@@ -65,7 +65,7 @@ Invoke-RestMethod http://localhost:8000/health/providers
 
 ```powershell
 $bodyObj = @{
-  company_name = "贵州茅台"
+  company_name = "某A股上市公司"
   question = "请基于公开公告资料分析该公司近三年营业收入、净利润变化和主要经营风险，要求给出引用来源，不要给投资建议。"
 }
 

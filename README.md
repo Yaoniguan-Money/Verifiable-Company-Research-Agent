@@ -2,6 +2,10 @@
 
 可溯源企业公开信息研究智能体
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **GitHub**: [Yaoniguan-Money/Verifiable-Company-Research-Agent](https://github.com/Yaoniguan-Money/Verifiable-Company-Research-Agent)
+
 本项目是一个面向企业公开信息研究的开源 MVP / reference implementation。它强调 **evidence-first（证据优先）**：先收集来源、切分证据、抽取事实、做验证，再生成带 citations 的报告，并在输出前做合规检查。
 
 本项目不提供投资建议。它不是生产级投研系统，也不提供荐股、买入/卖出建议、目标价、收益预测、持仓建议、评级或个性化投资建议。
@@ -20,12 +24,17 @@
 
 ## 项目亮点
 
-- **证据优先报告**：报告中的 citations 可以回查到 source / chunk 元数据。
-- **Provider-neutral 设计**：LLM、Search、Embedding、Vector Store 都通过接口选择具体实现。
-- **可替换 workflow engine**：LangGraph 是默认 workflow engine，不是项目名，也不是唯一架构限制。
-- **默认联网搜索**：`.env.example` 使用 `public_sources` 作为 SearchProvider，避免静默退回本地文档或 mock；所有 key 字段为空。
+- **证据优先报告**：报告中的 citations 可回查到 source/chunk 元数据。核心发现可直接追溯到年报原文段落。
+- **Provider-neutral 设计**：LLM、Search、Embedding、Vector Store、Reranker 均通过接口选择实现，配置驱动切换。
+- **可替换 workflow engine**：LangGraph 是默认 workflow engine，16 节点 StateGraph 可扩展。
+- **默认联网搜索**：`public_sources` 默认访问 CNINFO 等公开来源，不需要外部 API key。
+- **Hybrid RAG 检索**：Dense + BM25 + RRF 融合 + Reranker 重排，支持 ONNX/Embedding/Lexical 三后端可切换。
+- **LLM 增强事实抽取**：正则表格抽取 + LLM 语义抽取双链路。LLM 通过 Embedding 排序后依次送检、意图命中即停，补齐叙述句中的关键财务数字。
+- **分层校验体系**：LLM 事实置信度=1.0 直通 verified，正则事实走 cross-source 交叉验证。单位归一化消除元/亿元虚假冲突。
+- **财务指标精细区分**：研发费用(R&D_expenditure) vs 研发投入合计(R&D_total_spending)、净利润 vs 归母净利润 vs 扣非净利润，独立指标独立校验。
+- **双公司对比分析**：并行执行两个独立研究工作流，对比同一指标差异。
 - **合规边界清楚**：报告和 chat 输出会检查非投顾边界。
-- **真实公司样例只用于回归**：固定公开公司样例只放在 `data/eval/*` 和 `docs/evaluation_cases.md`；回归脚本从 case 文件读取，不在代码里内置公司名。这些样例用于链路回归，不代表系统绑定特定企业。
+- **实时特性开关**：前端设置页切换功能即时生效并持久化到 .env，无需重启。
 
 ## Demo 截图
 
@@ -80,17 +89,20 @@ flowchart TD
 
 **RAG / Evidence Pipeline**
 
-- Source collection：通过 SearchProvider 收集公开资料，支持本地文档、官方 URL、公告来源、Baidu AI Search 等实现。
-- CNINFO 公告接入：可从巨潮资讯检索上市公司年报/半年报 PDF，抽取正文后进入证据链。
-- 官方来源增强：搜索结果质量不足时优先补充官方披露页或官方 PDF，并用 source layer / credibility score 排序。
-- Evidence ingestion：将 source 原文切分为 evidence chunks，保留 source / chunk 元数据。
-- Embedding：通过 EmbeddingProvider 生成向量；本地默认 `local_hashing`，真实链路可用 DashScope / SiliconFlow 等 OpenAI-compatible embedding endpoint。
-- Vector store：提供 `in_memory` / SQLite vector store MVP，并在本地用 cosine similarity 做检索验证。
-- Retrieval：根据研究问题检索相关 evidence chunks，同时保留来源可信度和 source layer 元数据。
-- Fact extraction：用规则抽取和财报表格抽取将证据映射为结构化 facts。
-- Fact normalization / verification：对指标别名、单位、期间、数值和多来源一致性做规则化验证，输出 verified / conflicted / insufficient / outdated / rejected 等状态和 reason_code。
-- Citation grounding：报告中的 citations 绑定 source_id、chunk_id、title、url、retrieved_at，便于回查。
-- Evidence boundary：低可信来源、只有官方入口但没有正文、单来源事实等场景不会被包装成高置信结论。
+- **Source collection**：SearchProvider 收集公开资料，支持本地文档、官方 URL、CNINFO 巨潮公告、Baidu AI Search 等。
+- **Content enrichment pipeline**：PDF 下载缓存 → FinancialReportParser (pdfplumber) 结构化解析 → 表格 Markdown 增强 → 章节标注。Web 来源的 PDF 也能受益于结构化解析。
+- **Semantic chunking**：SectionAwareChunker（利用章节标注在边界处分块）、RecursiveTextSplitter（按段落/句子递归切分）、FixedWindowChunker（兼容保留），策略可配置。
+- **Content prioritization**：IntentDrivenPrioritizer 利用 MetricRegistry 动态生成关联词权重，替代硬编码关键词的 `_focus_report_content` 窗口化。
+- **Embedding**：EmbeddingProvider 生成向量，支持 DashScope/SiliconFlow 等真实 Embedding API。
+- **Vector store**：PgVector (HNSW 索引 + 无约束维度)、SQLite、InMemory 三种后端，维度校验防 mismatch。
+- **Hybrid retrieval**：Dense (DashScope cosine) + Sparse (BM25 缓存) + RRF 融合 (k=60) → Reranker 重排 → Top-K。
+- **Reranker 三后端实测**：在中文财报 chunk 检索场景下，ONNX cross-encoder (BAAI/bge-reranker-base) 全面领先——P@5=1.0, MRR=1.0, NDCG@5=1.0；Embedding API (DashScope) P@5=0.40；Lexical Jaccard P@5=0.60。ONNX 仅 527ms 推理延迟（CPU），推荐生产使用。
+- **Fact extraction 双链路**：正则表格抽取 (20 条规则 + 状态机) + LLM 语义抽取 (Embedding 排序 → 依次送检 → 意图命中即停)。
+- **LLM Prompt 标准化**：metric_name 映射表 (18 个中→英)、period 格式约束、禁止运算/增减幅，后处理归一化兜底。
+- **Fact verification 分层**：LLM 事实 (confidence=1.0) 直通 verified；正则事实走 cross-source 交叉验证。单位归一化消除虚假冲突。
+- **答案管道**：严格意图过滤 → 首选指标优先 → LLM 事实优先 → 空结果回退 conflicted → 口径差异标注。
+- **Citation grounding**：citations 绑定 source_id/chunk_id/title/url/retrieved_at，可逐条回溯。
+- **财务指标注册表**：rd/profit/revenue/capacity/business 五大族，每族 preferred_metric 指导答案选择。
 
 **Provider 架构**
 
@@ -122,9 +134,9 @@ flowchart TD
 - secret scan：检查 `.env`、真实 key、常见 secret 形态和 Git 历史中的 env 文件。
 - Dockerfile + Docker Compose + PowerShell 脚本：支持本地一键启动和 release 验证。
 
-## 简历关键词参考
+## 技术栈速览
 
-可以从这个项目中提炼的工程关键词：
+本项目涉及的核心技术点：
 
 - FastAPI 后端 API 设计
 - Pydantic schema / typed workflow state
@@ -139,16 +151,29 @@ flowchart TD
 - vector store abstraction / SQLite cosine retrieval
 - provider abstraction / provider factory / strict runtime validation
 - citation grounding / evidence-first report
-- financial table extraction / structured fact extraction
-- metric normalization / unit normalization / fact verification reason codes
+- financial table extraction / structured fact extraction (20+ rule patterns + state machine)
+- LLM-augmented fact extraction (embedding-ranked chunk selection, early termination)
+- metric normalization / unit normalization (元/千元/万元/亿元) / fact verification reason codes
+- ONNX cross-encoder reranker deployment (BAAI/bge-reranker-base, MRR=1.0)
+- Hybrid RAG: Dense + BM25 + RRF + Rerank pipeline
+- semantic chunking strategy (section-aware / recursive / fixed-window)
+- content prioritization (intent-driven report windowing)
+- PgVector HNSW vector store with dynamic dimension
+- dual-company parallel compare pipeline
+- runtime feature flags with frontend-backend sync + .env persistence
 - compliance guardrail / non-investment-advice output control
 - report-grounded follow-up chat
 - lightweight chat memory / memory operation persistence
+- LangFuse observability integration
 - secret hygiene scan / release-risk checks
 - React + Vite + TypeScript demo UI
-- pytest / ruff / GitHub Actions / Docker Compose
+- pytest (413 tests, 98.2% pass rate) / ruff / GitHub Actions / Docker Compose
 
 ## 快速启动
+
+！！
+作者有话说：作者还是学生，条件有限，所以很多方式没办法尝试，目前多种组合实测是外部LLM+外部search+本地ONNX模型最好用，大家可以直接使用这个方式
+！！
 
 最短本地启动路线，不需要外部 key；搜索默认会访问公开网络来源：
 
@@ -224,11 +249,18 @@ Smoke 脚本：
 
 - 当前是开源 MVP / reference implementation，不是生产级系统。
 - 不提供投资建议、评级、荐股、买卖建议、目标价、收益预测或持仓指导。
+- **数据来源合规**：本项目默认通过 CNINFO（巨潮资讯网）获取 A 股上市公司公开披露信息。巨潮资讯网是中国证监会指定的法定信息披露平台，其公告文件属于法定公开信息。但**自动抓取行为可能违反目标网站的服务条款**，使用者应自行评估合规风险，必要时改用本地导入模式 (`local_documents`) 或将 `SEARCH_PROVIDER` 切换为不依赖第三方抓取的 provider。本项目不提供任何规避网站访问限制的功能，也不对使用者因抓取行为产生的法律后果负责。
 - `mock` 和 `local_hashing` 只用于 dev/test，不能证明真实搜索质量或真实语义 embedding 质量。
 - `in_memory` / SQLite vector store 是本地 MVP 实现，不是生产级向量数据库。
 - fact extraction、verification、compliance 仍是偏规则化的 MVP 组件。
 - 外部 provider 效果受上游搜索结果、账号模型权限、网络、页面可抓取性、PDF/表格解析质量影响。
 - LangGraph 是默认 workflow engine；`WORKFLOW_ENGINE=service` 仅保留为 legacy fallback。
+
+## 开源协作
+
+- 仓库地址：<https://github.com/Yaoniguan-Money/Verifiable-Company-Research-Agent>
+- 贡献说明：`CONTRIBUTING.md`
+- 版本变更：`CHANGELOG.md`
 
 ## 文档索引
 
@@ -241,6 +273,7 @@ Smoke 脚本：
 - `docs/architecture.md`：模块边界。
 - `docs/workflow.md`：workflow engine 设计。
 - `docs/compliance.md`：非投顾合规护栏。
+- `docs/observability.md`：structlog 与 LangFuse 可选接入。
 
 ## License
 

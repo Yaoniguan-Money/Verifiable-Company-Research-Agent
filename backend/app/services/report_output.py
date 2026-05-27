@@ -30,7 +30,6 @@ class ReportOutputService:
             return report
         return report.model_copy(
             update={
-                "content": check.rewritten_text or report.content,
                 "compliance_status": check.status,
             }
         )

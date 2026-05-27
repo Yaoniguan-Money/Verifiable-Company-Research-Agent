@@ -7,6 +7,9 @@ from typing import Any
 import pytest
 from app.providers.llm.deepseek_provider import DeepSeekLLMProvider
 from app.schemas.chunk import EvidenceChunkRead
+from app.schemas.common import ComplianceStatus, TaskStatus
+from app.schemas.report import ReportRead
+from app.schemas.task import ResearchTaskRead
 
 
 class _FakeResponse:
@@ -141,6 +144,53 @@ def test_deepseek_extract_facts_parses_strict_json_and_keeps_traceability(monkey
 
 
 def test_deepseek_provider_example_uses_chat_model() -> None:
-    template = Path(".env.providers.example").read_text(encoding="utf-8")
+    template = Path(__file__).resolve().parents[2] / ".env.providers.example"
+    template = template.read_text(encoding="utf-8")
 
     assert "DEEPSEEK_MODEL=deepseek-chat" in template
+
+
+def test_deepseek_followup_prompt_includes_structured_payload(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def fake_chat(self, prompt: str, *, max_tokens: int, **kwargs) -> str:
+        captured["prompt"] = prompt
+        return "ok"
+
+    class Payload:
+        primary_facts_json = '[{"claim":"2025年研发投入为10亿元"}]'
+        ambiguities = [{"metric": "r_and_d", "period": "2025"}]
+        citation_lines = ["- source_1:chunk_1 2025年研发投入为10亿元"]
+
+    monkeypatch.setattr(DeepSeekLLMProvider, "_chat", fake_chat)
+    provider = DeepSeekLLMProvider(api_key="unit-test-token")
+    now = datetime.now(timezone.utc)
+
+    provider.answer_followup(
+        task=ResearchTaskRead(
+            id="task-1",
+            user_id="user-1",
+            company_name="Example Co",
+            question="研发投入",
+            status=TaskStatus.COMPLETED,
+            created_at=now,
+            updated_at=now,
+        ),
+        message="2025年研发投入是多少？",
+        report=ReportRead(
+            id="report-1",
+            task_id="task-1",
+            title="report",
+            content="## 总结\n已有研发投入信息。",
+            citations=[],
+            compliance_status=ComplianceStatus.PASSED,
+            created_at=now,
+        ),
+        fact_count=1,
+        verification_counts={"verified": 1},
+        followup_payload=Payload(),
+    )
+
+    assert "followup_facts_json" in captured["prompt"]
+    assert "2025年研发投入为10亿元" in captured["prompt"]
+    assert "do not say the report lacks" in captured["prompt"]

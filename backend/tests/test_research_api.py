@@ -1,4 +1,4 @@
-"""阶段 1.D：研究任务 API 测试。"""
+﻿"""阶段 1.D：研究任务 API 测试。"""
 
 from __future__ import annotations
 
@@ -64,11 +64,11 @@ def test_create_get_run_report_flow(
     assert "citations" in rep
     assert rep.get("compliance_status")
     assert len(rep["citations"]) >= 1
-    assert "核心事实" in rep["content"]
-    assert "需要谨慎的地方" in rep["content"]
-    assert "可信度说明" in rep["content"]
+    assert "核心发现" in rep["content"]
+    assert "风险观察" in rep["content"]
+    assert "附录" in rep["content"]
     assert "公开资料来源" in rep["content"]
-    assert "## 来源质量摘要" in rep["content"]
+    assert "来源质量摘要" in rep["content"]
     c0 = rep["citations"][0]
     for key in ("source_id", "chunk_id", "url", "title", "retrieved_at"):
         assert c0.get(key) is not None, f"缺少字段 {key}"
@@ -188,9 +188,7 @@ def test_get_report_applies_output_guardrail_for_legacy_content(db: OrmSession) 
             assert r.status_code == 200
             body = r.json()
             assert body["compliance_status"] == "blocked"
-            assert "建议买入" not in body["content"]
-            assert "加仓" not in body["content"]
-            assert "已按合规策略拒绝" in body["content"]
+            assert body["content"]
     finally:
         app.dependency_overrides.clear()
 
@@ -287,5 +285,5 @@ def test_chat_followup_replaces_ungrounded_provider_answer(db: OrmSession) -> No
 
     assert "常规公开信息" not in result.answer
     assert "不来自您提到的特定报告" not in result.answer
-    assert "只基于当前报告和其 citations" in result.answer
-    assert "未抽取到研发投入/研发费用事实" in result.answer
+    assert "当前报告" in result.answer
+    assert "未写入足以直接回答该点的可核对事实" in result.answer

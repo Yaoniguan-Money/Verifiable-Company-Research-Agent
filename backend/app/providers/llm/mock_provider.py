@@ -1,17 +1,14 @@
-"""MockLLMProvider：阶段 1 的局部能力占位实现。"""
+"""MockLLMProvider：本地 deterministic 实现，dev/test 默认走这条路。"""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-
-from app.compliance import ComplianceAction, evaluate_compliance_text
-from app.providers.llm.base import ComplianceCheckResult, LLMProvider
+from app.providers.llm.base import LLMProvider
 from app.schemas.chunk import Citation, EvidenceChunkRead
-from app.schemas.common import ComplianceStatus
 from app.schemas.fact import ExtractedFactCreate, ExtractedFactRead
 from app.schemas.report import ReportCreate
 from app.schemas.task import ResearchTaskRead
 from app.schemas.verification import VerificationResultRead
+from app.services.answer_pipeline import AnswerContext
 from app.services.report_renderer import MockReportRenderer, ReportRenderInput
 
 
@@ -76,6 +73,8 @@ class MockLLMProvider(LLMProvider):
         core_facts: list[ExtractedFactRead] | None = None,
         supporting_facts: list[ExtractedFactRead] | None = None,
         relevance_intents: list[str] | None = None,
+        reader_summary: str | None = None,
+        answer_context: AnswerContext | None = None,
     ) -> ReportCreate:
         return MockReportRenderer().render(
             ReportRenderInput(
@@ -91,40 +90,12 @@ class MockLLMProvider(LLMProvider):
                 citations=citations,
                 outdated_facts=outdated_facts or [],
                 rejected_facts=rejected_facts or [],
+                reader_summary=reader_summary,
+                answer_context=answer_context,
             )
         )
 
-    def check_compliance(self, text: str) -> ComplianceCheckResult:
-        decision = evaluate_compliance_text(text)
-        violations = [h.matched_snippet for h in decision.hits]
-        if decision.action == ComplianceAction.ALLOW:
-            return ComplianceCheckResult(
-                is_compliant=True,
-                status=ComplianceStatus.PASSED,
-                violations=[],
-                checked_at=datetime.now(timezone.utc),
-            )
+    def rewrite_retrieval_query(self, question: str) -> str:
+        return f"{question.strip()} 公开披露 财务指标 经营风险"
 
-        if decision.action == ComplianceAction.REWRITE:
-            rewritten = text
-            for phrase in violations:
-                rewritten = rewritten.replace(phrase, "【已移除违规表达】")
-            rewritten += (
-                "\n\n合规提示：本系统不提供证券投资导向结论。"
-                "可继续提供基于公开资料的经营情况与风险信息分析。"
-            )
-            status = ComplianceStatus.REWRITTEN
-        else:
-            rewritten = (
-                "当前请求涉及投资建议或个性化投融导向信息，已按合规策略拒绝。"
-                "你可以继续询问：经营风险、财务变化、信息披露一致性、供应链稳定性等公开信息问题。"
-            )
-            status = ComplianceStatus.BLOCKED
-
-        return ComplianceCheckResult(
-            is_compliant=False,
-            status=status,
-            violations=violations,
-            rewritten_text=rewritten,
-            checked_at=datetime.now(timezone.utc),
-        )
+    # check_compliance 走 LLMProvider 基类默认实现（本地规则裁定）。

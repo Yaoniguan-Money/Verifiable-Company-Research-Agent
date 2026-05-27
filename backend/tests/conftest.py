@@ -26,6 +26,8 @@ def _use_inmemory_sqlite(tmp_path_factory) -> None:
     os.environ["SEARCH_PROVIDER"] = "mock"
     os.environ["EMBEDDING_PROVIDER"] = "mock"
     os.environ["VECTOR_STORE"] = "in_memory"
+    os.environ["HYBRID_RETRIEVAL_ENABLED"] = "false"
+    os.environ["MULTI_AGENT_ENABLED"] = "false"
     os.environ["WORKFLOW_ENGINE"] = "langgraph"
 
     # 强制 settings 重建
@@ -42,6 +44,30 @@ def _use_inmemory_sqlite(tmp_path_factory) -> None:
     from app.db.init_db import create_all_tables
 
     create_all_tables()
+
+
+def _apply_test_provider_env() -> None:
+    """每轮测试强制 mock 配置，避免 monkeypatch.delenv 后回退到本地 .env。"""
+    import os
+
+    from app.core.config import get_settings
+
+    os.environ["APP_ENV"] = "test"
+    os.environ["LLM_PROVIDER"] = "mock"
+    os.environ["SEARCH_PROVIDER"] = "mock"
+    os.environ["EMBEDDING_PROVIDER"] = "mock"
+    os.environ["VECTOR_STORE"] = "in_memory"
+    os.environ["HYBRID_RETRIEVAL_ENABLED"] = "false"
+    os.environ["MULTI_AGENT_ENABLED"] = "false"
+    os.environ["WORKFLOW_ENGINE"] = "langgraph"
+    get_settings.cache_clear()
+
+
+@pytest.fixture(autouse=True)
+def _isolate_provider_settings() -> Generator[None, None, None]:
+    _apply_test_provider_env()
+    yield
+    _apply_test_provider_env()
 
 
 @pytest.fixture

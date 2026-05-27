@@ -76,10 +76,10 @@ def test_report_assembly_buckets_all_verification_statuses(db: OrmSession) -> No
         citations=[],
     )
 
+    assert "## 总结" in report.content
+    # 主答区不应堆砌各校验状态的 claim
     assert "verified claim" in report.content
-    assert "conflicted claim" in report.content
-    assert "insufficient claim" in report.content
-    assert "来源或期间过旧" in report.content
+    assert "conflicted claim" not in report.content.split("## 核心发现")[1].split("## 附录")[0]
+    assert "insufficient claim" not in report.content.split("## 核心发现")[1].split("## 附录")[0]
     assert "outdated claim" in report.content
-    assert "字段异常或来源质量不足" in report.content
     assert "rejected claim" in report.content

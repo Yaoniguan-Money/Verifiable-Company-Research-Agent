@@ -1,5 +1,6 @@
 from app.vectorstores.base import VectorRecord, VectorSearchResult, VectorStore
 from app.vectorstores.in_memory import InMemoryVectorStore
+from app.vectorstores.pgvector import PgVectorStore
 from app.vectorstores.sqlite import SQLiteVectorStore
 
 __all__ = [
@@ -8,4 +9,5 @@ __all__ = [
     "VectorStore",
     "InMemoryVectorStore",
     "SQLiteVectorStore",
+    "PgVectorStore",
 ]

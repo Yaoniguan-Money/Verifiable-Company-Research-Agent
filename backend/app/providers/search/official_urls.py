@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from io import BytesIO
+from math import isfinite
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -115,8 +116,8 @@ class OfficialUrlSearchProvider(SearchProvider):
         if not isinstance(item, dict) or not item.get("url"):
             raise ValueError(f"Invalid official URL entry in {manifest}")
         return OfficialUrlEntry(
-            url=str(item["url"]),
-            title=str(item["title"]) if item.get("title") else None,
+            url=str(item["url"]).strip(),
+            title=str(item["title"]).strip() if item.get("title") else None,
             source_type=self._source_type(item.get("source_type")),
             published_at=self._parse_datetime(item.get("published_at")),
             credibility_score=self._parse_score(item.get("credibility_score")),
@@ -151,7 +152,7 @@ class OfficialUrlSearchProvider(SearchProvider):
         if not raw:
             return SourceType.OTHER
         try:
-            return SourceType(str(raw))
+            return SourceType(str(raw).strip())
         except ValueError:
             return SourceType.OTHER
 
@@ -168,9 +169,12 @@ class OfficialUrlSearchProvider(SearchProvider):
         if raw is None:
             return 0.82
         try:
-            return max(0.0, min(1.0, float(raw)))
+            score = float(raw)
         except (TypeError, ValueError):
             return 0.82
+        if not isfinite(score):
+            return 0.82
+        return max(0.0, min(1.0, score))
 
     def _title_from_url(self, url: str) -> str:
         path = urlparse(url).path.rstrip("/").rsplit("/", 1)[-1]

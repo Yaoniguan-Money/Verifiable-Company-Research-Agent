@@ -49,6 +49,66 @@ def test_official_url_provider_fetches_whitelisted_html(tmp_path) -> None:
     assert "ignored" not in sources[0].raw_content
 
 
+def test_official_url_provider_strips_manifest_fields(tmp_path) -> None:
+    company_dir = tmp_path / "demo_tech"
+    company_dir.mkdir()
+    (company_dir / "official_urls.json").write_text(
+        """[{
+  "title": " Demo Tech 官网 ",
+  "url": " https://example.com/investor/demo-tech ",
+  "source_type": " official_website "
+}]""",
+        encoding="utf-8",
+    )
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                headers={"content-type": "text/plain"},
+                text="2023年研发投入为100亿元。",
+                request=request,
+            )
+        )
+    )
+
+    sources = OfficialUrlSearchProvider(
+        root_dir=str(tmp_path),
+        allowed_domains=["example.com"],
+        client=client,
+    ).search("demo tech", "研发投入")
+
+    assert sources[0].title == "Demo Tech 官网"
+    assert sources[0].url == "https://example.com/investor/demo-tech"
+    assert sources[0].source_type == "official_website"
+
+
+def test_official_url_provider_ignores_non_finite_score(tmp_path) -> None:
+    company_dir = tmp_path / "demo_tech"
+    company_dir.mkdir()
+    (company_dir / "official_urls.json").write_text(
+        """[{"url": "https://example.com/report", "credibility_score": "NaN"}]""",
+        encoding="utf-8",
+    )
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                headers={"content-type": "text/plain"},
+                text="2023年研发投入为100亿元。",
+                request=request,
+            )
+        )
+    )
+
+    sources = OfficialUrlSearchProvider(
+        root_dir=str(tmp_path),
+        allowed_domains=["example.com"],
+        client=client,
+    ).search("demo tech", "研发投入")
+
+    assert sources[0].credibility_score == 0.82
+
+
 def test_official_url_provider_blocks_non_whitelisted_domain(tmp_path) -> None:
     company_dir = tmp_path / "demo_tech"
     company_dir.mkdir()

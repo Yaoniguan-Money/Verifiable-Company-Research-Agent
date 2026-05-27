@@ -22,23 +22,24 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import health
+from app.api import admin, health
 from app.api.routes import chat, facts, research, sources, verification
 from app.core.config import get_settings
 from app.db.init_db import init_db
+from app.observability.logging import configure_structlog
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    """启动/关闭钩子：初始化数据库并引导默认用户。"""
+    """应用生命周期：启动时校验配置、初始化数据库；退出时仅打 info 日志。"""
     settings = get_settings()
+    # 启动期先把 provider key 校验跑一遍，避免上线后才发现 mock fallback。
     settings.validate_runtime_provider_requirements()
     logger.info(
-        "启动配置: app_name=%s llm_provider=%s search_provider=%s embedding_provider=%s "
-        "qianfan_api_key_configured=%s deepseek_api_key_configured=%s "
-        "baidu_ai_search_api_key_configured=%s",
+        "启动配置 app=%s | llm=%s search=%s embedding=%s | "
+        "qianfan_key=%s deepseek_key=%s baidu_search_key=%s",
         settings.app_name,
         settings.llm_provider,
         settings.search_provider,
@@ -47,7 +48,6 @@ async def lifespan(_app: FastAPI):
         settings.has_deepseek_api_key,
         settings.has_baidu_ai_search_api_key,
     )
-    logger.info("Application starting up: initializing database ...")
     init_db()
     logger.info("Database initialized.")
     yield
@@ -58,6 +58,7 @@ def create_app() -> FastAPI:
     """工厂函数。便于测试时创建独立实例，也便于未来按环境装配不同中间件。"""
     settings = get_settings()
 
+    configure_structlog(settings.log_level)
     logging.basicConfig(
         level=settings.log_level,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -82,6 +83,7 @@ def create_app() -> FastAPI:
             allow_headers=["*"],
         )
 
+    app.include_router(admin.router)
     app.include_router(health.router)
     app.add_api_route(
         "/health/providers",

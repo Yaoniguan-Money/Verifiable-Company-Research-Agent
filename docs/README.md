@@ -7,26 +7,21 @@
 ## 推荐阅读顺序
 
 1. [Glossary](glossary.md)：先理解核心术语和当前边界。
-2. [Open Source Review Checklist](open_source_review_checklist.md)：按 checklist 快速审查项目。
-3. [Windows Quickstart](windows_quickstart.md)：按 Windows PowerShell 启动本地环境。
-4. [Testing Guide](testing_guide.md)：运行后端测试、ruff、前端 build 和 fixture 回归。
-5. [Engineering Acceptance](engineering_acceptance.md)：查看 secrets 边界、一键启动、前端类型检查和数据库迁移边界。
-6. [Project Structure](PROJECT_STRUCTURE.md)：按目录理解代码阅读路径。
-7. [Architecture](architecture.md)：查看整体模块边界。
-8. [LangGraph Orchestration](langgraph_orchestration.md)：理解默认主编排。
-9. [Workflow](workflow.md)：理解 LangGraph workflow 与 legacy service fallback。
-10. [RAG Design](rag_design.md)：理解 RAG MVP、embedding 和 vector store 边界。
-11. [Compliance](compliance.md)：理解合规护栏和禁止输出范围。
-12. [Evaluation](eval.md)：理解测试、fixture regression 和评测边界。
-13. [Demo Walkthrough](demo_walkthrough.md)：真实链路演示与验收流程。
+2. [Windows Quickstart](windows_quickstart.md)：按 Windows PowerShell 启动本地环境。
+3. [Testing Guide](testing_guide.md)：运行后端测试、ruff、前端 build 和 fixture 回归。
+4. [Project Structure](PROJECT_STRUCTURE.md)：按目录理解代码阅读路径。
+5. [Architecture](architecture.md)：查看整体模块边界。
+6. [LangGraph Orchestration](langgraph_orchestration.md)：理解默认主编排。
+7. [Workflow](workflow.md)：理解 LangGraph workflow 与 legacy service fallback。
+8. [Compliance](compliance.md)：理解合规护栏和禁止输出范围。
+9. [Evaluation](eval.md)：理解测试、fixture regression 和评测边界。
+10. [Demo Walkthrough](demo_walkthrough.md)：真实链路演示与验收流程。
 
 ## 核心展示文档
 
 - [Glossary](glossary.md)
-- [Open Source Review Checklist](open_source_review_checklist.md)
 - [Windows Quickstart](windows_quickstart.md)
 - [Testing Guide](testing_guide.md)
-- [Engineering Acceptance](engineering_acceptance.md)
 - [Project Structure](PROJECT_STRUCTURE.md)
 - [Architecture](architecture.md)
 - [API](api.md)
@@ -35,7 +30,6 @@
 - [Compliance](compliance.md)
 - [Provider Boundary](provider_boundary.md)
 - [LangGraph Orchestration](langgraph_orchestration.md)
-- [Release Checklist](release_checklist.md)
 - [Memory Design](memory_design.md)
 
 ## Evaluation / Regression
@@ -48,10 +42,6 @@
 ## Demo
 
 - [Demo Walkthrough](demo_walkthrough.md)
-
-## 开发日志
-
-阶段记录和本轮变更说明见 [dev_log/](dev_log/)。
 
 ## 诚实边界
 

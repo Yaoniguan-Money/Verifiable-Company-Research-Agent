@@ -1,3 +1,13 @@
+"""Legacy 顺序执行工作流引擎。
+
+默认使用 LangGraph；本引擎保留是为了：
+- 老脚本/回归仍在用 ``WORKFLOW_ENGINE=service``；
+- 排查问题时可以切回逐步执行确认业务行为是否与图编排一致。
+
+业务逻辑全部委托给 ``WorkflowStepExecutor``（再下沉到 ``ResearchDomainServices``），
+本类只负责包一层 ``WorkflowState`` 生命周期。
+"""
+
 from __future__ import annotations
 
 from sqlalchemy.orm import Session
@@ -13,7 +23,7 @@ from app.services.workflow_step_executor import WorkflowStepExecutor
 
 
 class ServiceWorkflowEngine:
-    """Legacy sequential engine kept for WORKFLOW_ENGINE=service regression checks."""
+    """逐步执行版工作流引擎，与 LangGraph 引擎行为对齐。"""
 
     def __init__(
         self,

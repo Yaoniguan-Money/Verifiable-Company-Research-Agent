@@ -6,6 +6,7 @@ from app.core.config import Settings, get_settings
 from app.providers.factory import ProviderFactory
 from app.providers.llm import MockLLMProvider
 from app.providers.search import LocalDocumentSearchProvider, MockSearchProvider
+from app.providers.search.cached import CachedSearchProvider
 from app.repositories import ResearchArtifactRepository
 from app.schemas.common import TaskStatus
 from app.schemas.workflow import WorkflowState
@@ -107,6 +108,8 @@ def test_provider_factory_can_switch_from_environment(monkeypatch) -> None:
 
     provider = ProviderFactory().create_search_provider()
 
+    if isinstance(provider, CachedSearchProvider):
+        provider = provider.inner
     assert isinstance(provider, LocalDocumentSearchProvider)
     monkeypatch.delenv("SEARCH_PROVIDER", raising=False)
     monkeypatch.delenv("LOCAL_DOCUMENTS_DIR", raising=False)

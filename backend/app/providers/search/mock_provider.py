@@ -35,7 +35,7 @@ class MockSearchProvider(SearchProvider):
                 raw_content=(
                     f"{mock_notice} 用户输入公司：{company_name}。"
                     f"用户输入问题：{question}。"
-                    "MOCK演示指标：2024年营收为0元，2024年净利润为0元，2024年研发投入为0元；"
+                    "MOCK演示指标：2024年营收为100亿元，2024年净利润为10亿元，2024年研发投入为5亿元；"
                     "这些数值只用于本地流程测试，不是事实。"
                     "如需真实公开资料，请配置 SEARCH_PROVIDER=baidu_ai_search、"
                     "SEARCH_PROVIDER=cninfo_announcements 或 SEARCH_PROVIDER=public_sources。"
@@ -53,7 +53,7 @@ class MockSearchProvider(SearchProvider):
                 raw_content=(
                     f"{mock_notice} 这条记录只用于验证 workflow 是否能落库、切分、"
                     "抽取和渲染报告；不得作为事实依据。"
-                    "MOCK演示指标：2024年营收为0元，2024年净利润为0元。"
+                    "MOCK演示指标：2024年营收为120亿元，2024年净利润为8亿元。"
                 ),
                 credibility_score=0.61,
                 source_metadata={"provider": "mock", "mock": True},
@@ -67,7 +67,7 @@ class MockSearchProvider(SearchProvider):
                 retrieved_at=now,
                 raw_content=(
                     f"{mock_notice} 当前配置不会访问互联网，也不会校验 {company_name} "
-                    "的真实公开披露。MOCK演示指标：2024年研发投入为0元。"
+                    "的真实公开披露。MOCK演示指标：2024年研发投入为5亿元。"
                 ),
                 credibility_score=0.61,
                 source_metadata={"provider": "mock", "mock": True},

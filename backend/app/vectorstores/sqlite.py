@@ -163,6 +163,11 @@ class SQLiteVectorStore(VectorStore):
         dimension = len(records[0].embedding)
         if dimension <= 0:
             raise ValueError("record embedding 不能为空")
+        existing_dimension = self.dimension
+        if existing_dimension is not None and dimension != existing_dimension:
+            raise ValueError(
+                f"record embedding 维度不一致：期望 {existing_dimension}，实际 {dimension}"
+            )
         for rec in records:
             if not rec.embedding:
                 raise ValueError("record embedding 不能为空")

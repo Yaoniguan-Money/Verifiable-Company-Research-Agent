@@ -20,7 +20,7 @@ def test_financial_table_extractor_maps_year_columns_to_metric_rows() -> None:
     )
 
     facts = {(item.metric_name, item.period, item.value, item.claim) for item in result.facts}
-    assert ("R&D_expenditure", "2024", "542亿元", "2024年研发投入为542亿元") in facts
+    assert ("R&D_expenditure", "2024", "542亿元", "2024年研发费用为542亿元") in facts
     assert (
         "revenue_segment:汽车相关产品",
         "2024",
@@ -34,6 +34,23 @@ def test_financial_table_extractor_maps_year_columns_to_metric_rows() -> None:
         "2024年乘用车产能为4479392辆",
     ) in facts
     assert result.handled_spans
+
+
+def test_financial_table_extractor_respects_allowed_years() -> None:
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年 2022年",
+                "研发费用 542亿元 399亿元 202亿元",
+            ]
+        ),
+        allowed_years={2024},
+    )
+    periods = {item.period for item in result.facts}
+    assert periods == {"2024"}
 
 
 def test_financial_table_extractor_ignores_sentence_like_lines() -> None:
@@ -143,10 +160,10 @@ def test_financial_table_extractor_uses_ten_thousand_yuan_unit_context_for_rd_ro
         "R&D_expenditure",
         "2024",
         "1450000万元",
-        "2024年研发投入为1450000万元",
+        "2024年研发费用为1450000万元",
     ) in facts
-    assert ("R&D_expenditure", "2023", "1260000万元", "2023年研发投入为1260000万元") in facts
-    assert ("R&D_expenditure", "2022", "1180000万元", "2022年研发投入为1180000万元") in facts
+    assert ("R&D_expenditure", "2023", "1260000万元", "2023年研发费用为1260000万元") in facts
+    assert ("R&D_expenditure", "2022", "1180000万元", "2022年研发费用为1180000万元") in facts
 
 
 def test_financial_table_extractor_uses_hundred_million_yuan_unit_context_for_revenue_rows() -> None:
@@ -264,6 +281,28 @@ def test_financial_table_extractor_filters_accounting_line_noise_and_rd_ratios()
     assert all(not item.value.endswith("%") for item in result.facts)
 
 
+def test_financial_table_extractor_parses_rd_expense_row_with_comma_in_note() -> None:
+    """年报「3、费用」表中说明含顿号，研发费用行仍应被识别。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "单位：元",
+                "2025 年 2024 年 同比增减 重大变动说明",
+                "研发费用 57,978,105,000.00 53,194,745,000.00 8.99% 主要是折旧及摊销、检测费增加",
+                "4、研发投入",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value) for item in result.facts}
+    assert ("R&D_expenditure", "2025", "57978105000.00元") in facts
+    assert ("R&D_expenditure", "2024", "53194745000.00元") in facts
+    assert all(value != "4元" for _, _, value in facts)
+
+
 def test_financial_table_extractor_maps_capacity_production_and_sales_volume_rows() -> None:
     """模拟年报产能 / 产量 / 销量表：产品行按年度横向披露运营指标。"""
     result = FinancialTableExtractionService().extract(
@@ -299,3 +338,140 @@ def test_financial_table_extractor_maps_capacity_production_and_sales_volume_row
         "295.00GWh",
         "2022年动力电池销量为295.00GWh",
     ) in facts
+
+
+def test_financial_table_extractor_maps_net_profit_parent_row() -> None:
+    """模拟年报利润表中「归属于上市公司股东的净利润」行。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "归属于上市公司股东的净利润 862.28亿元 747.21亿元",
+                "归属于上市公司股东的扣除非经常性损益的净利润 858.00亿元 740.00亿元",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value, item.claim) for item in result.facts}
+    assert (
+        "net_profit_parent",
+        "2024",
+        "862.28亿元",
+        "2024年归母净利润为862.28亿元",
+    ) in facts
+    assert (
+        "net_profit_parent",
+        "2023",
+        "747.21亿元",
+        "2023年归母净利润为747.21亿元",
+    ) in facts
+
+
+def test_financial_table_extractor_maps_deducted_net_profit_row() -> None:
+    """模拟年报利润表中「扣除非经常性损益的净利润」行。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "归属于上市公司股东的扣除非经常性损益的净利润 858.00亿元 740.00亿元",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value, item.claim) for item in result.facts}
+    assert (
+        "net_profit_deducted",
+        "2024",
+        "858.00亿元",
+        "2024年扣非净利润为858.00亿元",
+    ) in facts
+
+
+def test_financial_table_extractor_maps_net_profit_row() -> None:
+    """模拟年报利润表中「净利润」行。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "净利润 862.28亿元 747.21亿元",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value) for item in result.facts}
+    assert ("net_profit", "2024", "862.28亿元") in facts
+    assert ("net_profit", "2023", "747.21亿元") in facts
+
+
+def test_financial_table_extractor_profit_row_not_confused_with_revenue() -> None:
+    """「净利润」行不应被「收入」规则误判为 revenue_segment。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "净利润 862.28亿元 747.21亿元",
+                "营业收入 1741.44亿元 1505.60亿元",
+            ]
+        ),
+    )
+
+    metrics = {item.metric_name for item in result.facts}
+    assert "net_profit" in metrics
+    assert "revenue" in metrics
+    # 「净利润」不应被误判为收入：
+    assert all(not item.metric_name.startswith("revenue_segment:净") for item in result.facts)
+
+
+def test_financial_table_extractor_maps_profit_table_with_unit_context() -> None:
+    """模拟年报利润表以「单位：元」披露，金额列为裸数字的形态。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "单位：元",
+                "项目 2024年 2023年",
+                "归属于上市公司股东的净利润 86,228,146,421.62 74,720,924,904.14",
+                "净利润 86,228,146,421.62 74,720,924,904.14",
+            ]
+        ),
+    )
+
+    facts = {(item.metric_name, item.period, item.value) for item in result.facts}
+    assert ("net_profit_parent", "2024", "86228146421.62元") in facts
+    assert ("net_profit", "2023", "74720924904.14元") in facts
+
+
+def test_financial_table_extractor_filters_profit_ratio_rows() -> None:
+    """利润相关百分比行（如净利率）不应被当作金额抽取。"""
+    result = FinancialTableExtractionService().extract(
+        task_id="task_1",
+        source_id="source_1",
+        chunk_id="chunk_1",
+        text="\n".join(
+            [
+                "项目 2024年 2023年",
+                "净利润 862.28亿元 747.21亿元",
+                "净利率 49.5% 48.9%",
+            ]
+        ),
+    )
+
+    # 百分比行「净利率」不应被抽取（净利润行本身仍应正确抽取）
+    assert all(not item.value.endswith("%") or "net_profit" not in (item.metric_name or "") for item in result.facts)
+    assert ("net_profit", "2024", "862.28亿元") in {
+        (item.metric_name, item.period, item.value) for item in result.facts
+    }

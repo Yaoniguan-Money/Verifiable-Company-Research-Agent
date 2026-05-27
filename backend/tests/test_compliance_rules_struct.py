@@ -38,3 +38,12 @@ def test_empty_text_should_allow() -> None:
     assert not decision.is_hit
     assert decision.action == ComplianceAction.ALLOW
 
+
+def test_data_uri_base64_substring_should_not_false_positive() -> None:
+    """内嵌图表 base64 可能含 buy 子串，不应误拦整份报告。"""
+    blob = "ruFd52BuyxsotXYrVqww4Vl7hHXWjAYNGphVBN3Dsz"
+    decision = evaluate_compliance_text(
+        f"## 趋势\n\n![chart](data:image/png;base64,{blob})\n\n请分析经营风险。"
+    )
+    assert not decision.is_hit
+

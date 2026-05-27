@@ -32,9 +32,9 @@
 
 ### sample_hk_public_company_case
 
-- `company_name`: 小米集团
-- `stock_code`: 01810
-- `question`: 请基于公开资料分析小米集团最近的经营风险和公开披露一致性，要求给出引用来源，不要给投资建议。
+- `company_name`: 某港股上市科技公司
+- `stock_code`: 01XXX
+- `question`: 请基于公开资料分析该公司的经营风险和公开披露一致性，要求给出引用来源，不要给投资建议。
 - `status`: 已真实验收过的回归样例
 - `expected`:
   - 官方来源 citation 可见
@@ -43,8 +43,8 @@
 
 ### sample_hk_public_company_case_002
 
-- `company_name`: 腾讯控股
-- `stock_code`: 00700
+- `company_name`: 某港股上市互联网公司
+- `stock_code`: 00XXX
 - `status`: 设计样例 / 待真实验收
 - `expected`:
   - 官方来源至少 1 条
@@ -53,8 +53,8 @@
 
 ### sample_cn_public_company_case
 
-- `company_name`: 比亚迪
-- `stock_code`: 002594 / 1211.HK
+- `company_name`: 某 A+H 股上市新能源公司
+- `stock_code`: 002XXX / XXXX.HK
 - `status`: 设计样例 / 待真实验收
 - `expected`:
   - 官方来源至少 1 条

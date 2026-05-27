@@ -1,9 +1,14 @@
+"""报告证据组装：embedding、检索、citation 排序与来源质量摘要。
+
+graph 节点/Agent 都通过本服务读取证据，避免每个调用点重复实现去重 / 排序 / 兜底官方资料。
+"""
+
 from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
-from app.db.models import EvidenceChunk, ResearchTask
+from app.db.models import EvidenceChunk, ResearchTask, Source
 from app.providers.embedding import EmbeddingProvider
 from app.providers.factory import ProviderFactory
 from app.repositories import ResearchArtifactRepository
@@ -20,17 +25,16 @@ from app.schemas.common import (
 )
 from app.schemas.retrieval import RetrievedEvidence
 from app.services.embedding import ChunkEmbeddingResult, EmbeddingService
+from app.services.rag.hybrid_retrieval import HybridRetrievalService
 from app.services.report_grounding import ReportGroundingService
-from app.services.retrieval import RetrievalService
 from app.vectorstores import VectorRecord, VectorStore
+
+# 官方正文兜底时给一个非常低但非零的 score，确保排序时排在检索结果之后又能保留。
+_OFFICIAL_BODY_FALLBACK_SCORE = 0.01
 
 
 class ReportEvidenceService:
-    """Build report evidence snippets and citation lists.
-
-    Embedding, retrieval, official-body evidence inclusion, and citation sorting stay here
-    so graph nodes can reuse one rule boundary instead of duplicating ranking logic.
-    """
+    """报告证据相关的工具集合。"""
 
     def __init__(
         self,
@@ -45,6 +49,7 @@ class ReportEvidenceService:
         self.embedding_provider = embedding_provider or providers.create_embedding_provider()
         self.vector_store = vector_store or providers.create_vector_store()
 
+    # ---------- 高层入口 ----------
     def build_report_evidence(self, task: ResearchTask) -> tuple[str, list[Citation]]:
         grounded_content, grounded_citations = self.build_grounded_section(task)
         return grounded_content, self.merge_with_fact_citations(task.id, grounded_citations)
@@ -53,6 +58,7 @@ class ReportEvidenceService:
         chunk_rows = self.artifacts.list_chunks(task.id)
         grounding = ReportGroundingService()
         if not chunk_rows:
+            # 没有 chunk 时直接产出"证据不足"段落，避免后续 embed 步骤抛错。
             section = grounding.build_grounded_section(query=task.question, evidences=[])
             return section.content, section.citations
 
@@ -63,6 +69,20 @@ class ReportEvidenceService:
         )
         return self.build_grounded_section_from_evidence(task=task, evidences=evidences)
 
+    def build_grounded_section_from_evidence(
+        self,
+        *,
+        task: ResearchTask,
+        evidences: list[RetrievedEvidence],
+    ) -> tuple[str, list[Citation]]:
+        section = ReportGroundingService().build_grounded_section(
+            query=task.question,
+            evidences=evidences,
+            max_items=3,
+        )
+        return section.content, section.citations
+
+    # ---------- Embedding 与检索 ----------
     def embed_and_index_chunks(
         self,
         task_id: str,
@@ -76,6 +96,7 @@ class ReportEvidenceService:
             self.db,
             self.embedding_provider,
         ).embed_and_persist_ids(chunks)
+        # 重新索引前先清空该 task 的旧向量，避免残留数据污染检索。
         self.vector_store.delete_task(task_id)
         chunk_source_map = {item.id: item.source_id for item in chunks}
         self.vector_store.add_embeddings(
@@ -98,13 +119,21 @@ class ReportEvidenceService:
         task: ResearchTask,
         indexed_chunk_count: int | None = None,
     ) -> list[RetrievedEvidence]:
-        top_k_ceiling = indexed_chunk_count
-        if top_k_ceiling is None:
-            top_k_ceiling = len(self.artifacts.list_chunks(task.id))
+        top_k_ceiling = (
+            indexed_chunk_count
+            if indexed_chunk_count is not None
+            else len(self.artifacts.list_chunks(task.id))
+        )
         if top_k_ceiling <= 0:
             return self._include_official_body_evidence(task.id, [])
 
-        evidences = RetrievalService(self.db).retrieve_for_task(
+        llm = ProviderFactory(self.settings).create_llm_provider()
+        evidences = HybridRetrievalService(
+            self.db,
+            llm_provider=llm,
+            embedding_provider=self.embedding_provider,
+            vector_store=self.vector_store,
+        ).retrieve_for_task(
             task_id=task.id,
             query=task.question,
             top_k=min(self.settings.retrieval_top_k, top_k_ceiling),
@@ -113,38 +142,20 @@ class ReportEvidenceService:
         )
         return self._include_official_body_evidence(task.id, evidences)
 
-    def build_grounded_section_from_evidence(
-        self,
-        *,
-        task: ResearchTask,
-        evidences: list[RetrievedEvidence],
-    ) -> tuple[str, list[Citation]]:
-        section = ReportGroundingService().build_grounded_section(
-            query=task.question,
-            evidences=evidences,
-            max_items=3,
-        )
-        return section.content, section.citations
-
+    # ---------- Citations ----------
     def merge_with_fact_citations(
         self,
         task_id: str,
         grounded_citations: list[Citation],
     ) -> list[Citation]:
         fact_citations = self._build_fact_citations(task_id)
-        return self._sort_citations_by_source_quality(
-            task_id,
-            self._merge_citations(grounded_citations, fact_citations),
-        )
+        merged = self._merge_citations(grounded_citations, fact_citations)
+        return self._sort_citations_by_source_quality(task_id, merged)
 
+    # ---------- 来源质量摘要 ----------
     def build_source_quality_summary(self, task_id: str) -> str:
         sources = self.artifacts.list_sources(task_id)
-        counts = {
-            SourceAuthority.HIGH.value: 0,
-            SourceAuthority.MEDIUM.value: 0,
-            SourceAuthority.LOW.value: 0,
-            SourceAuthority.UNKNOWN.value: 0,
-        }
+        authority_counts = {item.value: 0 for item in SourceAuthority}
         layer_counts = {
             "official_body": 0,
             SourceLayer.OFFICIAL_ENTRY_PAGE.value: 0,
@@ -153,7 +164,7 @@ class ReportEvidenceService:
         }
         for source in sources:
             authority = authority_label(source.credibility_score)
-            counts[authority.value] += 1
+            authority_counts[authority.value] += 1
             layer = source_layer_from_metadata(source.source_metadata)
             if is_official_body_layer(layer):
                 layer_counts["official_body"] += 1
@@ -163,21 +174,12 @@ class ReportEvidenceService:
                 layer_counts[SourceLayer.THIRD_PARTY_BACKGROUND.value] += 1
             if authority == SourceAuthority.LOW:
                 layer_counts[SourceAuthority.LOW.value] += 1
-        has_authoritative = counts[SourceAuthority.HIGH.value] > 0
-        has_official_body = layer_counts["official_body"] > 0
-        if has_official_body:
-            evidence_strength = "较高"
-            limitation = "已经拿到官方披露正文或官方 PDF，可以支撑后续事实核验。"
-        elif has_authoritative:
-            evidence_strength = "中等"
-            limitation = "目前只有官方入口，缺少具体披露正文；财务和经营结论仍需补证。"
-        else:
-            evidence_strength = "偏低"
-            limitation = "高权威来源不足，现有材料更适合作线索，不适合作确定结论。"
+
+        strength, limitation = self._describe_evidence_strength(authority_counts, layer_counts)
         return "\n".join(
             [
                 "## 来源质量摘要",
-                f"- 本次证据强度：{evidence_strength}。",
+                f"- 本次证据强度：{strength}。",
                 f"- 官方/监管/交易所正文：{layer_counts['official_body']} 条。",
                 f"- 官方入口但不是正文：{layer_counts[SourceLayer.OFFICIAL_ENTRY_PAGE.value]} 条。",
                 f"- 第三方背景材料：{layer_counts[SourceLayer.THIRD_PARTY_BACKGROUND.value]} 条。",
@@ -186,6 +188,18 @@ class ReportEvidenceService:
             ]
         )
 
+    @staticmethod
+    def _describe_evidence_strength(
+        authority_counts: dict[str, int],
+        layer_counts: dict[str, int],
+    ) -> tuple[str, str]:
+        if layer_counts["official_body"] > 0:
+            return "较高", "已经拿到官方披露正文或官方 PDF，可以支撑后续事实核验。"
+        if authority_counts[SourceAuthority.HIGH.value] > 0:
+            return "中等", "目前只有官方入口，缺少具体披露正文；财务和经营结论仍需补证。"
+        return "偏低", "高权威来源不足，现有材料更适合作线索，不适合作确定结论。"
+
+    # ---------- 私有 ----------
     def _build_fact_citations(self, task_id: str) -> list[Citation]:
         facts = self.artifacts.list_facts(task_id)
         source_map = self.artifacts.source_map(task_id)
@@ -218,6 +232,7 @@ class ReportEvidenceService:
         task_id: str,
         evidences: list[RetrievedEvidence],
     ) -> list[RetrievedEvidence]:
+        """若官方正文没出现在检索结果中，按 source 兜底补一条，避免报告漏掉关键披露。"""
         source_map = self.artifacts.source_map(task_id)
         seen_chunks = {item.chunk_id for item in evidences}
         out = list(evidences)
@@ -236,7 +251,7 @@ class ReportEvidenceService:
                     source_id=source.id,
                     task_id=task_id,
                     text=chunk.text,
-                    score=0.01,
+                    score=_OFFICIAL_BODY_FALLBACK_SCORE,
                     source_title=source.title,
                     source_url=source.url,
                     source_type=str(source.source_type),
@@ -251,8 +266,8 @@ class ReportEvidenceService:
             added_sources.add(source.id)
         return out
 
+    @staticmethod
     def _merge_citations(
-        self,
         primary: list[Citation],
         secondary: list[Citation],
     ) -> list[Citation]:
@@ -272,21 +287,16 @@ class ReportEvidenceService:
         citations: list[Citation],
     ) -> list[Citation]:
         source_map = self.artifacts.source_map(task_id)
-        return sorted(
-            citations,
-            key=lambda item: (
-                source_layer_priority(
-                    source_layer_from_metadata(
-                        source_map.get(item.source_id).source_metadata
-                        if source_map.get(item.source_id) is not None
-                        else None
-                    )
-                ),
-                source_map.get(item.source_id).credibility_score
-                if source_map.get(item.source_id) is not None
-                and source_map.get(item.source_id).credibility_score is not None
-                else 0,
+
+        def sort_key(item: Citation) -> tuple[int, float, object]:
+            # 单次 dict 访问，三次比较条件一次性算好，比之前嵌套 if 干净。
+            source: Source | None = source_map.get(item.source_id)
+            layer = source_layer_from_metadata(source.source_metadata) if source else None
+            credibility = (source.credibility_score or 0) if source else 0
+            return (
+                source_layer_priority(layer),
+                float(credibility),
                 item.retrieved_at,
-            ),
-            reverse=True,
-        )
+            )
+
+        return sorted(citations, key=sort_key, reverse=True)

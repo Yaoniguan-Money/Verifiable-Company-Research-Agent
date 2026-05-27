@@ -25,7 +25,7 @@ class HybridPublicSearchProvider(SearchProvider):
                 errors.append(f"{provider.__class__.__name__}: {exc}")
                 continue
             for source in sources:
-                url_key = source.url or f"{source.title}:{len(source.raw_content or '')}"
+                url_key = _source_dedupe_key(source)
                 if url_key in seen_urls:
                     continue
                 seen_urls.add(url_key)
@@ -40,3 +40,11 @@ class HybridPublicSearchProvider(SearchProvider):
             ),
             reverse=True,
         )
+
+
+def _source_dedupe_key(source: SourceCreate) -> str:
+    url = (source.url or "").strip().lower()
+    if url:
+        return url
+    # 无 URL 的本地资料只按标题会误杀，带上正文长度降低误去重概率。
+    return f"{source.title.strip().lower()}:{len(source.raw_content or '')}"

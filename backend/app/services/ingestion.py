@@ -8,6 +8,8 @@ from app.db.models import EvidenceChunk
 from app.repositories import ResearchArtifactRepository
 from app.schemas.common import SOURCE_CREDIBILITY_SCORE_METADATA_KEY, SOURCE_METADATA_KEY
 from app.services.chunking import ChunkingService
+from app.services.content_enrichment import ContentEnrichmentPipeline
+from app.services.pdf_ingestion import enrich_pdf_raw_content
 
 
 class IngestionService:
@@ -23,10 +25,12 @@ class IngestionService:
         self,
         db: Session,
         chunker: ChunkingService | None = None,
+        enrichment_pipeline: ContentEnrichmentPipeline | None = None,
     ) -> None:
         self.db = db
         self.artifacts = ResearchArtifactRepository(db)
         self._chunker = chunker or ChunkingService()
+        self._enrichment = enrichment_pipeline
 
     def ingest_chunks_for_source(
         self,
@@ -50,8 +54,9 @@ class IngestionService:
 
         self.artifacts.delete_chunks_for_source(task_id=task_id, source_id=source_id)
 
+        enriched = self._enrich_source_content(source)
         parts = self._chunker.split(
-            source.raw_content,
+            enriched,
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
             source_title=source.title,
@@ -81,3 +86,12 @@ class IngestionService:
         for row in created:
             self.db.refresh(row)
         return created
+
+    def _enrich_source_content(self, source) -> str:
+        """Run content enrichment pipeline if available, otherwise fall back to legacy."""
+        if self._enrichment is not None:
+            from app.schemas.source import SourceRead
+            source_read = SourceRead.model_validate(source)
+            enriched = self._enrichment.enrich(source_read, question="")
+            return enriched.raw
+        return enrich_pdf_raw_content(source.raw_content, source.source_metadata)

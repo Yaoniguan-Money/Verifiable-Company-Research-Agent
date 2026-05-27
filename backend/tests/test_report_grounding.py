@@ -100,7 +100,7 @@ def test_grounded_section_contains_citation_and_traceable_ids(db: OrmSession) ->
         evidences=[ev],
         max_items=2,
     )
-    assert "来源片段" in section.content
+    assert "《" in section.content
     assert "score=" not in section.content
     assert len(section.citations) == 1
     cit = section.citations[0]
@@ -413,6 +413,53 @@ def test_grounded_section_avoids_forbidden_terms(db: OrmSession) -> None:
     forbidden = ["买入", "卖出", "加仓", "减仓", "目标价", "收益承诺", "个股推荐"]
     lowered = section.content.lower()
     assert all(term.lower() not in lowered for term in forbidden)
+
+
+def test_grounded_section_redacts_forbidden_terms_from_evidence_text() -> None:
+    now = datetime.now(timezone.utc)
+    ev = RetrievedEvidence(
+        chunk_id="chunk",
+        source_id="source",
+        task_id="task",
+        text="第三方材料提到买入评级和目标价，这些词不应进入报告。",
+        score=0.8,
+        source_title="第三方材料",
+        source_url="https://example.com",
+        source_type="news",
+        retrieved_at=now,
+        metadata={},
+    )
+
+    section = ReportGroundingService().build_grounded_section(query="风险", evidences=[ev])
+
+    assert "买入" not in section.content
+    assert "目标价" not in section.content
+    assert "【已移除】" in section.content
+
+
+def test_grounded_section_max_items_zero_returns_no_citations() -> None:
+    now = datetime.now(timezone.utc)
+    ev = RetrievedEvidence(
+        chunk_id="chunk",
+        source_id="source",
+        task_id="task",
+        text="可展示证据",
+        score=0.8,
+        source_title="来源",
+        source_url="https://example.com",
+        source_type="news",
+        retrieved_at=now,
+        metadata={},
+    )
+
+    section = ReportGroundingService().build_grounded_section(
+        query="风险",
+        evidences=[ev],
+        max_items=0,
+    )
+
+    assert "未选入" in section.content
+    assert section.citations == []
 
 
 def test_blank_query_raises() -> None:

@@ -50,6 +50,19 @@ def test_hybrid_public_provider_dedupes_and_sorts_sources() -> None:
     assert [item.title for item in sources] == ["官方年报", "新闻补充"]
 
 
+def test_hybrid_public_provider_dedupes_normalized_urls() -> None:
+    provider = HybridPublicSearchProvider(
+        [
+            FakeProvider([_source("官方年报", "https://example.com/report.pdf", 0.95)]),
+            FakeProvider([_source("重复年报", " HTTPS://EXAMPLE.COM/report.pdf ", 0.95)]),
+        ]
+    )
+
+    sources = provider.search("样例股份", "研发")
+
+    assert [item.title for item in sources] == ["官方年报"]
+
+
 def test_hybrid_public_provider_raises_only_when_all_sources_fail() -> None:
     provider = HybridPublicSearchProvider([FakeProvider(error=ValueError("boom"))])
 

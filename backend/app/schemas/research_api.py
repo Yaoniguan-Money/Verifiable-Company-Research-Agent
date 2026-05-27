@@ -85,3 +85,36 @@ class ChatResponse(BaseModel):
     answer: str
     compliance_status: ComplianceStatus
     violations: list[str] = Field(default_factory=list)
+
+
+class CompareCompanyItem(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    company_name: str = Field(..., min_length=1, max_length=128)
+    stock_code: str | None = Field(default=None, max_length=16)
+
+
+class CompareResearchRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    companies: list[CompareCompanyItem] = Field(..., min_length=2, max_length=2)
+    question: str = Field(..., min_length=1)
+
+
+class CompareResearchResponse(BaseModel):
+    question: str
+    tasks: list[RunResearchTaskResponse]
+
+
+class ResearchTaskListItem(BaseModel):
+    task_id: str
+    company_name: str
+    question: str
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class ResearchTaskListResponse(BaseModel):
+    items: list[ResearchTaskListItem]
+    total: int

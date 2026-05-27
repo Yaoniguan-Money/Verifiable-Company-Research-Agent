@@ -33,6 +33,25 @@ credibility_score: 0.91
     assert "研发投入" in sources[0].raw_content
 
 
+def test_local_document_search_provider_ignores_non_finite_score(tmp_path) -> None:
+    company_dir = tmp_path / "demo"
+    company_dir.mkdir()
+    (company_dir / "report.md").write_text(
+        """---
+title: Demo Report
+credibility_score: NaN
+---
+
+2023年研发投入为100亿元。
+""",
+        encoding="utf-8",
+    )
+
+    sources = LocalDocumentSearchProvider(str(tmp_path)).search("demo", "研发投入")
+
+    assert sources[0].credibility_score == 0.8
+
+
 def test_local_document_search_provider_reads_nested_company_docs(tmp_path) -> None:
     nested = tmp_path / "demo_tech" / "reports"
     nested.mkdir(parents=True)

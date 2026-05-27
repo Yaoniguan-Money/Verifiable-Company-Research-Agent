@@ -5,6 +5,11 @@ from dataclasses import dataclass
 
 from app.schemas.fact import ExtractedFactCreate
 from app.services.fact_patterns import INLINE_VALUE_UNIT_PATTERN, METRIC_LABELS, YEAR_PATTERN
+from app.services.fact_plausibility import (
+    is_implausible_extracted_value,
+    is_section_heading_line,
+    is_section_number_token,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +31,7 @@ class FinancialTableExtractionService:
         source_id: str,
         chunk_id: str,
         text: str,
+        allowed_years: set[int] | None = None,
     ) -> TableExtractionResult:
         facts: list[ExtractedFactCreate] = []
         handled_spans: list[tuple[int, int]] = []
@@ -45,6 +51,8 @@ class FinancialTableExtractionService:
                 current_unit = unit
             if all(mark in clean for mark in ("产能状况", "快报产量", "快报销量")):
                 has_wide_header = True
+            if is_section_heading_line(clean):
+                continue
             row_metric = self._table_row_metric(clean)
             wide_facts = self._extract_vehicle_wide_row(
                 task_id=task_id,
@@ -76,9 +84,16 @@ class FinancialTableExtractionService:
                     metric_base=metric_base,
                     dimension=dimension,
                     value=value,
+                    line=clean,
                 ):
                     continue
                 period = current_years[idx]
+                if allowed_years is not None:
+                    try:
+                        if int(period) not in allowed_years:
+                            continue
+                    except ValueError:
+                        continue
                 metric_name = metric_with_optional_dimension(metric_base, dimension)
                 label = claim_label(metric_base, metric_name)
                 facts.append(
@@ -159,16 +174,43 @@ class FinancialTableExtractionService:
         return "亿元" if unit == "亿" else unit
 
     def _looks_like_table_row(self, line: str) -> bool:
+        # 说明里的顿号「、」不应把整行当成叙述句丢弃（常见于「A、B、C增加所致」）。
         if any(mark in line for mark in ("。", "；", ";")):
+            return False
+        if is_section_heading_line(line):
             return False
         return len(line) <= 220
 
     def _table_row_metric(self, line: str) -> tuple[str, str | None] | None:
         if not line:
             return None
-        if "研发费用" in line or "研发投入" in line:
+        if "研发费用" in line:
             return "R&D_expenditure", None
-        if "营业总收入" in line or ("营业收入" in line and "合计" in line):
+        if "研发投入" in line:
+            return "R&D_total_spending", None
+        # 利润类指标（须在通用「收入」判断之前，避免「净利润」被误判为收入）
+        if (
+            "归属于上市公司股东的净利润" in line
+            or "归母净利润" in line
+            or "归属于母公司所有者的净利润" in line
+            or "归属于母公司股东的净利润" in line
+        ):
+            return "net_profit_parent", None
+        if "扣非净利润" in line or "扣除非经常性损益" in line:
+            return "net_profit_deducted", None
+        if "净利润" in line:
+            return "net_profit", None
+        if "营业总收入" in line:
+            return "revenue", None
+        if "营业收入" in line:
+            # "营业收入" 可能是合并口径或分业务收入，需区分。
+            if "合计" in line:
+                return "revenue", None
+            segment = self._dimension_before_value(line)
+            if segment and segment not in {"收入", "销售收入", "营业收入", "主营业务收入", "营业"}:
+                if self._is_noisy_revenue_dimension(segment):
+                    return None
+                return "revenue_segment", segment
             return "revenue", None
         if "收入" in line or "销售收入" in line:
             segment = self._dimension_before_value(line)
@@ -190,10 +232,14 @@ class FinancialTableExtractionService:
         metric_base: str,
         dimension: str | None,
         value: str,
+        line: str,
     ) -> bool:
-        if metric_base in {"revenue", "revenue_segment", "R&D_expenditure"} and value.endswith("%"):
+        if metric_base in {"revenue", "revenue_segment", "R&D_expenditure", "R&D_total_spending", "net_profit", "net_profit_parent", "net_profit_deducted"} and value.endswith("%"):
             return True
         if metric_base == "revenue_segment" and self._is_noisy_revenue_dimension(dimension or ""):
+            return True
+        metric_name = metric_with_optional_dimension(metric_base, dimension)
+        if is_implausible_extracted_value(metric_name, value, line=line):
             return True
         return False
 
@@ -249,7 +295,7 @@ def value_and_unit(match: re.Match[str]) -> tuple[str, str]:
     groups = match.groupdict()
     values = [value for key, value in groups.items() if key.startswith("value") and value]
     units = [value for key, value in groups.items() if key.startswith("unit") and value]
-    value = values[-1].replace(",", "")
+    value = values[-1].replace(",", "").replace(" ", "")
     unit = units[-1]
     if unit == "亿":
         unit = "亿元"
@@ -268,11 +314,16 @@ def extract_numeric_values(line: str, *, fallback_unit: str | None) -> list[Tabl
         TableValue(value=value_and_unit(match)[0], start=match.start(), end=match.end())
         for match in re.finditer(INLINE_VALUE_UNIT_PATTERN, line)
     ]
-    if with_units or fallback_unit is None:
+    # 费用表常见「金额 + 同比%」混排：若仅有百分比带单位，仍应回退解析千分位金额。
+    if with_units and any(not item.value.endswith("%") for item in with_units):
+        return with_units
+    if fallback_unit is None:
         return with_units
     raw_values: list[TableValue] = []
     for match in re.finditer(r"(?<![A-Za-z0-9])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)(?![A-Za-z0-9])", line):
-        value = match.group(1).replace(",", "")
+        if is_section_number_token(line=line, start=match.start(), end=match.end()):
+            continue
+        value = match.group(1).replace(",", "").replace(" ", "")
         raw_values.append(TableValue(value=f"{value}{fallback_unit}", start=match.start(), end=match.end()))
     return raw_values
 

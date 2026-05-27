@@ -14,7 +14,8 @@ from app.schemas.fact import ExtractedFactRead
 from app.schemas.report import ReportCreate
 from app.schemas.task import ResearchTaskRead
 from app.schemas.verification import VerificationResultRead
-from app.services.fact_relevance import FactRelevanceService
+from app.services.answer_pipeline import AnswerPipeline
+from app.services.question_time_scope import resolve_research_time_scope
 
 
 @dataclass(slots=True)
@@ -43,32 +44,46 @@ class ReportAssemblyService:
     ) -> ReportCreate:
         facts = self._list_facts(task.id)
         verifications = self._list_verifications(task.id)
+        verification_reads = [
+            VerificationResultRead.model_validate(item) for item in verifications
+        ]
         buckets = self._bucket_facts(facts=facts, verifications=verifications)
-        relevance = FactRelevanceService().classify(
+        buckets.verified = self._rank_verified_facts(task.id, buckets.verified)
+        time_scope = resolve_research_time_scope(
+            task.question,
+            llm_provider=self.llm_provider,
+            allow_llm=True,
+        )
+        answer_context = AnswerPipeline().build_context(
+            company_name=task.company_name,
             question=task.question,
-            facts=[
-                *buckets.verified,
-                *buckets.conflicted,
-                *buckets.insufficient,
-            ],
+            verified_facts=buckets.verified,
+            conflicted_facts=buckets.conflicted,
+            verifications=verification_reads,
+            time_scope=time_scope,
         )
 
-        return self.llm_provider.generate_report(
+        report_kwargs = dict(
             task=ResearchTaskRead.model_validate(task),
             verified_facts=buckets.verified,
             conflicted_facts=buckets.conflicted,
             insufficient_facts=buckets.insufficient,
-            verification_results=[
-                VerificationResultRead.model_validate(item) for item in verifications
-            ],
+            verification_results=verification_reads,
             risk_analysis=risk_analysis,
             citations=citations,
             outdated_facts=buckets.outdated,
             rejected_facts=buckets.rejected,
-            core_facts=relevance.core_facts,
-            supporting_facts=relevance.supporting_facts,
-            relevance_intents=relevance.intent_labels,
+            core_facts=answer_context.primary_facts,
+            supporting_facts=answer_context.optional_context_facts,
+            relevance_intents=answer_context.plan.intent_labels,
+            reader_summary=answer_context.summary_text,
+            answer_context=answer_context,
         )
+        try:
+            return self.llm_provider.generate_report(**report_kwargs)
+        except TypeError:
+            report_kwargs.pop("answer_context", None)
+            return self.llm_provider.generate_report(**report_kwargs)
 
     def _list_facts(self, task_id: str) -> list[ExtractedFact]:
         return self.artifacts.list_facts(task_id)
@@ -100,3 +115,26 @@ class ReportAssemblyService:
                 buckets.insufficient.append(read)
 
         return buckets
+
+    def _rank_verified_facts(
+        self,
+        task_id: str,
+        facts: list[ExtractedFactRead],
+    ) -> list[ExtractedFactRead]:
+        source_map = self.artifacts.source_map(task_id)
+        disclosure_rank = {
+            "annual": 0,
+            "semi_annual": 1,
+            "interim": 2,
+            "media": 3,
+        }
+
+        def key(fact: ExtractedFactRead) -> tuple[int, int, float]:
+            source = source_map.get(fact.source_id)
+            metadata = getattr(source, "source_metadata", None) or {}
+            kind = str(metadata.get("disclosure_kind") or "interim")
+            published_at = getattr(source, "published_at", None)
+            timestamp = published_at.timestamp() if published_at else 0.0
+            return (disclosure_rank.get(kind, 2), -int(timestamp), -float(fact.confidence or 0))
+
+        return sorted(facts, key=key)

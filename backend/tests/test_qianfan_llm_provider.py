@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 
 from app.providers.qianfan_llm_provider import QianfanLLMProvider
 from app.schemas.chunk import EvidenceChunkRead
+from app.schemas.common import ComplianceStatus, TaskStatus
+from app.schemas.report import ReportRead
+from app.schemas.task import ResearchTaskRead
 
 
 class _FakeResponse:
@@ -92,3 +95,47 @@ def test_qianfan_compliance_guardrail_blocks_and_rewrites_violations() -> None:
     assert "目标价" in rewritten_target.violations
     assert rewritten_return.status.value == "rewritten"
     assert "收益承诺" in rewritten_return.violations
+def test_qianfan_followup_prompt_includes_structured_payload(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def fake_chat_with_system(self, system_prompt: str, user_prompt: str, *, max_tokens: int) -> str:
+        captured["prompt"] = user_prompt
+        return "ok"
+
+    class Payload:
+        primary_facts_json = '[{"claim":"2025年研发投入为10亿元"}]'
+        ambiguities = [{"metric": "r_and_d", "period": "2025"}]
+        citation_lines = ["- source_1:chunk_1 2025年研发投入为10亿元"]
+
+    monkeypatch.setattr(QianfanLLMProvider, "_chat_with_system", fake_chat_with_system)
+    provider = QianfanLLMProvider(api_key="unit-test-token")
+    now = datetime.now(timezone.utc)
+
+    provider.answer_followup(
+        task=ResearchTaskRead(
+            id="task-1",
+            user_id="user-1",
+            company_name="Example Co",
+            question="研发投入",
+            status=TaskStatus.COMPLETED,
+            created_at=now,
+            updated_at=now,
+        ),
+        message="2025年研发投入是多少？",
+        report=ReportRead(
+            id="report-1",
+            task_id="task-1",
+            title="report",
+            content="## 总结\n已有研发投入信息。",
+            citations=[],
+            compliance_status=ComplianceStatus.PASSED,
+            created_at=now,
+        ),
+        fact_count=1,
+        verification_counts={"verified": 1},
+        followup_payload=Payload(),
+    )
+
+    assert "followup_facts_json" in captured["prompt"]
+    assert "2025年研发投入为10亿元" in captured["prompt"]
+    assert "do not say the report lacks" in captured["prompt"]

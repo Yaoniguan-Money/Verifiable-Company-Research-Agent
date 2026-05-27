@@ -39,7 +39,7 @@ def test_extract_single_chunk_to_structured_fact() -> None:
     assert fact.task_id == "task_1"
     assert fact.source_id == "source_1"
     assert fact.chunk_id == "chunk_1"
-    assert fact.metric_name == "R&D_expenditure"
+    assert fact.metric_name == "R&D_total_spending"
     assert fact.value == "100亿元"
     assert fact.period == "2023"
     assert 0.0 <= fact.confidence <= 1.0
@@ -177,8 +177,8 @@ def test_extract_multiple_periods_in_dense_chunk() -> None:
     )
 
     by_metric_value = {(f.metric_name, f.value): f.period for f in out.facts}
-    assert by_metric_value[("R&D_expenditure", "80亿元")] == "2022"
-    assert by_metric_value[("R&D_expenditure", "100亿元")] == "2023"
+    assert by_metric_value[("R&D_total_spending", "80亿元")] == "2022"
+    assert by_metric_value[("R&D_total_spending", "100亿元")] == "2023"
     assert by_metric_value[("revenue", "500亿元")] == "2023"
 
 
@@ -229,7 +229,7 @@ def test_extract_rd_amount_from_news_style_phrasing() -> None:
         chunks=[chunk],
     )
 
-    rd_values = {(fact.period, fact.value) for fact in out.facts if fact.metric_name == "R&D_expenditure"}
+    rd_values = {(fact.period, fact.value) for fact in out.facts if fact.metric_name == "R&D_total_spending"}
     assert ("2024", "200亿元") in rd_values
     assert ("2025", "309亿元") in rd_values
 

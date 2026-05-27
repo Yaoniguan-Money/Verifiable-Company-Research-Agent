@@ -21,12 +21,14 @@ from app.services.fact_patterns import (
     FACT_RULES,
     YEAR_PATTERN,
 )
+from app.services.fact_plausibility import is_implausible_extracted_value
 from app.services.financial_table_extraction import (
     FinancialTableExtractionService,
     claim_label,
     metric_with_optional_dimension,
     value_and_unit,
 )
+from app.services.question_time_scope import parse_research_time_scope
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,6 +130,7 @@ class FactExtractionService:
                 source_id=ch.source_id,
                 chunk_id=ch.chunk_id,
                 text=ch.text,
+                question=question,
             ):
                 key = (fact.source_id, fact.metric_name, fact.period, fact.value)
                 periodless_key = (fact.source_id, fact.metric_name, fact.value)
@@ -156,12 +159,20 @@ class FactExtractionService:
         source_id: str,
         chunk_id: str,
         text: str,
+        question: str = "",
     ) -> list[ExtractedFactCreate]:
+        scope = parse_research_time_scope(question)
+        allowed_years: set[int] | None = None
+        if scope is not None and (scope.strict or scope.window_years == 1):
+            preferred = scope.preferred_years()
+            if preferred:
+                allowed_years = preferred
         table_result = FinancialTableExtractionService().extract(
             task_id=task_id,
             source_id=source_id,
             chunk_id=chunk_id,
             text=text,
+            allowed_years=allowed_years,
         )
         out = table_result.facts
         occupied_spans = table_result.handled_spans
@@ -174,7 +185,12 @@ class FactExtractionService:
                 period = self._period_near_match(text=text, match_start=m.start())
                 value, unit = self._value_and_unit(m)
                 metric_name = self._metric_name_with_dimension(rule.metric_name, m)
-                if self._should_skip_rule_value(metric_name=metric_name, value=value):
+                if self._should_skip_rule_value(
+                    metric_name=metric_name,
+                    value=value,
+                    text=text,
+                    match_start=m.start(),
+                ):
                     continue
                 metric_label = claim_label(rule.metric_name, metric_name)
                 claim = (
@@ -218,17 +234,34 @@ class FactExtractionService:
         # 部分规则会在同一表达式中出现两组命名捕获；取实际命中的那一组。
         return value_and_unit(match)
 
-    def _should_skip_rule_value(self, *, metric_name: str, value: str) -> bool:
+    def _should_skip_rule_value(
+        self,
+        *,
+        metric_name: str,
+        value: str,
+        text: str,
+        match_start: int,
+    ) -> bool:
         if value.endswith("%"):
             metric_base = metric_name.split(":", 1)[0]
-            return metric_base in {
+            if metric_base in {
                 "R&D_expenditure",
+                "R&D_total_spending",
                 "revenue",
                 "revenue_segment",
                 "net_profit",
                 "net_profit_parent",
                 "net_profit_deducted",
-            }
+            }:
+                return True
+        context_start = max(0, match_start - 40)
+        context_end = min(len(text), match_start + 80)
+        if is_implausible_extracted_value(
+            metric_name,
+            value,
+            context=text[context_start:context_end],
+        ):
+            return True
         return False
 
     def _period_near_match(self, *, text: str, match_start: int) -> str:

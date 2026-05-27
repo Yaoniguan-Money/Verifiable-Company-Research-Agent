@@ -128,6 +128,19 @@ export interface RegressionEvalSummary {
   cases: RegressionEvalCase[];
 }
 
+export interface FeatureFlag {
+  name: string;
+  label: string;
+  description: string;
+  value: unknown;
+  default: unknown;
+  options: string[] | null;
+}
+
+export interface FeatureFlagsResponse {
+  flags: FeatureFlag[];
+}
+
 export interface ProviderHealth {
   llm_provider: string;
   search_provider: string;

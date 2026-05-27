@@ -34,31 +34,32 @@ def create_all_tables() -> None:
     logger.info("DB tables created (or already exist).")
 
 
+# 向后兼容补齐列表：早期版本的 SQLite 数据库可能缺这些字段，
+# 升级到当前版本时一次性补齐，避免线上回归出错。
+_LIGHTWEIGHT_COLUMN_ADDITIONS: tuple[tuple[str, str, str], ...] = (
+    ("verification_results", "reason_code", "VARCHAR(64)"),
+    ("sources", "source_metadata", "JSON"),
+    ("user_memories", "memory_layer", "VARCHAR(16) NOT NULL DEFAULT 'warm'"),
+)
+
+
 def ensure_lightweight_schema_updates(bind: Engine | None = None) -> None:
-    """在 Alembic 接入前，只处理向后兼容的小字段补齐。"""
+    """Alembic 接入前的过渡：检测缺失字段并 ``ALTER TABLE`` 补齐。
+
+    Alembic 已可用的环境会通过 ``USE_ALEMBIC_ON_STARTUP=true`` 走正式迁移路径；
+    本函数只是给本地 SQLite 用户的兼容层。
+    """
     engine = bind or db_session.engine
     inspector = inspect(engine)
     table_names = set(inspector.get_table_names())
-    if "verification_results" in table_names:
-        columns = {column["name"] for column in inspector.get_columns("verification_results")}
-        if "reason_code" not in columns:
-            with engine.begin() as conn:
-                conn.execute(text("ALTER TABLE verification_results ADD COLUMN reason_code VARCHAR(64)"))
-    if "sources" in table_names:
-        columns = {column["name"] for column in inspector.get_columns("sources")}
-        if "source_metadata" not in columns:
-            with engine.begin() as conn:
-                conn.execute(text("ALTER TABLE sources ADD COLUMN source_metadata JSON"))
-    if "user_memories" in table_names:
-        columns = {column["name"] for column in inspector.get_columns("user_memories")}
-        if "memory_layer" not in columns:
-            with engine.begin() as conn:
-                conn.execute(
-                    text(
-                        "ALTER TABLE user_memories "
-                        "ADD COLUMN memory_layer VARCHAR(16) NOT NULL DEFAULT 'warm'"
-                    )
-                )
+    for table, column, column_type in _LIGHTWEIGHT_COLUMN_ADDITIONS:
+        if table not in table_names:
+            continue
+        existing_cols = {col["name"] for col in inspector.get_columns(table)}
+        if column in existing_cols:
+            continue
+        with engine.begin() as conn:
+            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}"))
 
 
 def ensure_default_user(db: OrmSession) -> User:
@@ -76,9 +77,31 @@ def ensure_default_user(db: OrmSession) -> User:
     return user
 
 
+def run_alembic_migrations() -> None:
+    """执行 Alembic 升级到 head（仅 PostgreSQL 等生产库推荐）。"""
+    from alembic import command
+    from alembic.config import Config
+
+    from pathlib import Path
+
+    cfg = Config(str(Path(__file__).resolve().parents[3] / "alembic.ini"))
+    command.upgrade(cfg, "head")
+    logger.info("Alembic migrations applied.")
+
+
 def init_db() -> None:
     """应用启动时调用：建表 + 默认用户。幂等。"""
-    create_all_tables()
+    from app.core.config import get_settings
+
+    settings = get_settings()
+    if settings.use_alembic_on_startup and settings.database_url.startswith("postgresql"):
+        try:
+            run_alembic_migrations()
+        except Exception as exc:
+            logger.warning("Alembic 迁移失败，回退 create_all: %s", exc)
+            create_all_tables()
+    else:
+        create_all_tables()
     with db_session.SessionLocal() as db:
         ensure_default_user(db)
 

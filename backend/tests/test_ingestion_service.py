@@ -34,19 +34,19 @@ def test_chunking_long_text_produces_multiple_chunks() -> None:
     for i, p in enumerate(parts):
         assert p.chunk_index == i
     assert "source_title" in parts[0].metadata
-    assert parts[0].metadata.get("char_start") == 0
     assert parts[0].metadata.get("chunk_size") == 100
+    assert "strategy" in parts[0].metadata
 
 
 def test_chunking_empty_returns_empty() -> None:
     svc = ChunkingService()
-    assert svc.split("", source_title="x", source_type="a") == []
-    assert svc.split("   \n  ", source_title="x", source_type="a") == []
+    assert svc.split("", chunk_size=100, chunk_overlap=0, source_title="x", source_type="a") == []
+    assert svc.split("   \n  ", chunk_size=100, chunk_overlap=0, source_title="x", source_type="a") == []
 
 
 def test_chunking_non_empty_starts_index_at_zero() -> None:
     svc = ChunkingService()
-    parts = svc.split("短文本", chunk_size=50, source_title="t", source_type=SourceType.NEWS.value)
+    parts = svc.split("短文本", chunk_size=50, chunk_overlap=0, source_title="t", source_type=SourceType.NEWS.value)
     assert len(parts) == 1
     assert parts[0].chunk_index == 0
     assert parts[0].text == "短文本"
@@ -108,7 +108,7 @@ def test_ingestion_writes_multiple_chunks_with_metadata(
             created_at=row.created_at,
         )
         assert read.metadata is not None
-        assert read.metadata.get("strategy") == "char_window"
+        assert read.metadata.get("strategy") in {"char_window", "section_aware", "recursive", "fixed_window"}
         assert "source_title" in read.metadata
         same = EvidenceChunkRead.model_validate(
             {

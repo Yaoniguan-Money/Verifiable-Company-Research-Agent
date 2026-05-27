@@ -1,0 +1,30 @@
+{
+  "name": "synthetic_single_source_conflict",
+  "company_name": "Synthetic Co",
+  "question": "2025年研发投入是多少？",
+  "assertions": [
+    "same source with two values for the same metric and period is conflicted",
+    "reason_code is same_period_value_divergence"
+  ],
+  "facts": [
+    {
+      "claim": "2025年研发投入为10亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "10亿元",
+      "period": "2025",
+      "source_id": "official_pdf_1",
+      "status": "conflicted",
+      "reason_code": "same_period_value_divergence"
+    },
+    {
+      "claim": "2025年研发投入为12亿元",
+      "metric_name": "R&D_expenditure",
+      "value": "12亿元",
+      "period": "2025",
+      "source_id": "official_pdf_1",
+      "status": "conflicted",
+      "reason_code": "same_period_value_divergence"
+    }
+  ]
+}
+

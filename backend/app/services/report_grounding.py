@@ -23,6 +23,7 @@ FORBIDDEN_TERMS = [
     "个股推荐",
     "适合你购买",
 ]
+_REDACTION = "【已移除】"
 
 
 @dataclass(frozen=True, slots=True)
@@ -95,15 +96,26 @@ class ReportGroundingService:
             ),
             reverse=True,
         )
-        picked = ranked[: max(1, max_items)]
-        lines = [f"为了回答“{q}”，系统优先回看了这些来源片段：", ""]
+        limit = max(0, max_items)
+        if limit == 0:
+            return GroundedReportSection(
+                title="证据摘录",
+                content=f"围绕问题“{q}”，当前未选入可展示的证据摘录。",
+                citations=[],
+            )
+        picked = ranked[:limit]
+        lines = [f"与问题「{q}」相关的公开资料摘录如下（供回查，不构成结论）：", ""]
+        from app.core.config import get_settings
+        max_snippet = get_settings().grounding_snippet_max_chars
         for idx, ev in enumerate(picked, start=1):
             snippet = ev.text.strip().replace("\n", " ")
-            if len(snippet) > 80:
-                snippet = snippet[:80] + "..."
+            if len(snippet) > max_snippet:
+                snippet = snippet[:max_snippet] + "..."
+            # 证据原文可能带投顾词，报告摘录只脱敏，不让单条脏证据中断整份报告。
+            snippet = _redact_forbidden_terms(snippet)
             lines.append(f"{idx}. 《{ev.source_title}》：{snippet}")
         lines.append("")
-        lines.append("注：以上只是原始公开资料摘录，结论仍以事实校验结果为准。")
+        lines.append("以上摘自原始披露片段，是否采纳须结合上文核对结果判断。")
 
         content = "\n".join(lines)
         lowered = content.lower()
@@ -115,3 +127,10 @@ class ReportGroundingService:
             content=content,
             citations=self.format_citations(picked),
         )
+
+
+def _redact_forbidden_terms(text: str) -> str:
+    cleaned = text
+    for term in FORBIDDEN_TERMS:
+        cleaned = cleaned.replace(term, _REDACTION)
+    return cleaned

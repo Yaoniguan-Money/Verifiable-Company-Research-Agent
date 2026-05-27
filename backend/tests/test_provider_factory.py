@@ -16,7 +16,12 @@ from app.providers.search import (
     MockSearchProvider,
     OfficialUrlSearchProvider,
 )
+from app.providers.search.cached import CachedSearchProvider
 from app.vectorstores import InMemoryVectorStore, SQLiteVectorStore
+
+
+def _unwrap_cached(provider):
+    return provider.inner if isinstance(provider, CachedSearchProvider) else provider
 
 
 def test_provider_factory_defaults_to_online_public_search_and_local_embedding(
@@ -34,7 +39,7 @@ def test_provider_factory_defaults_to_online_public_search_and_local_embedding(
     )
 
     assert isinstance(factory.create_llm_provider(), MockLLMProvider)
-    search_provider = factory.create_search_provider()
+    search_provider = _unwrap_cached(factory.create_search_provider())
     assert isinstance(search_provider, HybridPublicSearchProvider)
     assert [type(item).__name__ for item in search_provider.providers] == [
         "CninfoAnnouncementProvider"
@@ -77,7 +82,7 @@ def test_provider_factory_can_create_sqlite_vector_store(tmp_path) -> None:
 def test_provider_factory_can_create_local_document_search_provider() -> None:
     factory = ProviderFactory(Settings(search_provider="local_documents"))
 
-    assert isinstance(factory.create_search_provider(), LocalDocumentSearchProvider)
+    assert isinstance(_unwrap_cached(factory.create_search_provider()), LocalDocumentSearchProvider)
 
 
 def test_provider_factory_can_create_official_url_search_provider() -> None:
@@ -88,7 +93,7 @@ def test_provider_factory_can_create_official_url_search_provider() -> None:
         )
     )
 
-    assert isinstance(factory.create_search_provider(), OfficialUrlSearchProvider)
+    assert isinstance(_unwrap_cached(factory.create_search_provider()), OfficialUrlSearchProvider)
 
 
 def test_provider_factory_can_create_baidu_ai_search_provider_with_key() -> None:
@@ -99,7 +104,7 @@ def test_provider_factory_can_create_baidu_ai_search_provider_with_key() -> None
         )
     )
 
-    provider = factory.create_search_provider()
+    provider = _unwrap_cached(factory.create_search_provider())
 
     assert isinstance(provider, HybridPublicSearchProvider)
     assert [type(item).__name__ for item in provider.providers] == [
@@ -111,7 +116,7 @@ def test_provider_factory_can_create_baidu_ai_search_provider_with_key() -> None
 def test_provider_factory_can_create_cninfo_announcement_provider() -> None:
     factory = ProviderFactory(Settings(search_provider="cninfo_announcements"))
 
-    assert isinstance(factory.create_search_provider(), CninfoAnnouncementProvider)
+    assert isinstance(_unwrap_cached(factory.create_search_provider()), CninfoAnnouncementProvider)
 
 
 def test_provider_factory_can_create_public_sources_provider_with_optional_baidu() -> None:
@@ -122,7 +127,7 @@ def test_provider_factory_can_create_public_sources_provider_with_optional_baidu
         )
     )
 
-    assert isinstance(factory.create_search_provider(), HybridPublicSearchProvider)
+    assert isinstance(_unwrap_cached(factory.create_search_provider()), HybridPublicSearchProvider)
 
 
 def test_public_sources_ignores_blank_optional_baidu_key() -> None:
@@ -133,7 +138,7 @@ def test_public_sources_ignores_blank_optional_baidu_key() -> None:
         )
     )
 
-    provider = factory.create_search_provider()
+    provider = _unwrap_cached(factory.create_search_provider())
 
     assert isinstance(provider, HybridPublicSearchProvider)
     assert [type(item).__name__ for item in provider.providers] == ["CninfoAnnouncementProvider"]
@@ -205,3 +210,11 @@ def test_provider_factory_requires_embedding_key_for_dashscope() -> None:
 def test_provider_factory_requires_embedding_key_for_siliconflow() -> None:
     with pytest.raises(ValueError, match="EMBEDDING_API_KEY"):
         ProviderFactory(Settings(embedding_provider="siliconflow", embedding_api_key=None))
+
+
+def test_content_enrichment_pipeline_respects_disabled_flag() -> None:
+    factory = ProviderFactory(Settings(content_enrichment_enabled=False))
+
+    pipeline = factory.create_content_enrichment_pipeline()
+
+    assert pipeline._stages == []

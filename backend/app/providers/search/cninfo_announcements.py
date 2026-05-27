@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
 import httpx
+from app.services.question_time_scope import ResearchTimeScope, parse_research_time_scope
 from app.providers.search.base import SearchProvider
 from app.providers.search.official_urls import _extract_pdf_text, _normalize_text
 from app.schemas.common import (
@@ -65,9 +67,17 @@ class CninfoAnnouncementProvider(SearchProvider):
             headers=self._headers(),
         )
         should_close = self._client is None
+        time_scope = parse_research_time_scope(
+            question,
+            default_lookback_years=self.lookback_years,
+        )
         try:
             security = self._resolve_security(client=client, company_name=company_name)
-            announcements = self._query_announcements(client=client, security=security)
+            announcements = self._query_announcements(
+                client=client,
+                security=security,
+                time_scope=time_scope,
+            )
             sources = self._download_sources(
                 client=client,
                 security=security,
@@ -110,12 +120,18 @@ class CninfoAnnouncementProvider(SearchProvider):
         *,
         client: httpx.Client,
         security: CninfoSecurity,
+        time_scope: ResearchTimeScope | None = None,
     ) -> list[CninfoAnnouncement]:
+        effective_top_k = (
+            time_scope.suggested_source_limit(default_top_k=self.top_k)
+            if time_scope is not None
+            else self.top_k
+        )
         response = client.post(
             CNINFO_ANNOUNCEMENT_QUERY_URL,
             data={
                 "pageNum": "1",
-                "pageSize": str(max(self.top_k * 4, 20)),
+                "pageSize": str(max(effective_top_k * 4, 20)),
                 "tabName": "fulltext",
                 "column": security.column,
                 "stock": f"{security.code},{security.org_id}",
@@ -124,7 +140,7 @@ class CninfoAnnouncementProvider(SearchProvider):
                 "plate": security.plate,
                 "category": "category_ndbg_szsh;category_bndbg_szsh;",
                 "trade": "",
-                "seDate": self._date_range(),
+                "seDate": self._date_range(time_scope),
             },
         )
         response.raise_for_status()
@@ -150,7 +166,24 @@ class CninfoAnnouncementProvider(SearchProvider):
                     source_type=SourceType.ANNUAL_REPORT if "年度报告" in title else SourceType.ANNOUNCEMENT,
                 )
             )
-        return sorted(candidates, key=self._report_priority)[: self.top_k]
+        if time_scope is not None and time_scope.strict:
+            allowed = time_scope.preferred_years()
+            candidates = [
+                item
+                for item in candidates
+                if (year := self._report_year(item.title, item.published_at)) is None
+                or year in allowed
+            ]
+        elif time_scope is not None:
+            preferred = time_scope.preferred_years()
+
+            def _announcement_rank(item: CninfoAnnouncement) -> tuple[int, tuple[int, float]]:
+                year = self._report_year(item.title, item.published_at) or 0
+                in_pref = 0 if year in preferred else 1
+                return (in_pref, self._report_priority(item))
+
+            return sorted(candidates, key=_announcement_rank)[:effective_top_k]
+        return sorted(candidates, key=self._report_priority)[:effective_top_k]
 
     def _download_sources(
         self,
@@ -179,6 +212,14 @@ class CninfoAnnouncementProvider(SearchProvider):
             )
             if not content:
                 continue
+            metadata: dict = {
+                SOURCE_LAYER_METADATA_KEY: SourceLayer.OFFICIAL_PDF.value
+                if is_pdf
+                else SourceLayer.OFFICIAL_DISCLOSURE_PAGE.value,
+                CONTENT_FETCH_STATUS_METADATA_KEY: ContentFetchStatus.FETCHED_CONTENT.value,
+            }
+            if is_pdf:
+                metadata["pdf_url"] = item.url
             sources.append(
                 SourceCreate(
                     task_id="TBD_BY_WORKFLOW",
@@ -189,12 +230,7 @@ class CninfoAnnouncementProvider(SearchProvider):
                     retrieved_at=now,
                     raw_content=content,
                     credibility_score=0.95,
-                    source_metadata={
-                        SOURCE_LAYER_METADATA_KEY: SourceLayer.OFFICIAL_PDF.value
-                        if is_pdf
-                        else SourceLayer.OFFICIAL_DISCLOSURE_PAGE.value,
-                        CONTENT_FETCH_STATUS_METADATA_KEY: ContentFetchStatus.FETCHED_CONTENT.value,
-                    },
+                    source_metadata=metadata,
                 )
             )
         return sources
@@ -209,9 +245,21 @@ class CninfoAnnouncementProvider(SearchProvider):
         timestamp = item.published_at.timestamp() if item.published_at else 0.0
         return (1 if is_semiannual else 0, -timestamp)
 
-    def _date_range(self) -> str:
+    def _date_range(self, time_scope: ResearchTimeScope | None = None) -> str:
         now = datetime.now(timezone.utc)
-        return f"{now.year - self.lookback_years}-01-01~{now.year}-12-31"
+        if time_scope is not None:
+            span = min(time_scope.lookback_years, self.lookback_years)
+        else:
+            span = self.lookback_years
+        return f"{now.year - span}-01-01~{now.year}-12-31"
+
+    def _report_year(self, title: str, published_at: datetime | None) -> int | None:
+        match = re.search(r"(20\d{2})", title)
+        if match:
+            return int(match.group(1))
+        if published_at:
+            return published_at.year
+        return None
 
     def _parse_cninfo_time(self, raw: object) -> datetime | None:
         if raw is None:

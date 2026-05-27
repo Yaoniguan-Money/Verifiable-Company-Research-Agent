@@ -174,3 +174,11 @@ def test_sqlite_vector_store_delete_task(tmp_path) -> None:
 
     assert store.similarity_search([1.0, 0.0], top_k=5, task_id="t1") == []
     assert [item.chunk_id for item in store.similarity_search([1.0, 0.0], top_k=5)] == ["c2"]
+
+
+def test_sqlite_vector_store_rejects_dimension_mismatch_against_existing_store(tmp_path) -> None:
+    store = SQLiteVectorStore(str(tmp_path / "vectors.sqlite"))
+    store.add_embeddings([_rec("c1", "t1", [1.0, 0.0])])
+
+    with pytest.raises(ValueError, match="record embedding 维度不一致"):
+        store.add_embeddings([_rec("c2", "t1", [1.0, 0.0, 0.0])])

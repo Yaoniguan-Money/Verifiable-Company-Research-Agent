@@ -10,6 +10,8 @@ import type {
   VerificationResult,
 } from "../types";
 
+import { AshareScopeNotice } from "./AshareScopeNotice";
+
 interface ResearchFormProps {
   companyName: string;
   question: string;
@@ -33,16 +35,18 @@ export function ResearchForm({
       <h2>发起企业研究</h2>
       <p className="section-desc">输入公司名称与研究问题，系统会采集公开资料、抽取事实并生成可追溯报告。</p>
 
+      <AshareScopeNotice className="mb-3" />
+
       <div className="form-grid">
         <label className="field-label" htmlFor="company-name">
-          企业名称
+          企业名称（A 股）
         </label>
         <input
           id="company-name"
           className="text-input"
           value={companyName}
           onChange={(event) => onCompanyNameChange(event.target.value)}
-          placeholder="例如：某上市公司、某制造企业、某科技企业"
+          placeholder="例如：示例科技、样本制造"
         />
 
         <label className="field-label" htmlFor="research-question">

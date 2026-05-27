@@ -12,7 +12,7 @@ def test_rd_metric_aliases_share_one_key() -> None:
     assert normalizer.comparable_key("r_and_d") == expected
     assert normalizer.comparable_key("research_expense") == expected
     assert normalizer.comparable_key("\u7814\u53d1\u8d39\u7528") == expected
-    assert normalizer.comparable_key("\u7814\u53d1\u6295\u5165") == expected
+    assert normalizer.comparable_key("\u7814\u53d1\u6295\u5165") == normalizer.comparable_key("R&D_total_spending")
 
 
 def test_profit_metrics_keep_accounting_boundaries() -> None:
