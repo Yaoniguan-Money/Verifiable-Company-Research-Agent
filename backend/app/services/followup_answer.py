@@ -4,11 +4,11 @@ import json
 from dataclasses import dataclass, field
 
 from app.db.models import ExtractedFact, ResearchTask, VerificationResult
+from app.domain.report_limits import MAX_FOLLOWUP_CITATIONS
 from app.schemas.fact import ExtractedFactRead
 from app.schemas.report import ReportRead
 from app.schemas.verification import VerificationResultRead
 from app.services.answer_composer import compose_followup_answer
-from app.domain.report_limits import MAX_FOLLOWUP_CITATIONS
 from app.services.answer_pipeline import AnswerContext, AnswerPipeline
 from app.services.report_reader_text import REPORT_SECTION_SUMMARY, extract_report_section
 

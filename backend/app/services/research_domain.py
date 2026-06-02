@@ -514,7 +514,7 @@ class ResearchDomainServices:
 
         scored = []
         for idx, cv in enumerate(chunk_vecs):
-            dot = sum(a * b for a, b in zip(query_vec, cv))
+            dot = sum(a * b for a, b in zip(query_vec, cv, strict=False))
             na = math.sqrt(sum(a * a for a in query_vec))
             nb = math.sqrt(sum(b * b for b in cv))
             score = float(dot / (na * nb)) if na > 0 and nb > 0 else 0.0
@@ -527,7 +527,7 @@ class ResearchDomainServices:
         all_llm_facts: list[ExtractedFactCreate] = []
         intent_matched = False
 
-        for attempt, (score, idx) in enumerate(scored[:max_attempts]):
+        for attempt, (_score, idx) in enumerate(scored[:max_attempts]):
             chunk = candidates[idx]
             try:
                 batch = self.llm_provider.extract_facts(

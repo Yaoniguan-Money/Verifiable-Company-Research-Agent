@@ -47,8 +47,9 @@ class EvaluationRunner:
         normalizer = FactMetricNormalizer()
         tp = fp = fn = 0
         for item in items:
-            from app.schemas.chunk import EvidenceChunkRead
             from datetime import datetime, timezone
+
+            from app.schemas.chunk import EvidenceChunkRead
 
             chunk = EvidenceChunkRead(
                 id=item.get("chunk_id", "eval-chunk"),

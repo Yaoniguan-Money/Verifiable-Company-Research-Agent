@@ -9,7 +9,6 @@ from app.schemas.fact import ExtractedFactRead
 from app.services.answer_pipeline import AnswerPipeline
 from app.services.fact_verification import FactVerificationService
 
-
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
 
 
@@ -35,8 +34,8 @@ def _fact(item: dict, idx: int, task_id: str = "task_1") -> ExtractedFactRead:
 def test_profit_fixture_keeps_rd_out_of_optional_context() -> None:
     raw = _load("sample_consumer_2025_profit.json")
     facts = [_fact(item, idx) for idx, item in enumerate(raw["facts"], start=1)]
-    verified = [fact for fact, item in zip(facts, raw["facts"]) if item["status"] == "verified"]
-    conflicted = [fact for fact, item in zip(facts, raw["facts"]) if item["status"] == "conflicted"]
+    verified = [fact for fact, item in zip(facts, raw["facts"], strict=False) if item["status"] == "verified"]
+    conflicted = [fact for fact, item in zip(facts, raw["facts"], strict=False) if item["status"] == "conflicted"]
 
     ctx = AnswerPipeline().build_context(
         company_name=raw["company_name"],

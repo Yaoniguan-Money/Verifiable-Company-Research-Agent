@@ -9,8 +9,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
-from pydantic import Field
-
 from app.compliance import ComplianceAction, evaluate_compliance_text
 from app.schemas.chunk import Citation, EvidenceChunkRead
 from app.schemas.common import ComplianceStatus, SchemaBase
@@ -19,6 +17,7 @@ from app.schemas.report import ReportCreate
 from app.schemas.task import ResearchTaskRead
 from app.schemas.verification import VerificationResultRead
 from app.services.answer_pipeline import AnswerContext
+from pydantic import Field
 
 # 违规改写时的提示与拒绝模板（DeepSeek / Qianfan / Mock 共用，保持口径一致）。
 _COMPLIANCE_REWRITE_NOTICE = (

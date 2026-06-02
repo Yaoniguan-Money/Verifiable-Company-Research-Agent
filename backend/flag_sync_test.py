@@ -1,5 +1,7 @@
 """前后端开关联动测试：验证 PATCH /api/admin/flags 即时生效 + 持久化到.env。"""
-import json, urllib.request, time
+import json
+import time
+import urllib.request
 
 API = "http://localhost:8000/api"
 

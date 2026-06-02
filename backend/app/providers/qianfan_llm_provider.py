@@ -9,8 +9,6 @@ import json
 from typing import Any
 
 import httpx
-from pydantic import ValidationError
-
 from app.providers.llm.base import LLMProvider
 from app.schemas.chunk import Citation, EvidenceChunkRead
 from app.schemas.fact import ExtractedFactCreate, ExtractedFactRead
@@ -22,10 +20,10 @@ from app.services.followup_answer import FollowupPayload
 from app.services.followup_prompt import build_followup_llm_prompt
 from app.services.report_reader_text import (
     RISK_ANALYSIS_OUTPUT_RULES,
-    extract_report_section,
     fact_status_suffix_for_reader,
 )
 from app.services.report_renderer import ReportDocumentRenderer, ReportRenderInput
+from pydantic import ValidationError
 
 # 与 DeepSeek 一致的"非投资建议"边界声明。
 _SYSTEM_PROMPT = "你是审慎的企业公开信息研究助手，必须遵守非投资建议边界。"

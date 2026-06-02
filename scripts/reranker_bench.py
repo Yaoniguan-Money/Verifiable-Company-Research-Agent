@@ -1,13 +1,13 @@
 """Reranker 三后端 A/B 对比 — 直接在容器内跑，绕过 API 直接调检索层。"""
 import math
-import time
-import json
 import sys
+import time
+
 sys.path.insert(0, "/app/backend")
 
-from app.services.rag.reranker import LexicalReranker, OnnxReranker, EmbeddingReranker
-from app.providers.factory import ProviderFactory
 from app.core.config import Settings
+from app.providers.factory import ProviderFactory
+from app.services.rag.reranker import EmbeddingReranker, LexicalReranker, OnnxReranker
 
 # ---- 1. Prepare test data ----
 # Chunks from an annual report task

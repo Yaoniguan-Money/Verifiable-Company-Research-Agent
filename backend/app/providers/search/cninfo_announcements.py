@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 import httpx
-from app.services.question_time_scope import ResearchTimeScope, parse_research_time_scope
 from app.providers.search.base import SearchProvider
 from app.providers.search.official_urls import _extract_pdf_text, _normalize_text
 from app.schemas.common import (
@@ -16,6 +15,7 @@ from app.schemas.common import (
     SourceType,
 )
 from app.schemas.source import SourceCreate
+from app.services.question_time_scope import ResearchTimeScope, parse_research_time_scope
 
 CNINFO_STATIC_BASE_URL = "https://static.cninfo.com.cn/"
 CNINFO_STOCK_LIST_URL = "http://www.cninfo.com.cn/new/data/szse_stock.json"

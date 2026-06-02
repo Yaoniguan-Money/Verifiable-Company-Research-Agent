@@ -1,0 +1,7 @@
+[
+  {
+    "dense_ranked": ["chunk-1", "chunk-2"],
+    "sparse_ranked": ["chunk-2", "chunk-1"],
+    "relevant_chunk_ids": ["chunk-1"]
+  }
+]

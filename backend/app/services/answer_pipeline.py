@@ -9,7 +9,12 @@ from app.services.answer_composer import compose_report_answer
 from app.services.answer_selection import AnswerFactSet, select_facts_for_answer
 from app.services.fact_metric_normalization import FactMetricNormalizer
 from app.services.fact_value_normalization import FactValueNormalizer
-from app.services.question_intent import AnswerMode, AnswerPlan, fact_matches_metric_family, parse_question_intent
+from app.services.question_intent import (
+    AnswerMode,
+    AnswerPlan,
+    fact_matches_metric_family,
+    parse_question_intent,
+)
 from app.services.question_time_scope import ResearchTimeScope
 
 

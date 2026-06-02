@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 
 import httpx
 from app.providers.search.baidu_reference import BaiduReferenceProcessor
-from app.services.question_time_scope import parse_research_time_scope
 from app.providers.search.base import SearchProvider
 from app.schemas.common import (
     SOURCE_LAYER_METADATA_KEY,
@@ -14,6 +13,7 @@ from app.schemas.common import (
     source_layer_priority,
 )
 from app.schemas.source import SourceCreate
+from app.services.question_time_scope import parse_research_time_scope
 from pydantic import SecretStr
 
 logger = logging.getLogger(__name__)

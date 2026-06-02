@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from app.api.deps import get_research_workflow_service
 from app.api.guards import REPORT_NOT_GENERATED, require_task
 from app.db.models import ResearchTask
 from app.schemas.common import TaskStatus
 from app.schemas.research_api import (
+    CompareResearchRequest,
+    CompareResearchResponse,
     CreateResearchTaskRequest,
     CreateResearchTaskResponse,
     ReportResponse,
     ResearchTaskDetailResponse,
     RunResearchTaskResponse,
 )
+from app.services.report_export import export_markdown, export_pdf_bytes
 from app.services.research_workflow import ResearchWorkflowService, RunWorkflowResult
 
 router = APIRouter(prefix="/api/research", tags=["research"])
@@ -88,6 +91,32 @@ def run_research_task(
     )
 
 
+@router.post("/compare", response_model=CompareResearchResponse)
+def compare_research_tasks(
+    body: CompareResearchRequest,
+    service: ResearchWorkflowService = Depends(get_research_workflow_service),
+) -> CompareResearchResponse:
+    tasks: list[RunResearchTaskResponse] = []
+    for company in body.companies:
+        task = service.create_research_task(
+            company_name=company.company_name,
+            question=body.question,
+        )
+        outcome = service.run_workflow(task.id)
+        stored_task = service.get_research_task(task.id)
+        tasks.append(
+            RunResearchTaskResponse(
+                task_id=task.id,
+                report_id=outcome.report_id,
+                status=_task_status_str(stored_task) if stored_task else "unknown",
+                title=outcome.title,
+                summary=outcome.summary,
+                error=outcome.error,
+            )
+        )
+    return CompareResearchResponse(question=body.question, tasks=tasks)
+
+
 @router.get("/tasks/{task_id}/report", response_model=ReportResponse)
 def get_research_task_report(
     task_id: str,
@@ -105,4 +134,26 @@ def get_research_task_report(
         title=rep.title,
     )
 
+
+@router.get("/tasks/{task_id}/report/export")
+def export_research_task_report(
+    task_id: str,
+    fmt: str = "md",
+    service: ResearchWorkflowService = Depends(get_research_workflow_service),
+) -> Response:
+    require_task(service, task_id)
+    rep = service.get_report_for_output(task_id)
+    if rep is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=REPORT_NOT_GENERATED)
+
+    normalized_fmt = fmt.lower()
+    if normalized_fmt in {"md", "markdown"}:
+        content = export_markdown(title=rep.title or "Research Report", content=rep.content)
+        return Response(content=content, media_type="text/markdown; charset=utf-8")
+    if normalized_fmt == "pdf":
+        return Response(
+            content=export_pdf_bytes(title=rep.title or "Research Report", content=rep.content),
+            media_type="application/pdf",
+        )
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported export format")
 

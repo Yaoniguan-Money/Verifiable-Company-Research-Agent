@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from functools import wraps
 from typing import Any, TypeVar
 
 from app.core.config import get_settings

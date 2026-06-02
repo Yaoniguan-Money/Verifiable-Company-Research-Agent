@@ -25,6 +25,13 @@ ignore = [
     "B008",
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"backend/flag_sync_test.py" = ["E701"]
+"backend/onnx_test.py" = ["E701", "E702", "E731"]
+"backend/reranker_bench.py" = ["E701", "E702"]
+"scripts/rag_benchmark.py" = ["E701", "E702", "E722", "E741"]
+"scripts/reranker_bench.py" = ["E701", "E702"]
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["backend/tests"]

@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
 
 from app.core.config import get_settings
-from app.services.chunking_strategy.base import ChunkMetadata, ChunkingPart, ChunkingStrategy
+from app.services.chunking_strategy.base import ChunkingPart, ChunkingStrategy, ChunkMetadata
 from app.services.chunking_strategy.fixed_window import FixedWindowChunker
 from app.services.chunking_strategy.recursive import RecursiveTextSplitter
 from app.services.chunking_strategy.section_aware import SectionAwareChunker

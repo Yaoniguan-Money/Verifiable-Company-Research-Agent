@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy.orm import Session
 
 from app.db.models import ResearchTask, VerificationResult
+from app.domain.report_limits import FALLBACK_REPORT_BRIEF_LIMIT
 from app.providers.factory import ProviderFactory
 from app.providers.llm import LLMProvider
 from app.providers.llm.base import ComplianceCheckResult
@@ -15,7 +16,6 @@ from app.schemas.report import ReportRead
 from app.services.chat_grounding import GroundedFollowupAnswerBuilder
 from app.services.chat_guardrail import ChatGuardrailService
 from app.services.chat_memory import ChatMemoryService
-from app.domain.report_limits import FALLBACK_REPORT_BRIEF_LIMIT
 from app.services.followup_answer import FollowupAnswerService, FollowupPayload
 from app.services.report_output import ReportOutputService
 

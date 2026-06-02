@@ -8,7 +8,9 @@ IR 指标: Precision@K, Recall@K, F1@K, MRR, NDCG@K, MAP
 
 from __future__ import annotations
 
-import json, math, time, urllib.request
+import json
+import time
+import urllib.request
 from dataclasses import dataclass
 
 API = "http://localhost:8000/api"
@@ -200,7 +202,7 @@ def fact_extraction_accuracy():
     rec = tp/(tp+fn) if (tp+fn)>0 else 0
     f1 = 2*prec*rec/(prec+rec) if (prec+rec)>0 else 0
 
-    print(f"\n  --- Fact Extraction Summary ---")
+    print("\n  --- Fact Extraction Summary ---")
     print(f"  Metric命中: {mok}/{n} ({mok*100//n if n else 0}%)")
     print(f"  Value精确:  {vok}/{n} ({vok*100//n if n else 0}%)")
     print(f"  Period正确: {pok}/{n} ({pok*100//n if n else 0}%)")
@@ -270,7 +272,7 @@ def pipeline_breakpoints():
         print(f"  {row['task']:30s} | {' '.join('Y' if row[k] else 'N' for k in layers)} | {passes}/7")
 
     # Layer pass rates
-    print(f"\n  --- Layer Pass Rates ---")
+    print("\n  --- Layer Pass Rates ---")
     for l in layers:
         p = sum(1 for r in heatmap if r.get(l))
         print(f"  {l}: {p}/{len(heatmap)} ({p*100//len(heatmap) if heatmap else 0}%)")

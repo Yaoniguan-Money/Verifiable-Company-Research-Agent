@@ -79,10 +79,10 @@ def ensure_default_user(db: OrmSession) -> User:
 
 def run_alembic_migrations() -> None:
     """执行 Alembic 升级到 head（仅 PostgreSQL 等生产库推荐）。"""
+    from pathlib import Path
+
     from alembic import command
     from alembic.config import Config
-
-    from pathlib import Path
 
     cfg = Config(str(Path(__file__).resolve().parents[3] / "alembic.ini"))
     command.upgrade(cfg, "head")
