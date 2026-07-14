@@ -276,6 +276,8 @@ Smoke 脚本：
 - `docs/compliance.md`：非投顾合规护栏。
 - `docs/observability.md`：structlog 与 LangFuse 可选接入。
 
+测试、Benchmark、原始结果与复现方式见 ./evidence/README.md。
+
 ## License
 
 MIT License. See `LICENSE`.
