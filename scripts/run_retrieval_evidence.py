@@ -14,7 +14,9 @@ BACKEND = ROOT / "backend"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
-from app.providers.embedding.local_hashing_provider import LocalHashingEmbeddingProvider  # noqa: E402
+from app.providers.embedding.local_hashing_provider import (  # noqa: E402
+    LocalHashingEmbeddingProvider,
+)
 from app.services.rag.hybrid_retrieval import _bm25_rank  # noqa: E402
 from app.services.rag.query_optimizer import QueryOptimizer  # noqa: E402
 from app.services.rag.reranker import LexicalReranker  # noqa: E402
