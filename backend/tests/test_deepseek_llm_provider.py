@@ -24,7 +24,7 @@ class _FakeResponse:
 
 
 def test_deepseek_empty_content_with_reasoning_has_actionable_error(monkeypatch) -> None:
-    secret = "unit-secret-key"
+    secret = "test-only-placeholder"
     reasoning = "internal reasoning should not be returned"
 
     class FakeClient:

@@ -35,14 +35,15 @@ class EvaluationRunner:
     def load_json(self, name: str) -> list[dict]:
         path = self.eval_dir / name
         if not path.exists():
-            return []
+            raise FileNotFoundError(f"required evaluation dataset is missing: {path}")
         data = json.loads(path.read_text(encoding="utf-8"))
-        return data if isinstance(data, list) else data.get("items", [])
+        items = data if isinstance(data, list) else data.get("items", [])
+        if not isinstance(items, list) or not items:
+            raise ValueError(f"evaluation dataset must contain a non-empty item list: {path}")
+        return items
 
     def run_fact_extraction_eval(self) -> float:
         items = self.load_json("fact_extraction_eval.json")
-        if not items:
-            return 0.82
         service = FactExtractionService()
         normalizer = FactMetricNormalizer()
         tp = fp = fn = 0
@@ -95,8 +96,6 @@ class EvaluationRunner:
 
     def run_retrieval_eval(self) -> float:
         items = self.load_json("retrieval_eval.json")
-        if not items:
-            return 0.78
         hits = 0
         total = 0
         for item in items:
@@ -111,8 +110,6 @@ class EvaluationRunner:
 
     def run_e2e_eval(self) -> float:
         items = self.load_json("e2e_eval.json")
-        if not items:
-            return 0.80
         passed = 0
         for item in items:
             required = set(item.get("required_sections", []))

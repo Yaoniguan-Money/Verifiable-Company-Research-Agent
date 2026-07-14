@@ -1,4 +1,4 @@
-"""生成评测集：事实抽取 200 / 检索 50 / 端到端 20。"""
+"""生成开发示例数据，不得作为简历或质量评测证据。"""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EVAL = ROOT / "data" / "eval"
+EVAL = ROOT / "data" / "eval" / "generated_dev"
 
 
 def _fact_items() -> list[dict]:
@@ -75,7 +75,7 @@ def main() -> None:
         json.dumps(_e2e_items(), ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"已写入评测集到 {EVAL}")
+    print(f"警告：仅开发示例，标签由模板生成，不得用于质量结论。已写入 {EVAL}")
 
 
 if __name__ == "__main__":
