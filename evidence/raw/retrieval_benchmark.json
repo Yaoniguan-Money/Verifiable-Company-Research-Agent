@@ -1,0 +1,3689 @@
+{
+  "schema_version": 1,
+  "run_type": "offline fixture / synthetic source excerpts / human-curated labels",
+  "dataset": "evidence/datasets/retrieval_curated_v1.json",
+  "baseline": "BM25 top-10",
+  "current": "LocalHashing dense + BM25 over QueryOptimizer expansions + RRF + LexicalReranker",
+  "summary": {
+    "queries": 57,
+    "corpus_chunks": 51,
+    "baseline": {
+      "recall_at_5": 0.9038461538461539,
+      "recall_at_10": 0.9423076923076923,
+      "ndcg_at_10": 0.8008399240596289,
+      "mrr_at_10": 0.7594551282051282,
+      "positive_queries": 52,
+      "no_answer_queries": 5,
+      "no_answer_false_positive_rate": 1.0,
+      "latency_ms": {
+        "p50": 0.11939999990318029,
+        "p95": 0.3701000000546628
+      }
+    },
+    "current": {
+      "recall_at_5": 0.9519230769230769,
+      "recall_at_10": 0.9807692307692307,
+      "ndcg_at_10": 0.849960706977378,
+      "mrr_at_10": 0.8155677655677656,
+      "positive_queries": 52,
+      "no_answer_queries": 5,
+      "no_answer_false_positive_rate": 1.0,
+      "latency_ms": {
+        "p50": 2.1515000000817963,
+        "p95": 3.312699999924007
+      }
+    },
+    "changes": {
+      "recall_at_5_pp": 4.807692307692301,
+      "ndcg_at_10_pp": 4.912078291774913
+    }
+  },
+  "results": [
+    {
+      "id": "q-001",
+      "query": "比亚迪最近三年的研发投入是多少",
+      "relevant_chunk_ids": [
+        "chunk-e44ae20b45"
+      ],
+      "category": "fact",
+      "challenge": "metric alias",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪最近三年的研发投入是多少",
+        "比亚迪 最近 三年 研发 投入 多少"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-e44ae20b45",
+          "chunk-86e6b7e941",
+          "chunk-ca0caf8afa",
+          "chunk-708177e374",
+          "chunk-9453b70aaf",
+          "chunk-51437e3a74",
+          "chunk-9f924caeb7",
+          "chunk-38c3957f96",
+          "chunk-d5b761c339",
+          "chunk-0dbee86eb5"
+        ],
+        "latency_ms": 705.1154999999198,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-e44ae20b45",
+          "chunk-bcdd6e5c5a",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-9453b70aaf",
+          "chunk-88a06ea449",
+          "chunk-c9cd9cb7e1",
+          "chunk-9c1ec579e8",
+          "chunk-51437e3a74",
+          "chunk-ac5f844525"
+        ],
+        "latency_ms": 3.2414999998309213,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-002",
+      "query": "比亚迪营业总收入趋势",
+      "relevant_chunk_ids": [
+        "chunk-88a06ea449"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪营业总收入趋势",
+        "比亚迪 营业 总收入 趋势"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-8e6abe263e",
+          "chunk-ab92dcb00a",
+          "chunk-52e8d52f49",
+          "chunk-f08eb71828",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.13760000001639128,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-88a06ea449",
+          "chunk-ab92dcb00a",
+          "chunk-008a5892d5",
+          "chunk-a01d7fc59e",
+          "chunk-8e6abe263e",
+          "chunk-6cf5ff6f4a",
+          "chunk-c9cd9cb7e1",
+          "chunk-bcdd6e5c5a",
+          "chunk-91c33dcf6e",
+          "chunk-9c1ec579e8"
+        ],
+        "latency_ms": 1.952999999957683,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-003",
+      "query": "比亚迪归母净利变化",
+      "relevant_chunk_ids": [
+        "chunk-86e6b7e941"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪归母净利变化",
+        "比亚迪 归母 净利 变化"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-91c33dcf6e",
+          "chunk-c1085a7e12",
+          "chunk-2f5772f184",
+          "chunk-701fda93ad",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 0.11909999989256903,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-008a5892d5",
+          "chunk-6cf5ff6f4a",
+          "chunk-bcdd6e5c5a",
+          "chunk-91c33dcf6e",
+          "chunk-86e6b7e941",
+          "chunk-e44ae20b45",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-88a06ea449",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 2.1515000000817963,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        }
+      }
+    },
+    {
+      "id": "q-004",
+      "query": "比亚迪汽车业务分部收入",
+      "relevant_chunk_ids": [
+        "chunk-2b6891477b"
+      ],
+      "category": "segment",
+      "challenge": "long label",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪汽车业务分部收入",
+        "比亚迪 汽车 业务 分部 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2b6891477b",
+          "chunk-88a06ea449",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-ac5f844525",
+          "chunk-e44ae20b45",
+          "chunk-86e6b7e941",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.10910000014519028,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2b6891477b",
+          "chunk-88a06ea449",
+          "chunk-008a5892d5",
+          "chunk-6cf5ff6f4a",
+          "chunk-ac5f844525",
+          "chunk-c9cd9cb7e1",
+          "chunk-9c1ec579e8",
+          "chunk-bcdd6e5c5a",
+          "chunk-91c33dcf6e",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 2.085800000031668,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-005",
+      "query": "比亚迪手机零部件业务收入",
+      "relevant_chunk_ids": [
+        "chunk-ac5f844525"
+      ],
+      "category": "segment",
+      "challenge": "synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪手机零部件业务收入",
+        "比亚迪 手机 零部件 业务收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ac5f844525",
+          "chunk-5542a04659",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b",
+          "chunk-9c1ec579e8"
+        ],
+        "latency_ms": 0.10330000009162177,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ac5f844525",
+          "chunk-88a06ea449",
+          "chunk-008a5892d5",
+          "chunk-6cf5ff6f4a",
+          "chunk-86e6b7e941",
+          "chunk-91c33dcf6e",
+          "chunk-5542a04659",
+          "chunk-2b6891477b",
+          "chunk-e44ae20b45",
+          "chunk-bcdd6e5c5a"
+        ],
+        "latency_ms": 2.080799999930605,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-006",
+      "query": "比亚迪乘用车能生产多少辆",
+      "relevant_chunk_ids": [
+        "chunk-6cf5ff6f4a",
+        "chunk-9c1ec579e8"
+      ],
+      "category": "operations",
+      "challenge": "capacity paraphrase",
+      "relevant_count": 2,
+      "expanded_queries": [
+        "比亚迪乘用车能生产多少辆",
+        "比亚迪 乘用车 生产 多少"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-9c1ec579e8",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.2365000000281725,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-9c1ec579e8",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-91c33dcf6e",
+          "chunk-86e6b7e941",
+          "chunk-c9cd9cb7e1",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 2.4042000000008557,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-007",
+      "query": "比亚迪乘用车实际产出",
+      "relevant_chunk_ids": [
+        "chunk-008a5892d5",
+        "chunk-9c1ec579e8"
+      ],
+      "category": "operations",
+      "challenge": "production paraphrase",
+      "relevant_count": 2,
+      "expanded_queries": [
+        "比亚迪乘用车实际产出",
+        "比亚迪 乘用车 实际 产出"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-9c1ec579e8",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.1002999999855092,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6509209298071326,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6509209298071326,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-008a5892d5",
+          "chunk-6cf5ff6f4a",
+          "chunk-bcdd6e5c5a",
+          "chunk-9c1ec579e8",
+          "chunk-88a06ea449",
+          "chunk-e44ae20b45",
+          "chunk-c9cd9cb7e1",
+          "chunk-2b6891477b",
+          "chunk-86e6b7e941",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 2.664699999968434,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-008",
+      "query": "比亚迪乘用车卖了多少",
+      "relevant_chunk_ids": [
+        "chunk-9c1ec579e8",
+        "chunk-bcdd6e5c5a"
+      ],
+      "category": "operations",
+      "challenge": "sales paraphrase",
+      "relevant_count": 2,
+      "expanded_queries": [
+        "比亚迪乘用车卖了多少",
+        "比亚迪 乘用车 多少"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-9c1ec579e8",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.3701000000546628,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.5706417189553201,
+          "mrr": 0.3333333333333333
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.5706417189553201,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-bcdd6e5c5a",
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-9c1ec579e8",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-c9cd9cb7e1",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 2.5293999999576045,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.8772153153380493,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-009",
+      "query": "比亚迪有哪些经营风险",
+      "relevant_chunk_ids": [
+        "chunk-91c33dcf6e"
+      ],
+      "category": "risk",
+      "challenge": "broad question",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "比亚迪有哪些经营风险",
+        "比亚迪 经营风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.09840000006988703,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-6cf5ff6f4a",
+          "chunk-e44ae20b45",
+          "chunk-91c33dcf6e",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-c1085a7e12"
+        ],
+        "latency_ms": 1.8861000000924832,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        }
+      }
+    },
+    {
+      "id": "q-010",
+      "query": "云南白药研发支出走势",
+      "relevant_chunk_ids": [
+        "chunk-ca0caf8afa"
+      ],
+      "category": "fact",
+      "challenge": "metric alias",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药研发支出走势",
+        "云南白药 研发 支出 走势"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ca0caf8afa",
+          "chunk-e44ae20b45",
+          "chunk-708177e374",
+          "chunk-9453b70aaf",
+          "chunk-51437e3a74",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-9f924caeb7"
+        ],
+        "latency_ms": 0.10369999995418766,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-51437e3a74",
+          "chunk-c1085a7e12",
+          "chunk-78167a265a",
+          "chunk-e44ae20b45",
+          "chunk-9f924caeb7",
+          "chunk-8b8e75e3e2",
+          "chunk-8b0c9e264e",
+          "chunk-9453b70aaf"
+        ],
+        "latency_ms": 2.868999999918742,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-011",
+      "query": "云南白药营收规模",
+      "relevant_chunk_ids": [
+        "chunk-a01d7fc59e"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药营收规模",
+        "云南白药 营收 规模"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941"
+        ],
+        "latency_ms": 0.11309999990771757,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-c1085a7e12",
+          "chunk-8b0c9e264e",
+          "chunk-9f924caeb7",
+          "chunk-8b8e75e3e2",
+          "chunk-86e6b7e941",
+          "chunk-91c33dcf6e",
+          "chunk-2f5772f184"
+        ],
+        "latency_ms": 1.9555000001219014,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-012",
+      "query": "云南白药股东口径净利润",
+      "relevant_chunk_ids": [
+        "chunk-9f924caeb7"
+      ],
+      "category": "fact",
+      "challenge": "accounting boundary",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药股东口径净利润",
+        "云南白药 股东 口径 净利润"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9f924caeb7",
+          "chunk-86e6b7e941",
+          "chunk-38c3957f96",
+          "chunk-d5b761c339",
+          "chunk-0dbee86eb5",
+          "chunk-2af253edbb",
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e"
+        ],
+        "latency_ms": 0.11440000002949091,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-9f924caeb7",
+          "chunk-0dbee86eb5",
+          "chunk-86e6b7e941",
+          "chunk-d5b761c339",
+          "chunk-a01d7fc59e",
+          "chunk-8b0c9e264e",
+          "chunk-38c3957f96",
+          "chunk-ca0caf8afa",
+          "chunk-2af253edbb",
+          "chunk-8b8e75e3e2"
+        ],
+        "latency_ms": 1.9169000001966197,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-013",
+      "query": "云南白药药品板块收入",
+      "relevant_chunk_ids": [
+        "chunk-78167a265a"
+      ],
+      "category": "segment",
+      "challenge": "business segment",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药药品板块收入",
+        "云南白药 药品 板块 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-78167a265a",
+          "chunk-a01d7fc59e",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-ca0caf8afa",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-8e6abe263e"
+        ],
+        "latency_ms": 0.09580000005371403,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-78167a265a",
+          "chunk-a01d7fc59e",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-c1085a7e12",
+          "chunk-ca0caf8afa",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-8e6abe263e",
+          "chunk-9f924caeb7"
+        ],
+        "latency_ms": 1.828700000032768,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-014",
+      "query": "云南白药健康产品业务收入",
+      "relevant_chunk_ids": [
+        "chunk-8b0c9e264e"
+      ],
+      "category": "segment",
+      "challenge": "synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药健康产品业务收入",
+        "云南白药 健康 产品 业务收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-8b0c9e264e",
+          "chunk-5542a04659",
+          "chunk-2b6891477b",
+          "chunk-cb4ceb6ac3",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-ca0caf8afa",
+          "chunk-ac5f844525",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a"
+        ],
+        "latency_ms": 0.09459999978389533,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-8b0c9e264e",
+          "chunk-2b6891477b",
+          "chunk-a01d7fc59e",
+          "chunk-8b8e75e3e2",
+          "chunk-5542a04659",
+          "chunk-15e9fea5ff",
+          "chunk-78167a265a",
+          "chunk-c1085a7e12",
+          "chunk-cb4ceb6ac3",
+          "chunk-ca0caf8afa"
+        ],
+        "latency_ms": 1.8771000000015192,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-015",
+      "query": "云南白药中药资源收入",
+      "relevant_chunk_ids": [
+        "chunk-8b8e75e3e2"
+      ],
+      "category": "segment",
+      "challenge": "business segment",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药中药资源收入",
+        "云南白药 中药 资源 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-8b8e75e3e2",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e",
+          "chunk-ca0caf8afa",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-8e6abe263e"
+        ],
+        "latency_ms": 0.1002999999855092,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-8b8e75e3e2",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e",
+          "chunk-ca0caf8afa",
+          "chunk-c1085a7e12",
+          "chunk-9f924caeb7",
+          "chunk-4ca6b62c8b",
+          "chunk-76a9aeb66d",
+          "chunk-f08eb71828"
+        ],
+        "latency_ms": 2.8109999998378044,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-016",
+      "query": "云南白药渠道与政策风险",
+      "relevant_chunk_ids": [
+        "chunk-c1085a7e12"
+      ],
+      "category": "risk",
+      "challenge": "multiple risk terms",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "云南白药渠道与政策风险",
+        "云南白药 渠道 政策 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-91c33dcf6e",
+          "chunk-2f5772f184",
+          "chunk-701fda93ad",
+          "chunk-872d062cc3",
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e"
+        ],
+        "latency_ms": 0.12799999990420474,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-91c33dcf6e",
+          "chunk-9f924caeb7",
+          "chunk-872d062cc3",
+          "chunk-701fda93ad",
+          "chunk-78167a265a",
+          "chunk-2f5772f184",
+          "chunk-8b8e75e3e2",
+          "chunk-ca0caf8afa"
+        ],
+        "latency_ms": 1.9057999998040032,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-017",
+      "query": "宁德时代研发投入近三年数据",
+      "relevant_chunk_ids": [
+        "chunk-9453b70aaf"
+      ],
+      "category": "fact",
+      "challenge": "metric alias",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代研发投入近三年数据",
+        "宁德 时代 研发 投入 近三年 数据"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af",
+          "chunk-0dbee86eb5",
+          "chunk-e44ae20b45",
+          "chunk-ca0caf8afa"
+        ],
+        "latency_ms": 0.1283999999941443,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-9453b70aaf",
+          "chunk-5b887ea381",
+          "chunk-2786ae2133",
+          "chunk-52e8d52f49",
+          "chunk-9c662356af",
+          "chunk-872d062cc3",
+          "chunk-ca0caf8afa",
+          "chunk-bbe9cf9344",
+          "chunk-0dbee86eb5"
+        ],
+        "latency_ms": 2.2639999999682914,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-018",
+      "query": "宁德时代收入变化",
+      "relevant_chunk_ids": [
+        "chunk-52e8d52f49"
+      ],
+      "category": "fact",
+      "challenge": "short query",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代收入变化",
+        "宁德 时代 收入 变化"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-872d062cc3",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af",
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-0dbee86eb5",
+          "chunk-c1085a7e12"
+        ],
+        "latency_ms": 0.09309999995821272,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-872d062cc3",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-9c662356af",
+          "chunk-5b887ea381",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-701fda93ad",
+          "chunk-0dbee86eb5"
+        ],
+        "latency_ms": 1.8159000001105596,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.3333333333333333,
+          "mrr": 0.14285714285714285
+        }
+      }
+    },
+    {
+      "id": "q-019",
+      "query": "宁德时代归母利润",
+      "relevant_chunk_ids": [
+        "chunk-0dbee86eb5"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代归母利润",
+        "宁德 时代 归母 利润"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.12379999998302083,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.31546487678572877,
+          "mrr": 0.125
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-5b887ea381",
+          "chunk-9453b70aaf",
+          "chunk-2786ae2133",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3",
+          "chunk-52e8d52f49",
+          "chunk-9c662356af",
+          "chunk-bbe9cf9344",
+          "chunk-86e6b7e941"
+        ],
+        "latency_ms": 1.8708000000060565,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        }
+      }
+    },
+    {
+      "id": "q-020",
+      "query": "宁德时代动力电池业务收入",
+      "relevant_chunk_ids": [
+        "chunk-bbe9cf9344"
+      ],
+      "category": "segment",
+      "challenge": "product segment",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代动力电池业务收入",
+        "宁德 时代 动力电池 业务收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-bbe9cf9344",
+          "chunk-5542a04659",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-9c662356af",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3"
+        ],
+        "latency_ms": 0.09779999982129084,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.43067655807339306,
+          "mrr": 0.25
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.43067655807339306,
+          "mrr": 0.25
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2786ae2133",
+          "chunk-bbe9cf9344",
+          "chunk-ecc16c8216",
+          "chunk-5b887ea381",
+          "chunk-9c662356af",
+          "chunk-52e8d52f49",
+          "chunk-5542a04659",
+          "chunk-9453b70aaf",
+          "chunk-872d062cc3",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 2.2070999998504703,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-021",
+      "query": "宁德时代储能板块营收",
+      "relevant_chunk_ids": [
+        "chunk-9c662356af"
+      ],
+      "category": "segment",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代储能板块营收",
+        "宁德 时代 储能 板块 营收"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9c662356af",
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.1251999999567488,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-9c662356af",
+          "chunk-5b887ea381",
+          "chunk-2786ae2133",
+          "chunk-ecc16c8216",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-872d062cc3",
+          "chunk-bbe9cf9344",
+          "chunk-88a06ea449",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 1.9680000000334985,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-022",
+      "query": "宁德时代电池产能 GWh",
+      "relevant_chunk_ids": [
+        "chunk-ecc16c8216"
+      ],
+      "category": "operations",
+      "challenge": "unit token",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代电池产能 GWh",
+        "宁德 时代 电池 产能 GWh"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-9c662356af",
+          "chunk-872d062cc3",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-0dbee86eb5",
+          "chunk-6cf5ff6f4a"
+        ],
+        "latency_ms": 0.14559999999619322,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-5b887ea381",
+          "chunk-2786ae2133",
+          "chunk-872d062cc3",
+          "chunk-9c662356af",
+          "chunk-9453b70aaf",
+          "chunk-0dbee86eb5",
+          "chunk-bbe9cf9344",
+          "chunk-6cf5ff6f4a",
+          "chunk-52e8d52f49"
+        ],
+        "latency_ms": 1.9162999999480235,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-023",
+      "query": "宁德时代动力电池制造产量",
+      "relevant_chunk_ids": [
+        "chunk-2786ae2133"
+      ],
+      "category": "operations",
+      "challenge": "production",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代动力电池制造产量",
+        "宁德 时代 动力电池 制造 产量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2786ae2133",
+          "chunk-ecc16c8216",
+          "chunk-5b887ea381",
+          "chunk-bbe9cf9344",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-9c662356af",
+          "chunk-0dbee86eb5",
+          "chunk-008a5892d5",
+          "chunk-4325f4dbd6"
+        ],
+        "latency_ms": 0.10610000003907771,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-ecc16c8216",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af",
+          "chunk-52e8d52f49",
+          "chunk-9453b70aaf",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3",
+          "chunk-9c1ec579e8"
+        ],
+        "latency_ms": 1.9133999999212392,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-024",
+      "query": "宁德时代电池出货销量",
+      "relevant_chunk_ids": [
+        "chunk-5b887ea381"
+      ],
+      "category": "operations",
+      "challenge": "sales synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代电池出货销量",
+        "宁德 时代 电池 出货 销量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9c662356af",
+          "chunk-5b887ea381",
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-0dbee86eb5",
+          "chunk-bcdd6e5c5a",
+          "chunk-39a2c19892"
+        ],
+        "latency_ms": 0.09600000021237065,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-5b887ea381",
+          "chunk-9c662356af",
+          "chunk-2786ae2133",
+          "chunk-ecc16c8216",
+          "chunk-9453b70aaf",
+          "chunk-52e8d52f49",
+          "chunk-872d062cc3",
+          "chunk-bbe9cf9344",
+          "chunk-bcdd6e5c5a",
+          "chunk-0dbee86eb5"
+        ],
+        "latency_ms": 1.8055999998978223,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-025",
+      "query": "宁德时代海外贸易和客户集中风险",
+      "relevant_chunk_ids": [
+        "chunk-872d062cc3"
+      ],
+      "category": "risk",
+      "challenge": "compound risk",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "宁德时代海外贸易和客户集中风险",
+        "宁德 时代 海外 贸易 客户 集中 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-872d062cc3",
+          "chunk-91c33dcf6e",
+          "chunk-c1085a7e12",
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af"
+        ],
+        "latency_ms": 0.14659999987998162,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-872d062cc3",
+          "chunk-5b887ea381",
+          "chunk-91c33dcf6e",
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-c1085a7e12",
+          "chunk-701fda93ad",
+          "chunk-2786ae2133",
+          "chunk-52e8d52f49",
+          "chunk-0dbee86eb5"
+        ],
+        "latency_ms": 2.1374000000378146,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-026",
+      "query": "美的集团研发费用",
+      "relevant_chunk_ids": [
+        "chunk-51437e3a74"
+      ],
+      "category": "fact",
+      "challenge": "exact metric",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的集团研发费用",
+        "美的 集团 研发 费用"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-51437e3a74",
+          "chunk-e44ae20b45",
+          "chunk-ca0caf8afa",
+          "chunk-708177e374",
+          "chunk-9453b70aaf",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b"
+        ],
+        "latency_ms": 0.10479999991730438,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-51437e3a74",
+          "chunk-e44ae20b45",
+          "chunk-812618ffe1",
+          "chunk-9453b70aaf",
+          "chunk-4ca6b62c8b",
+          "chunk-3381a7136b",
+          "chunk-708177e374",
+          "chunk-003d2eeeb1",
+          "chunk-ca0caf8afa",
+          "chunk-2f5772f184"
+        ],
+        "latency_ms": 1.8753000001652254,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-027",
+      "query": "美的集团总营收",
+      "relevant_chunk_ids": [
+        "chunk-f08eb71828"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的集团总营收",
+        "美的 集团 总营收"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-2af253edbb",
+          "chunk-3381a7136b",
+          "chunk-2f5772f184",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.8792999999513995,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.43067655807339306,
+          "mrr": 0.25
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.43067655807339306,
+          "mrr": 0.25
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-51437e3a74",
+          "chunk-76a9aeb66d",
+          "chunk-f08eb71828",
+          "chunk-3381a7136b",
+          "chunk-4ca6b62c8b",
+          "chunk-003d2eeeb1",
+          "chunk-2af253edbb",
+          "chunk-2f5772f184",
+          "chunk-88a06ea449",
+          "chunk-6cf5ff6f4a"
+        ],
+        "latency_ms": 2.078100000062477,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "id": "q-028",
+      "query": "美的集团归属于母公司股东利润",
+      "relevant_chunk_ids": [
+        "chunk-2af253edbb"
+      ],
+      "category": "fact",
+      "challenge": "long paraphrase",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的集团归属于母公司股东利润",
+        "美的 集团 归属于 母公司 股东 利润"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2af253edbb",
+          "chunk-86e6b7e941",
+          "chunk-9f924caeb7",
+          "chunk-38c3957f96",
+          "chunk-d5b761c339",
+          "chunk-0dbee86eb5",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828"
+        ],
+        "latency_ms": 0.13949999993201345,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2af253edbb",
+          "chunk-86e6b7e941",
+          "chunk-0dbee86eb5",
+          "chunk-9f924caeb7",
+          "chunk-d5b761c339",
+          "chunk-38c3957f96",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-51437e3a74",
+          "chunk-3381a7136b"
+        ],
+        "latency_ms": 2.054900000075577,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-029",
+      "query": "美的暖通空调收入",
+      "relevant_chunk_ids": [
+        "chunk-76a9aeb66d"
+      ],
+      "category": "segment",
+      "challenge": "entity abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的暖通空调收入",
+        "美的 暖通 空调 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-76a9aeb66d",
+          "chunk-5542a04659",
+          "chunk-4325f4dbd6",
+          "chunk-39a2c19892",
+          "chunk-f08eb71828",
+          "chunk-4ca6b62c8b",
+          "chunk-3381a7136b",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1"
+        ],
+        "latency_ms": 0.10360000010223303,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-76a9aeb66d",
+          "chunk-5542a04659",
+          "chunk-4325f4dbd6",
+          "chunk-003d2eeeb1",
+          "chunk-51437e3a74",
+          "chunk-3381a7136b",
+          "chunk-812618ffe1",
+          "chunk-4ca6b62c8b",
+          "chunk-39a2c19892",
+          "chunk-78167a265a"
+        ],
+        "latency_ms": 2.0081000000118365,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-030",
+      "query": "美的消费电器板块收入",
+      "relevant_chunk_ids": [
+        "chunk-4ca6b62c8b"
+      ],
+      "category": "segment",
+      "challenge": "business segment",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的消费电器板块收入",
+        "美的 消费 电器 板块 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-4ca6b62c8b",
+          "chunk-bbd85163ab",
+          "chunk-701fda93ad",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-3381a7136b",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-2af253edbb"
+        ],
+        "latency_ms": 0.11659999995572434,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-4ca6b62c8b",
+          "chunk-bbd85163ab",
+          "chunk-3381a7136b",
+          "chunk-76a9aeb66d",
+          "chunk-f08eb71828",
+          "chunk-78167a265a",
+          "chunk-8b8e75e3e2",
+          "chunk-8e6abe263e",
+          "chunk-2f5772f184",
+          "chunk-a01d7fc59e"
+        ],
+        "latency_ms": 2.1525999998175394,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-031",
+      "query": "美的机器人自动化业务收入",
+      "relevant_chunk_ids": [
+        "chunk-3381a7136b"
+      ],
+      "category": "segment",
+      "challenge": "punctuation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的机器人自动化业务收入",
+        "美的 机器人 自动化 业务收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-3381a7136b",
+          "chunk-5542a04659",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-2af253edbb",
+          "chunk-2f5772f184"
+        ],
+        "latency_ms": 0.10180000003856549,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-3381a7136b",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-5542a04659",
+          "chunk-2af253edbb",
+          "chunk-51437e3a74",
+          "chunk-88a06ea449",
+          "chunk-2f5772f184",
+          "chunk-ac5f844525"
+        ],
+        "latency_ms": 2.052800000001298,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-032",
+      "query": "美的家用空调生产量",
+      "relevant_chunk_ids": [
+        "chunk-003d2eeeb1"
+      ],
+      "category": "operations",
+      "challenge": "production synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的家用空调生产量",
+        "美的 家用空调 生产量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-51437e3a74",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-2af253edbb",
+          "chunk-3381a7136b",
+          "chunk-2f5772f184",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.09810000005927577,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-51437e3a74",
+          "chunk-2af253edbb",
+          "chunk-4ca6b62c8b",
+          "chunk-76a9aeb66d",
+          "chunk-008a5892d5",
+          "chunk-9c1ec579e8",
+          "chunk-2f5772f184",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 2.5158000000828906,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-033",
+      "query": "美的家用空调销售量",
+      "relevant_chunk_ids": [
+        "chunk-812618ffe1"
+      ],
+      "category": "operations",
+      "challenge": "sales synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的家用空调销售量",
+        "美的 家用空调 销售量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-51437e3a74",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-2af253edbb",
+          "chunk-3381a7136b",
+          "chunk-2f5772f184",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.16559999994569807,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-812618ffe1",
+          "chunk-003d2eeeb1",
+          "chunk-51437e3a74",
+          "chunk-2af253edbb",
+          "chunk-76a9aeb66d",
+          "chunk-9c1ec579e8",
+          "chunk-4ca6b62c8b",
+          "chunk-3381a7136b",
+          "chunk-c9cd9cb7e1",
+          "chunk-2f5772f184"
+        ],
+        "latency_ms": 3.617899999881047,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-034",
+      "query": "美的汇率和海外经营风险",
+      "relevant_chunk_ids": [
+        "chunk-2f5772f184"
+      ],
+      "category": "risk",
+      "challenge": "compound risk",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "美的汇率和海外经营风险",
+        "美的 汇率 海外经营 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2f5772f184",
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-701fda93ad",
+          "chunk-872d062cc3",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d"
+        ],
+        "latency_ms": 0.19720000000233995,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2f5772f184",
+          "chunk-51437e3a74",
+          "chunk-872d062cc3",
+          "chunk-4ca6b62c8b",
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-2af253edbb",
+          "chunk-91c33dcf6e",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d"
+        ],
+        "latency_ms": 3.312699999924007,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-035",
+      "query": "格力研发支出",
+      "relevant_chunk_ids": [
+        "chunk-708177e374"
+      ],
+      "category": "fact",
+      "challenge": "entity abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力研发支出",
+        "格力 研发 支出"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-e44ae20b45",
+          "chunk-ca0caf8afa",
+          "chunk-708177e374",
+          "chunk-9453b70aaf",
+          "chunk-51437e3a74",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b",
+          "chunk-ac5f844525",
+          "chunk-6cf5ff6f4a"
+        ],
+        "latency_ms": 0.16789999995125982,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-708177e374",
+          "chunk-e44ae20b45",
+          "chunk-9453b70aaf",
+          "chunk-ca0caf8afa",
+          "chunk-51437e3a74",
+          "chunk-88a06ea449",
+          "chunk-bcdd6e5c5a",
+          "chunk-91c33dcf6e",
+          "chunk-872d062cc3",
+          "chunk-c1085a7e12"
+        ],
+        "latency_ms": 1.9981999998890387,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-036",
+      "query": "格力电器营业总收入",
+      "relevant_chunk_ids": [
+        "chunk-8e6abe263e"
+      ],
+      "category": "fact",
+      "challenge": "exact entity",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力电器营业总收入",
+        "格力电器 营业 总收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-8e6abe263e",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-ab92dcb00a",
+          "chunk-52e8d52f49",
+          "chunk-f08eb71828",
+          "chunk-708177e374",
+          "chunk-5542a04659",
+          "chunk-9e3501e160",
+          "chunk-4325f4dbd6"
+        ],
+        "latency_ms": 0.1138000000082684,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-8e6abe263e",
+          "chunk-88a06ea449",
+          "chunk-ab92dcb00a",
+          "chunk-5542a04659",
+          "chunk-9e3501e160",
+          "chunk-bbd85163ab",
+          "chunk-a01d7fc59e",
+          "chunk-52e8d52f49",
+          "chunk-9b8994741f",
+          "chunk-f08eb71828"
+        ],
+        "latency_ms": 3.357300000061514,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-037",
+      "query": "格力归母净利润",
+      "relevant_chunk_ids": [
+        "chunk-38c3957f96"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力归母净利润",
+        "格力 归母 净利润"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-86e6b7e941",
+          "chunk-9f924caeb7",
+          "chunk-38c3957f96",
+          "chunk-d5b761c339",
+          "chunk-0dbee86eb5",
+          "chunk-2af253edbb",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-2b6891477b",
+          "chunk-ac5f844525"
+        ],
+        "latency_ms": 0.15729999995528487,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.5,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-86e6b7e941",
+          "chunk-38c3957f96",
+          "chunk-0dbee86eb5",
+          "chunk-9f924caeb7",
+          "chunk-d5b761c339",
+          "chunk-2af253edbb",
+          "chunk-bcdd6e5c5a",
+          "chunk-008a5892d5",
+          "chunk-e44ae20b45",
+          "chunk-6cf5ff6f4a"
+        ],
+        "latency_ms": 2.984799999921961,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-038",
+      "query": "格力空调主营业务收入",
+      "relevant_chunk_ids": [
+        "chunk-5542a04659"
+      ],
+      "category": "segment",
+      "challenge": "business synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力空调主营业务收入",
+        "格力空调 主营业务 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8e6abe263e",
+          "chunk-bbd85163ab",
+          "chunk-ab92dcb00a",
+          "chunk-cb4ceb6ac3",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2"
+        ],
+        "latency_ms": 0.1729999999042775,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-88a06ea449",
+          "chunk-9e3501e160",
+          "chunk-8e6abe263e",
+          "chunk-a01d7fc59e",
+          "chunk-ab92dcb00a",
+          "chunk-76a9aeb66d",
+          "chunk-8b8e75e3e2",
+          "chunk-52e8d52f49",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 3.059099999973114,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    },
+    {
+      "id": "q-039",
+      "query": "格力生活家电收入",
+      "relevant_chunk_ids": [
+        "chunk-bbd85163ab"
+      ],
+      "category": "segment",
+      "challenge": "synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力生活家电收入",
+        "格力 生活 家电 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-bbd85163ab",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8e6abe263e",
+          "chunk-ab92dcb00a",
+          "chunk-cb4ceb6ac3",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2"
+        ],
+        "latency_ms": 0.115299999833951,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-bbd85163ab",
+          "chunk-8e6abe263e",
+          "chunk-9e3501e160",
+          "chunk-bbe9cf9344",
+          "chunk-ab92dcb00a",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-88a06ea449",
+          "chunk-8b8e75e3e2",
+          "chunk-76a9aeb66d"
+        ],
+        "latency_ms": 2.046700000164492,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-040",
+      "query": "格力工业产品收入",
+      "relevant_chunk_ids": [
+        "chunk-9e3501e160"
+      ],
+      "category": "segment",
+      "challenge": "synonym",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力工业产品收入",
+        "格力 工业 产品 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2b6891477b",
+          "chunk-cb4ceb6ac3",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-ac5f844525",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8e6abe263e"
+        ],
+        "latency_ms": 0.19040000006498303,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.3562071871080222,
+          "mrr": 0.16666666666666666
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2b6891477b",
+          "chunk-9e3501e160",
+          "chunk-cb4ceb6ac3",
+          "chunk-15e9fea5ff",
+          "chunk-88a06ea449",
+          "chunk-991e9f236a",
+          "chunk-ac5f844525",
+          "chunk-a01d7fc59e",
+          "chunk-ab92dcb00a",
+          "chunk-9c662356af"
+        ],
+        "latency_ms": 2.595499999870299,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-041",
+      "query": "格力空调产量",
+      "relevant_chunk_ids": [
+        "chunk-4325f4dbd6"
+      ],
+      "category": "operations",
+      "challenge": "production",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力空调产量",
+        "格力空调 产量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-008a5892d5",
+          "chunk-4325f4dbd6",
+          "chunk-2786ae2133",
+          "chunk-003d2eeeb1",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.0892999998995947,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-4325f4dbd6",
+          "chunk-008a5892d5",
+          "chunk-003d2eeeb1",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-bcdd6e5c5a",
+          "chunk-86e6b7e941",
+          "chunk-6cf5ff6f4a",
+          "chunk-88a06ea449",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 2.1423000000595493,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-042",
+      "query": "格力空调销量",
+      "relevant_chunk_ids": [
+        "chunk-39a2c19892"
+      ],
+      "category": "operations",
+      "challenge": "sales",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力空调销量",
+        "格力空调 销量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-bcdd6e5c5a",
+          "chunk-39a2c19892",
+          "chunk-5b887ea381",
+          "chunk-812618ffe1",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.08279999997284904,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-39a2c19892",
+          "chunk-bcdd6e5c5a",
+          "chunk-812618ffe1",
+          "chunk-9c1ec579e8",
+          "chunk-5b887ea381",
+          "chunk-c9cd9cb7e1",
+          "chunk-008a5892d5",
+          "chunk-e44ae20b45",
+          "chunk-86e6b7e941",
+          "chunk-9f924caeb7"
+        ],
+        "latency_ms": 2.2814999999809515,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-043",
+      "query": "格力房地产后周期风险",
+      "relevant_chunk_ids": [
+        "chunk-9b8994741f"
+      ],
+      "category": "risk",
+      "challenge": "specific risk",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "格力房地产后周期风险",
+        "格力 房地产 周期 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9b8994741f",
+          "chunk-c1085a7e12",
+          "chunk-91c33dcf6e",
+          "chunk-2f5772f184",
+          "chunk-701fda93ad",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.15089999988049385,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-9b8994741f",
+          "chunk-e44ae20b45",
+          "chunk-86e6b7e941",
+          "chunk-872d062cc3",
+          "chunk-91c33dcf6e",
+          "chunk-9c1ec579e8",
+          "chunk-008a5892d5",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-38c3957f96"
+        ],
+        "latency_ms": 2.062000000023545,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-044",
+      "query": "五粮液营业收入",
+      "relevant_chunk_ids": [
+        "chunk-ab92dcb00a"
+      ],
+      "category": "fact",
+      "challenge": "exact metric",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液营业收入",
+        "五粮液 营业 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ab92dcb00a",
+          "chunk-cb4ceb6ac3",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e",
+          "chunk-8e6abe263e",
+          "chunk-52e8d52f49",
+          "chunk-f08eb71828",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-d5b761c339"
+        ],
+        "latency_ms": 0.08989999992081721,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ab92dcb00a",
+          "chunk-cb4ceb6ac3",
+          "chunk-88a06ea449",
+          "chunk-15e9fea5ff",
+          "chunk-a01d7fc59e",
+          "chunk-52e8d52f49",
+          "chunk-f08eb71828",
+          "chunk-701fda93ad",
+          "chunk-8e6abe263e",
+          "chunk-991e9f236a"
+        ],
+        "latency_ms": 2.8677000000243424,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-045",
+      "query": "五粮液归母净利",
+      "relevant_chunk_ids": [
+        "chunk-d5b761c339"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液归母净利",
+        "五粮液 归母 净利"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-cb4ceb6ac3",
+          "chunk-ab92dcb00a",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-d5b761c339",
+          "chunk-701fda93ad",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.17270000012103992,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.38685280723454163,
+          "mrr": 0.2
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-cb4ceb6ac3",
+          "chunk-d5b761c339",
+          "chunk-ab92dcb00a",
+          "chunk-701fda93ad",
+          "chunk-86e6b7e941",
+          "chunk-15e9fea5ff",
+          "chunk-91c33dcf6e",
+          "chunk-991e9f236a",
+          "chunk-9f924caeb7",
+          "chunk-008a5892d5"
+        ],
+        "latency_ms": 2.473600000030274,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-046",
+      "query": "五粮液核心产品收入",
+      "relevant_chunk_ids": [
+        "chunk-cb4ceb6ac3"
+      ],
+      "category": "segment",
+      "challenge": "core product paraphrase",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液核心产品收入",
+        "五粮液 核心 产品 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-cb4ceb6ac3",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-2b6891477b",
+          "chunk-ab92dcb00a",
+          "chunk-ac5f844525",
+          "chunk-d5b761c339",
+          "chunk-701fda93ad",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 0.11549999999260763,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-cb4ceb6ac3",
+          "chunk-15e9fea5ff",
+          "chunk-991e9f236a",
+          "chunk-ab92dcb00a",
+          "chunk-2b6891477b",
+          "chunk-ac5f844525",
+          "chunk-88a06ea449",
+          "chunk-701fda93ad",
+          "chunk-d5b761c339",
+          "chunk-a01d7fc59e"
+        ],
+        "latency_ms": 2.9168000000936445,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-047",
+      "query": "五粮液系列酒营收",
+      "relevant_chunk_ids": [
+        "chunk-991e9f236a"
+      ],
+      "category": "segment",
+      "challenge": "abbreviation",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液系列酒营收",
+        "五粮液 系列 酒营收"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-991e9f236a",
+          "chunk-cb4ceb6ac3",
+          "chunk-ab92dcb00a",
+          "chunk-15e9fea5ff",
+          "chunk-d5b761c339",
+          "chunk-701fda93ad",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.11940000013055396,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ab92dcb00a",
+          "chunk-991e9f236a",
+          "chunk-cb4ceb6ac3",
+          "chunk-15e9fea5ff",
+          "chunk-d5b761c339",
+          "chunk-701fda93ad",
+          "chunk-88a06ea449",
+          "chunk-e44ae20b45",
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e"
+        ],
+        "latency_ms": 2.0680000000083965,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-048",
+      "query": "五粮液其他酒类产品收入",
+      "relevant_chunk_ids": [
+        "chunk-15e9fea5ff"
+      ],
+      "category": "segment",
+      "challenge": "word order",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液其他酒类产品收入",
+        "五粮液 其他 酒类 产品 收入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-15e9fea5ff",
+          "chunk-cb4ceb6ac3",
+          "chunk-991e9f236a",
+          "chunk-2b6891477b",
+          "chunk-ab92dcb00a",
+          "chunk-ac5f844525",
+          "chunk-d5b761c339",
+          "chunk-701fda93ad",
+          "chunk-9e3501e160",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 0.14740000005986076,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-cb4ceb6ac3",
+          "chunk-15e9fea5ff",
+          "chunk-ab92dcb00a",
+          "chunk-2b6891477b",
+          "chunk-991e9f236a",
+          "chunk-701fda93ad",
+          "chunk-ac5f844525",
+          "chunk-d5b761c339",
+          "chunk-88a06ea449",
+          "chunk-a01d7fc59e"
+        ],
+        "latency_ms": 2.3360000000138825,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.6309297535714575,
+          "mrr": 0.5
+        }
+      }
+    },
+    {
+      "id": "q-049",
+      "query": "五粮液渠道库存与食品安全风险",
+      "relevant_chunk_ids": [
+        "chunk-701fda93ad"
+      ],
+      "category": "risk",
+      "challenge": "compound risk",
+      "relevant_count": 1,
+      "expanded_queries": [
+        "五粮液渠道库存与食品安全风险",
+        "五粮液 渠道 库存 食品安全 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-701fda93ad",
+          "chunk-2f5772f184",
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-cb4ceb6ac3",
+          "chunk-ab92dcb00a",
+          "chunk-991e9f236a",
+          "chunk-15e9fea5ff",
+          "chunk-d5b761c339",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 0.15489999987039482,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-701fda93ad",
+          "chunk-2f5772f184",
+          "chunk-c1085a7e12",
+          "chunk-ab92dcb00a",
+          "chunk-cb4ceb6ac3",
+          "chunk-15e9fea5ff",
+          "chunk-9b8994741f",
+          "chunk-872d062cc3",
+          "chunk-d5b761c339",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 2.138900000090871,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-050",
+      "query": "比较比亚迪和宁德时代的研发投入",
+      "relevant_chunk_ids": [
+        "chunk-9453b70aaf",
+        "chunk-e44ae20b45"
+      ],
+      "category": "cross-company",
+      "challenge": "multiple relevant chunks",
+      "relevant_count": 2,
+      "expanded_queries": [
+        "比较比亚迪和宁德时代的研发投入",
+        "比较 比亚迪 宁德 时代 研发 投入"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9453b70aaf",
+          "chunk-0dbee86eb5",
+          "chunk-e44ae20b45",
+          "chunk-872d062cc3",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-86e6b7e941",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344"
+        ],
+        "latency_ms": 0.15929999995023536,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.9197207891481876,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.9197207891481876,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-ecc16c8216",
+          "chunk-872d062cc3",
+          "chunk-9453b70aaf",
+          "chunk-5b887ea381",
+          "chunk-2786ae2133",
+          "chunk-e44ae20b45",
+          "chunk-6cf5ff6f4a",
+          "chunk-bcdd6e5c5a",
+          "chunk-008a5892d5",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 2.3427999999512394,
+        "at5": {
+          "recall": 0.5,
+          "ndcg": 0.3065735963827292,
+          "mrr": 0.3333333333333333
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.5249810332008933,
+          "mrr": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "id": "q-051",
+      "query": "比较美的与格力空调销量",
+      "relevant_chunk_ids": [
+        "chunk-39a2c19892",
+        "chunk-812618ffe1"
+      ],
+      "category": "cross-company",
+      "challenge": "multiple entities",
+      "relevant_count": 2,
+      "expanded_queries": [
+        "比较美的与格力空调销量",
+        "比较 美的 格力空调 销量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-812618ffe1",
+          "chunk-bcdd6e5c5a",
+          "chunk-39a2c19892",
+          "chunk-5b887ea381",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d"
+        ],
+        "latency_ms": 0.11939999990318029,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 0.9197207891481876,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 0.9197207891481876,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-812618ffe1",
+          "chunk-39a2c19892",
+          "chunk-bcdd6e5c5a",
+          "chunk-003d2eeeb1",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1",
+          "chunk-51437e3a74",
+          "chunk-5b887ea381",
+          "chunk-2af253edbb",
+          "chunk-76a9aeb66d"
+        ],
+        "latency_ms": 2.007300000059331,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-052",
+      "query": "哪些公司提示了原材料价格波动风险",
+      "relevant_chunk_ids": [
+        "chunk-2f5772f184",
+        "chunk-91c33dcf6e",
+        "chunk-9b8994741f",
+        "chunk-c1085a7e12"
+      ],
+      "category": "cross-company",
+      "challenge": "four relevant chunks",
+      "relevant_count": 4,
+      "expanded_queries": [
+        "哪些公司提示了原材料价格波动风险",
+        "提示 原材料 价格 波动 风险"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-2f5772f184",
+          "chunk-91c33dcf6e",
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-701fda93ad",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 0.19239999983255984,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2f5772f184",
+          "chunk-91c33dcf6e",
+          "chunk-c1085a7e12",
+          "chunk-9b8994741f",
+          "chunk-e44ae20b45",
+          "chunk-872d062cc3",
+          "chunk-9f924caeb7",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-2b6891477b"
+        ],
+        "latency_ms": 2.159200000050987,
+        "at5": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        },
+        "at10": {
+          "recall": 1.0,
+          "ndcg": 1.0,
+          "mrr": 1.0
+        }
+      }
+    },
+    {
+      "id": "q-053",
+      "query": "比亚迪员工总数",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent",
+      "relevant_count": 0,
+      "expanded_queries": [
+        "比亚迪员工总数",
+        "比亚迪 员工 总数"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-6cf5ff6f4a",
+          "chunk-008a5892d5",
+          "chunk-bcdd6e5c5a",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-2b6891477b",
+          "chunk-9c1ec579e8",
+          "chunk-c9cd9cb7e1"
+        ],
+        "latency_ms": 0.07600000003549212,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-008a5892d5",
+          "chunk-6cf5ff6f4a",
+          "chunk-bcdd6e5c5a",
+          "chunk-91c33dcf6e",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941",
+          "chunk-e44ae20b45",
+          "chunk-c9cd9cb7e1",
+          "chunk-9c1ec579e8",
+          "chunk-ac5f844525"
+        ],
+        "latency_ms": 2.8616999998121173,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    },
+    {
+      "id": "q-054",
+      "query": "云南白药现金分红方案",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent",
+      "relevant_count": 0,
+      "expanded_queries": [
+        "云南白药现金分红方案",
+        "云南白药 现金 分红 方案"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-ca0caf8afa",
+          "chunk-a01d7fc59e",
+          "chunk-78167a265a",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-e44ae20b45",
+          "chunk-88a06ea449",
+          "chunk-86e6b7e941"
+        ],
+        "latency_ms": 0.15189999999165593,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-78167a265a",
+          "chunk-a01d7fc59e",
+          "chunk-ca0caf8afa",
+          "chunk-9f924caeb7",
+          "chunk-c1085a7e12",
+          "chunk-8b0c9e264e",
+          "chunk-8b8e75e3e2",
+          "chunk-86e6b7e941",
+          "chunk-ac5f844525",
+          "chunk-91c33dcf6e"
+        ],
+        "latency_ms": 3.1793000000561733,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    },
+    {
+      "id": "q-055",
+      "query": "宁德时代资产负债率",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent",
+      "relevant_count": 0,
+      "expanded_queries": [
+        "宁德时代资产负债率",
+        "宁德 时代 资产负债率"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-9453b70aaf",
+          "chunk-ecc16c8216",
+          "chunk-2786ae2133",
+          "chunk-5b887ea381",
+          "chunk-52e8d52f49",
+          "chunk-bbe9cf9344",
+          "chunk-9c662356af",
+          "chunk-0dbee86eb5",
+          "chunk-872d062cc3",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.1340999999683845,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-2786ae2133",
+          "chunk-ecc16c8216",
+          "chunk-5b887ea381",
+          "chunk-872d062cc3",
+          "chunk-9453b70aaf",
+          "chunk-0dbee86eb5",
+          "chunk-9c662356af",
+          "chunk-52e8d52f49",
+          "chunk-91c33dcf6e",
+          "chunk-6cf5ff6f4a"
+        ],
+        "latency_ms": 2.4272999999084277,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    },
+    {
+      "id": "q-056",
+      "query": "美的集团审计意见类型",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent",
+      "relevant_count": 0,
+      "expanded_queries": [
+        "美的集团审计意见类型",
+        "美的 集团 审计 意见 类型"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-51437e3a74",
+          "chunk-003d2eeeb1",
+          "chunk-812618ffe1",
+          "chunk-f08eb71828",
+          "chunk-76a9aeb66d",
+          "chunk-4ca6b62c8b",
+          "chunk-2af253edbb",
+          "chunk-3381a7136b",
+          "chunk-2f5772f184",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.14929999997548293,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-812618ffe1",
+          "chunk-003d2eeeb1",
+          "chunk-51437e3a74",
+          "chunk-76a9aeb66d",
+          "chunk-3381a7136b",
+          "chunk-2af253edbb",
+          "chunk-f08eb71828",
+          "chunk-4ca6b62c8b",
+          "chunk-2f5772f184",
+          "chunk-9c1ec579e8"
+        ],
+        "latency_ms": 2.1622000001570996,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    },
+    {
+      "id": "q-057",
+      "query": "格力电器碳排放总量",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent",
+      "relevant_count": 0,
+      "expanded_queries": [
+        "格力电器碳排放总量",
+        "格力电器 排放 总量"
+      ],
+      "baseline": {
+        "ranked": [
+          "chunk-708177e374",
+          "chunk-5542a04659",
+          "chunk-9e3501e160",
+          "chunk-4325f4dbd6",
+          "chunk-39a2c19892",
+          "chunk-8e6abe263e",
+          "chunk-bbd85163ab",
+          "chunk-38c3957f96",
+          "chunk-9b8994741f",
+          "chunk-e44ae20b45"
+        ],
+        "latency_ms": 0.11100000006081245,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      },
+      "current": {
+        "ranked": [
+          "chunk-708177e374",
+          "chunk-5542a04659",
+          "chunk-bbd85163ab",
+          "chunk-8e6abe263e",
+          "chunk-4325f4dbd6",
+          "chunk-9b8994741f",
+          "chunk-9e3501e160",
+          "chunk-39a2c19892",
+          "chunk-38c3957f96",
+          "chunk-88a06ea449"
+        ],
+        "latency_ms": 2.439200000026176,
+        "at5": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        },
+        "at10": {
+          "recall": 0.0,
+          "ndcg": 0.0,
+          "mrr": 0.0
+        }
+      }
+    }
+  ]
+}

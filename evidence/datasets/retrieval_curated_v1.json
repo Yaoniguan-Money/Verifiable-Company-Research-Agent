@@ -1,0 +1,935 @@
+{
+  "schema_version": 1,
+  "dataset_id": "vcra-retrieval-curated-v1",
+  "run_type": "offline fixture / synthetic source excerpts / human-curated labels",
+  "source_file": "data/eval/public_company_regression_fixtures.json",
+  "annotation_method": "Query and relevance targets were manually authored independently of retrieval code; the builder only resolves company+substring annotations to stable chunk IDs.",
+  "limitations": [
+    "Source excerpts are synthetic regression fixtures, not verified current filings.",
+    "Five negative queries have no relevant chunk; current retrieval does not abstain.",
+    "No labels were removed after observing retrieval results."
+  ],
+  "corpus": [
+    {
+      "id": "chunk-e44ae20b45",
+      "company": "比亚迪",
+      "text": "比亚迪：研发费用 542.00亿元 419.00亿元 395.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-88a06ea449",
+      "company": "比亚迪",
+      "text": "比亚迪：营业收入 合计 7771.00亿元 6023.15亿元 6023.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-86e6b7e941",
+      "company": "比亚迪",
+      "text": "比亚迪：归属于上市公司股东的净利润 402.00亿元 300.41亿元 300.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-2b6891477b",
+      "company": "比亚迪",
+      "text": "比亚迪：汽车、汽车相关产品及其他产品收入 6170.00亿元 4800.00亿元 4834.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-ac5f844525",
+      "company": "比亚迪",
+      "text": "比亚迪：手机部件、组装及其他产品收入 1601.00亿元 1200.00亿元 1189.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-6cf5ff6f4a",
+      "company": "比亚迪",
+      "text": "比亚迪：2025年乘用车产能 500.00万辆",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    },
+    {
+      "id": "chunk-008a5892d5",
+      "company": "比亚迪",
+      "text": "比亚迪：2025年乘用车产量 430.00万辆",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 7
+    },
+    {
+      "id": "chunk-bcdd6e5c5a",
+      "company": "比亚迪",
+      "text": "比亚迪：2025年乘用车销量 420.00万辆",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 8
+    },
+    {
+      "id": "chunk-9c1ec579e8",
+      "company": "比亚迪",
+      "text": "比亚迪：乘用车 产能状况 500.00万辆 快报产量 430.00万辆 快报销量 420.00万辆 销售收入 5500.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 9
+    },
+    {
+      "id": "chunk-c9cd9cb7e1",
+      "company": "比亚迪",
+      "text": "比亚迪：商用车 产能状况 30.00万辆 快报产量 18.00万辆 快报销量 17.00万辆 销售收入 300.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 10
+    },
+    {
+      "id": "chunk-91c33dcf6e",
+      "company": "比亚迪",
+      "text": "比亚迪：风险提示：行业竞争、原材料价格波动、海外市场政策变化可能影响经营表现。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 11
+    },
+    {
+      "id": "chunk-ca0caf8afa",
+      "company": "云南白药",
+      "text": "云南白药：研发费用 5.80亿元 5.30亿元 4.90亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-a01d7fc59e",
+      "company": "云南白药",
+      "text": "云南白药：营业收入 合计 410.00亿元 391.00亿元 391.11亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-9f924caeb7",
+      "company": "云南白药",
+      "text": "云南白药：归属于上市公司股东的净利润 51.00亿元 41.00亿元 40.94亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-78167a265a",
+      "company": "云南白药",
+      "text": "云南白药：药品事业部收入 120.00亿元 113.00亿元 108.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-8b0c9e264e",
+      "company": "云南白药",
+      "text": "云南白药：健康品事业部收入 260.00亿元 246.00亿元 241.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-8b8e75e3e2",
+      "company": "云南白药",
+      "text": "云南白药：中药资源事业部收入 30.00亿元 32.00亿元 42.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    },
+    {
+      "id": "chunk-c1085a7e12",
+      "company": "云南白药",
+      "text": "云南白药：主要风险包括原材料价格波动、行业政策变化、渠道竞争和新品培育不确定性。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-01/1225067975.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 7
+    },
+    {
+      "id": "chunk-9453b70aaf",
+      "company": "宁德时代",
+      "text": "宁德时代：研发费用 250.00亿元 220.00亿元 183.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-52e8d52f49",
+      "company": "宁德时代",
+      "text": "宁德时代：营业收入 合计 4200.00亿元 3620.00亿元 4009.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-0dbee86eb5",
+      "company": "宁德时代",
+      "text": "宁德时代：归属于上市公司股东的净利润 520.00亿元 507.00亿元 441.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-bbe9cf9344",
+      "company": "宁德时代",
+      "text": "宁德时代：动力电池系统收入 3000.00亿元 2600.00亿元 2850.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-9c662356af",
+      "company": "宁德时代",
+      "text": "宁德时代：储能电池系统收入 900.00亿元 600.00亿元 599.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-ecc16c8216",
+      "company": "宁德时代",
+      "text": "宁德时代：动力电池产能 900.00GWh 760.00GWh 600.00GWh",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    },
+    {
+      "id": "chunk-2786ae2133",
+      "company": "宁德时代",
+      "text": "宁德时代：动力电池产量 650.00GWh 520.00GWh 390.00GWh",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 7
+    },
+    {
+      "id": "chunk-5b887ea381",
+      "company": "宁德时代",
+      "text": "宁德时代：动力电池销量 620.00GWh 500.00GWh 380.00GWh",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 8
+    },
+    {
+      "id": "chunk-872d062cc3",
+      "company": "宁德时代",
+      "text": "宁德时代：风险提示：产能扩张节奏、锂电材料价格、海外贸易政策和客户集中度变化可能影响经营表现。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 9
+    },
+    {
+      "id": "chunk-51437e3a74",
+      "company": "美的集团",
+      "text": "美的集团：研发费用 160.00亿元 145.00亿元 126.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-f08eb71828",
+      "company": "美的集团",
+      "text": "美的集团：营业收入 合计 4380.00亿元 4090.00亿元 3737.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-2af253edbb",
+      "company": "美的集团",
+      "text": "美的集团：归属于上市公司股东的净利润 430.00亿元 385.00亿元 337.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-76a9aeb66d",
+      "company": "美的集团",
+      "text": "美的集团：暖通空调收入 1900.00亿元 1760.00亿元 1610.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-4ca6b62c8b",
+      "company": "美的集团",
+      "text": "美的集团：消费电器收入 1500.00亿元 1390.00亿元 1270.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-3381a7136b",
+      "company": "美的集团",
+      "text": "美的集团：机器人、自动化系统及其他制造业收入 350.00亿元 320.00亿元 300.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    },
+    {
+      "id": "chunk-003d2eeeb1",
+      "company": "美的集团",
+      "text": "美的集团：家用空调产量 7200.00万台 6800.00万台 6200.00万台",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 7
+    },
+    {
+      "id": "chunk-812618ffe1",
+      "company": "美的集团",
+      "text": "美的集团：家用空调销量 7000.00万台 6600.00万台 6100.00万台",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 8
+    },
+    {
+      "id": "chunk-2f5772f184",
+      "company": "美的集团",
+      "text": "美的集团：风险提示：原材料价格波动、海外经营环境、汇率变化和渠道库存波动可能影响经营表现。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225053331.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 9
+    },
+    {
+      "id": "chunk-708177e374",
+      "company": "格力电器",
+      "text": "格力电器：研发费用 80.00亿元 75.00亿元 70.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-8e6abe263e",
+      "company": "格力电器",
+      "text": "格力电器：营业收入 合计 2150.00亿元 2050.00亿元 2039.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-38c3957f96",
+      "company": "格力电器",
+      "text": "格力电器：归属于上市公司股东的净利润 320.00亿元 300.00亿元 290.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-5542a04659",
+      "company": "格力电器",
+      "text": "格力电器：空调业务收入 1500.00亿元 1450.00亿元 1460.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-bbd85163ab",
+      "company": "格力电器",
+      "text": "格力电器：生活电器收入 210.00亿元 195.00亿元 180.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-9e3501e160",
+      "company": "格力电器",
+      "text": "格力电器：工业制品收入 160.00亿元 145.00亿元 130.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    },
+    {
+      "id": "chunk-4325f4dbd6",
+      "company": "格力电器",
+      "text": "格力电器：空调产量 6200.00万台 5900.00万台 5600.00万台",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 7
+    },
+    {
+      "id": "chunk-39a2c19892",
+      "company": "格力电器",
+      "text": "格力电器：空调销量 6000.00万台 5750.00万台 5480.00万台",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 8
+    },
+    {
+      "id": "chunk-9b8994741f",
+      "company": "格力电器",
+      "text": "格力电器：风险提示：房地产后周期需求、原材料价格、出口市场政策和渠道竞争可能影响经营表现。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225060651.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 9
+    },
+    {
+      "id": "chunk-ab92dcb00a",
+      "company": "五粮液",
+      "text": "五粮液：营业收入 合计 920.00亿元 850.00亿元 832.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 1
+    },
+    {
+      "id": "chunk-d5b761c339",
+      "company": "五粮液",
+      "text": "五粮液：归属于上市公司股东的净利润 340.00亿元 315.00亿元 302.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 2
+    },
+    {
+      "id": "chunk-cb4ceb6ac3",
+      "company": "五粮液",
+      "text": "五粮液：五粮液产品收入 720.00亿元 665.00亿元 628.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 3
+    },
+    {
+      "id": "chunk-991e9f236a",
+      "company": "五粮液",
+      "text": "五粮液：系列酒产品收入 150.00亿元 140.00亿元 136.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 4
+    },
+    {
+      "id": "chunk-15e9fea5ff",
+      "company": "五粮液",
+      "text": "五粮液：酒类其他产品收入 30.00亿元 25.00亿元 24.00亿元",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 5
+    },
+    {
+      "id": "chunk-701fda93ad",
+      "company": "五粮液",
+      "text": "五粮液：风险提示：白酒消费需求变化、渠道库存、品牌竞争和食品安全管理要求可能影响经营表现。",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-29/1225060858.PDF",
+      "source_type": "synthetic annual-report fixture",
+      "line_index": 6
+    }
+  ],
+  "queries": [
+    {
+      "id": "q-001",
+      "query": "比亚迪最近三年的研发投入是多少",
+      "relevant_chunk_ids": [
+        "chunk-e44ae20b45"
+      ],
+      "category": "fact",
+      "challenge": "metric alias"
+    },
+    {
+      "id": "q-002",
+      "query": "比亚迪营业总收入趋势",
+      "relevant_chunk_ids": [
+        "chunk-88a06ea449"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-003",
+      "query": "比亚迪归母净利变化",
+      "relevant_chunk_ids": [
+        "chunk-86e6b7e941"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-004",
+      "query": "比亚迪汽车业务分部收入",
+      "relevant_chunk_ids": [
+        "chunk-2b6891477b"
+      ],
+      "category": "segment",
+      "challenge": "long label"
+    },
+    {
+      "id": "q-005",
+      "query": "比亚迪手机零部件业务收入",
+      "relevant_chunk_ids": [
+        "chunk-ac5f844525"
+      ],
+      "category": "segment",
+      "challenge": "synonym"
+    },
+    {
+      "id": "q-006",
+      "query": "比亚迪乘用车能生产多少辆",
+      "relevant_chunk_ids": [
+        "chunk-6cf5ff6f4a",
+        "chunk-9c1ec579e8"
+      ],
+      "category": "operations",
+      "challenge": "capacity paraphrase"
+    },
+    {
+      "id": "q-007",
+      "query": "比亚迪乘用车实际产出",
+      "relevant_chunk_ids": [
+        "chunk-008a5892d5",
+        "chunk-9c1ec579e8"
+      ],
+      "category": "operations",
+      "challenge": "production paraphrase"
+    },
+    {
+      "id": "q-008",
+      "query": "比亚迪乘用车卖了多少",
+      "relevant_chunk_ids": [
+        "chunk-9c1ec579e8",
+        "chunk-bcdd6e5c5a"
+      ],
+      "category": "operations",
+      "challenge": "sales paraphrase"
+    },
+    {
+      "id": "q-009",
+      "query": "比亚迪有哪些经营风险",
+      "relevant_chunk_ids": [
+        "chunk-91c33dcf6e"
+      ],
+      "category": "risk",
+      "challenge": "broad question"
+    },
+    {
+      "id": "q-010",
+      "query": "云南白药研发支出走势",
+      "relevant_chunk_ids": [
+        "chunk-ca0caf8afa"
+      ],
+      "category": "fact",
+      "challenge": "metric alias"
+    },
+    {
+      "id": "q-011",
+      "query": "云南白药营收规模",
+      "relevant_chunk_ids": [
+        "chunk-a01d7fc59e"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-012",
+      "query": "云南白药股东口径净利润",
+      "relevant_chunk_ids": [
+        "chunk-9f924caeb7"
+      ],
+      "category": "fact",
+      "challenge": "accounting boundary"
+    },
+    {
+      "id": "q-013",
+      "query": "云南白药药品板块收入",
+      "relevant_chunk_ids": [
+        "chunk-78167a265a"
+      ],
+      "category": "segment",
+      "challenge": "business segment"
+    },
+    {
+      "id": "q-014",
+      "query": "云南白药健康产品业务收入",
+      "relevant_chunk_ids": [
+        "chunk-8b0c9e264e"
+      ],
+      "category": "segment",
+      "challenge": "synonym"
+    },
+    {
+      "id": "q-015",
+      "query": "云南白药中药资源收入",
+      "relevant_chunk_ids": [
+        "chunk-8b8e75e3e2"
+      ],
+      "category": "segment",
+      "challenge": "business segment"
+    },
+    {
+      "id": "q-016",
+      "query": "云南白药渠道与政策风险",
+      "relevant_chunk_ids": [
+        "chunk-c1085a7e12"
+      ],
+      "category": "risk",
+      "challenge": "multiple risk terms"
+    },
+    {
+      "id": "q-017",
+      "query": "宁德时代研发投入近三年数据",
+      "relevant_chunk_ids": [
+        "chunk-9453b70aaf"
+      ],
+      "category": "fact",
+      "challenge": "metric alias"
+    },
+    {
+      "id": "q-018",
+      "query": "宁德时代收入变化",
+      "relevant_chunk_ids": [
+        "chunk-52e8d52f49"
+      ],
+      "category": "fact",
+      "challenge": "short query"
+    },
+    {
+      "id": "q-019",
+      "query": "宁德时代归母利润",
+      "relevant_chunk_ids": [
+        "chunk-0dbee86eb5"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-020",
+      "query": "宁德时代动力电池业务收入",
+      "relevant_chunk_ids": [
+        "chunk-bbe9cf9344"
+      ],
+      "category": "segment",
+      "challenge": "product segment"
+    },
+    {
+      "id": "q-021",
+      "query": "宁德时代储能板块营收",
+      "relevant_chunk_ids": [
+        "chunk-9c662356af"
+      ],
+      "category": "segment",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-022",
+      "query": "宁德时代电池产能 GWh",
+      "relevant_chunk_ids": [
+        "chunk-ecc16c8216"
+      ],
+      "category": "operations",
+      "challenge": "unit token"
+    },
+    {
+      "id": "q-023",
+      "query": "宁德时代动力电池制造产量",
+      "relevant_chunk_ids": [
+        "chunk-2786ae2133"
+      ],
+      "category": "operations",
+      "challenge": "production"
+    },
+    {
+      "id": "q-024",
+      "query": "宁德时代电池出货销量",
+      "relevant_chunk_ids": [
+        "chunk-5b887ea381"
+      ],
+      "category": "operations",
+      "challenge": "sales synonym"
+    },
+    {
+      "id": "q-025",
+      "query": "宁德时代海外贸易和客户集中风险",
+      "relevant_chunk_ids": [
+        "chunk-872d062cc3"
+      ],
+      "category": "risk",
+      "challenge": "compound risk"
+    },
+    {
+      "id": "q-026",
+      "query": "美的集团研发费用",
+      "relevant_chunk_ids": [
+        "chunk-51437e3a74"
+      ],
+      "category": "fact",
+      "challenge": "exact metric"
+    },
+    {
+      "id": "q-027",
+      "query": "美的集团总营收",
+      "relevant_chunk_ids": [
+        "chunk-f08eb71828"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-028",
+      "query": "美的集团归属于母公司股东利润",
+      "relevant_chunk_ids": [
+        "chunk-2af253edbb"
+      ],
+      "category": "fact",
+      "challenge": "long paraphrase"
+    },
+    {
+      "id": "q-029",
+      "query": "美的暖通空调收入",
+      "relevant_chunk_ids": [
+        "chunk-76a9aeb66d"
+      ],
+      "category": "segment",
+      "challenge": "entity abbreviation"
+    },
+    {
+      "id": "q-030",
+      "query": "美的消费电器板块收入",
+      "relevant_chunk_ids": [
+        "chunk-4ca6b62c8b"
+      ],
+      "category": "segment",
+      "challenge": "business segment"
+    },
+    {
+      "id": "q-031",
+      "query": "美的机器人自动化业务收入",
+      "relevant_chunk_ids": [
+        "chunk-3381a7136b"
+      ],
+      "category": "segment",
+      "challenge": "punctuation"
+    },
+    {
+      "id": "q-032",
+      "query": "美的家用空调生产量",
+      "relevant_chunk_ids": [
+        "chunk-003d2eeeb1"
+      ],
+      "category": "operations",
+      "challenge": "production synonym"
+    },
+    {
+      "id": "q-033",
+      "query": "美的家用空调销售量",
+      "relevant_chunk_ids": [
+        "chunk-812618ffe1"
+      ],
+      "category": "operations",
+      "challenge": "sales synonym"
+    },
+    {
+      "id": "q-034",
+      "query": "美的汇率和海外经营风险",
+      "relevant_chunk_ids": [
+        "chunk-2f5772f184"
+      ],
+      "category": "risk",
+      "challenge": "compound risk"
+    },
+    {
+      "id": "q-035",
+      "query": "格力研发支出",
+      "relevant_chunk_ids": [
+        "chunk-708177e374"
+      ],
+      "category": "fact",
+      "challenge": "entity abbreviation"
+    },
+    {
+      "id": "q-036",
+      "query": "格力电器营业总收入",
+      "relevant_chunk_ids": [
+        "chunk-8e6abe263e"
+      ],
+      "category": "fact",
+      "challenge": "exact entity"
+    },
+    {
+      "id": "q-037",
+      "query": "格力归母净利润",
+      "relevant_chunk_ids": [
+        "chunk-38c3957f96"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-038",
+      "query": "格力空调主营业务收入",
+      "relevant_chunk_ids": [
+        "chunk-5542a04659"
+      ],
+      "category": "segment",
+      "challenge": "business synonym"
+    },
+    {
+      "id": "q-039",
+      "query": "格力生活家电收入",
+      "relevant_chunk_ids": [
+        "chunk-bbd85163ab"
+      ],
+      "category": "segment",
+      "challenge": "synonym"
+    },
+    {
+      "id": "q-040",
+      "query": "格力工业产品收入",
+      "relevant_chunk_ids": [
+        "chunk-9e3501e160"
+      ],
+      "category": "segment",
+      "challenge": "synonym"
+    },
+    {
+      "id": "q-041",
+      "query": "格力空调产量",
+      "relevant_chunk_ids": [
+        "chunk-4325f4dbd6"
+      ],
+      "category": "operations",
+      "challenge": "production"
+    },
+    {
+      "id": "q-042",
+      "query": "格力空调销量",
+      "relevant_chunk_ids": [
+        "chunk-39a2c19892"
+      ],
+      "category": "operations",
+      "challenge": "sales"
+    },
+    {
+      "id": "q-043",
+      "query": "格力房地产后周期风险",
+      "relevant_chunk_ids": [
+        "chunk-9b8994741f"
+      ],
+      "category": "risk",
+      "challenge": "specific risk"
+    },
+    {
+      "id": "q-044",
+      "query": "五粮液营业收入",
+      "relevant_chunk_ids": [
+        "chunk-ab92dcb00a"
+      ],
+      "category": "fact",
+      "challenge": "exact metric"
+    },
+    {
+      "id": "q-045",
+      "query": "五粮液归母净利",
+      "relevant_chunk_ids": [
+        "chunk-d5b761c339"
+      ],
+      "category": "fact",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-046",
+      "query": "五粮液核心产品收入",
+      "relevant_chunk_ids": [
+        "chunk-cb4ceb6ac3"
+      ],
+      "category": "segment",
+      "challenge": "core product paraphrase"
+    },
+    {
+      "id": "q-047",
+      "query": "五粮液系列酒营收",
+      "relevant_chunk_ids": [
+        "chunk-991e9f236a"
+      ],
+      "category": "segment",
+      "challenge": "abbreviation"
+    },
+    {
+      "id": "q-048",
+      "query": "五粮液其他酒类产品收入",
+      "relevant_chunk_ids": [
+        "chunk-15e9fea5ff"
+      ],
+      "category": "segment",
+      "challenge": "word order"
+    },
+    {
+      "id": "q-049",
+      "query": "五粮液渠道库存与食品安全风险",
+      "relevant_chunk_ids": [
+        "chunk-701fda93ad"
+      ],
+      "category": "risk",
+      "challenge": "compound risk"
+    },
+    {
+      "id": "q-050",
+      "query": "比较比亚迪和宁德时代的研发投入",
+      "relevant_chunk_ids": [
+        "chunk-9453b70aaf",
+        "chunk-e44ae20b45"
+      ],
+      "category": "cross-company",
+      "challenge": "multiple relevant chunks"
+    },
+    {
+      "id": "q-051",
+      "query": "比较美的与格力空调销量",
+      "relevant_chunk_ids": [
+        "chunk-39a2c19892",
+        "chunk-812618ffe1"
+      ],
+      "category": "cross-company",
+      "challenge": "multiple entities"
+    },
+    {
+      "id": "q-052",
+      "query": "哪些公司提示了原材料价格波动风险",
+      "relevant_chunk_ids": [
+        "chunk-2f5772f184",
+        "chunk-91c33dcf6e",
+        "chunk-9b8994741f",
+        "chunk-c1085a7e12"
+      ],
+      "category": "cross-company",
+      "challenge": "four relevant chunks"
+    },
+    {
+      "id": "q-053",
+      "query": "比亚迪员工总数",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent"
+    },
+    {
+      "id": "q-054",
+      "query": "云南白药现金分红方案",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent"
+    },
+    {
+      "id": "q-055",
+      "query": "宁德时代资产负债率",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent"
+    },
+    {
+      "id": "q-056",
+      "query": "美的集团审计意见类型",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent"
+    },
+    {
+      "id": "q-057",
+      "query": "格力电器碳排放总量",
+      "relevant_chunk_ids": [],
+      "category": "negative",
+      "challenge": "answer absent"
+    }
+  ]
+}

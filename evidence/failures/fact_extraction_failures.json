@@ -1,0 +1,84 @@
+[
+  {
+    "id": "fact-chunk-9c1ec579e8",
+    "sample_type": "multi-fact",
+    "text": "项目 2025年 2024年 2023年\n乘用车 产能状况 500.00万辆 快报产量 430.00万辆 快报销量 420.00万辆 销售收入 5500.00亿元",
+    "expected": [
+      [
+        "production_capacity",
+        "2025",
+        "vehicle:5000000:vehicle"
+      ],
+      [
+        "production_volume",
+        "2025",
+        "vehicle:4300000:vehicle"
+      ],
+      [
+        "revenue_segment",
+        "2025",
+        "money:550000000000:yuan"
+      ],
+      [
+        "sales_volume",
+        "2025",
+        "vehicle:4200000:vehicle"
+      ]
+    ],
+    "baseline_predicted": [
+      [
+        "production_capacity",
+        "2025",
+        "vehicle:5000000:vehicle"
+      ]
+    ],
+    "predicted": [],
+    "baseline_tp": 1,
+    "baseline_fp": 0,
+    "baseline_fn": 3,
+    "tp": 0,
+    "fp": 0,
+    "fn": 4
+  },
+  {
+    "id": "fact-chunk-c9cd9cb7e1",
+    "sample_type": "multi-fact",
+    "text": "项目 2025年 2024年 2023年\n商用车 产能状况 30.00万辆 快报产量 18.00万辆 快报销量 17.00万辆 销售收入 300.00亿元",
+    "expected": [
+      [
+        "production_capacity",
+        "2025",
+        "vehicle:300000:vehicle"
+      ],
+      [
+        "production_volume",
+        "2025",
+        "vehicle:180000:vehicle"
+      ],
+      [
+        "revenue_segment",
+        "2025",
+        "money:30000000000:yuan"
+      ],
+      [
+        "sales_volume",
+        "2025",
+        "vehicle:170000:vehicle"
+      ]
+    ],
+    "baseline_predicted": [
+      [
+        "production_capacity",
+        "2025",
+        "vehicle:300000:vehicle"
+      ]
+    ],
+    "predicted": [],
+    "baseline_tp": 1,
+    "baseline_fp": 0,
+    "baseline_fn": 3,
+    "tp": 0,
+    "fp": 0,
+    "fn": 4
+  }
+]

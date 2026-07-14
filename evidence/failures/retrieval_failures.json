@@ -1,0 +1,376 @@
+[
+  {
+    "id": "q-038",
+    "query": "格力空调主营业务收入",
+    "relevant_chunk_ids": [
+      "chunk-5542a04659"
+    ],
+    "category": "segment",
+    "challenge": "business synonym",
+    "relevant_count": 1,
+    "expanded_queries": [
+      "格力空调主营业务收入",
+      "格力空调 主营业务 收入"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-9e3501e160",
+        "chunk-88a06ea449",
+        "chunk-a01d7fc59e",
+        "chunk-78167a265a",
+        "chunk-8e6abe263e",
+        "chunk-bbd85163ab",
+        "chunk-ab92dcb00a",
+        "chunk-cb4ceb6ac3",
+        "chunk-8b0c9e264e",
+        "chunk-8b8e75e3e2"
+      ],
+      "latency_ms": 0.1729999999042775,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-88a06ea449",
+        "chunk-9e3501e160",
+        "chunk-8e6abe263e",
+        "chunk-a01d7fc59e",
+        "chunk-ab92dcb00a",
+        "chunk-76a9aeb66d",
+        "chunk-8b8e75e3e2",
+        "chunk-52e8d52f49",
+        "chunk-ac5f844525",
+        "chunk-2b6891477b"
+      ],
+      "latency_ms": 3.059099999973114,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  },
+  {
+    "id": "q-053",
+    "query": "比亚迪员工总数",
+    "relevant_chunk_ids": [],
+    "category": "negative",
+    "challenge": "answer absent",
+    "relevant_count": 0,
+    "expanded_queries": [
+      "比亚迪员工总数",
+      "比亚迪 员工 总数"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-6cf5ff6f4a",
+        "chunk-008a5892d5",
+        "chunk-bcdd6e5c5a",
+        "chunk-e44ae20b45",
+        "chunk-88a06ea449",
+        "chunk-86e6b7e941",
+        "chunk-ac5f844525",
+        "chunk-2b6891477b",
+        "chunk-9c1ec579e8",
+        "chunk-c9cd9cb7e1"
+      ],
+      "latency_ms": 0.07600000003549212,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-008a5892d5",
+        "chunk-6cf5ff6f4a",
+        "chunk-bcdd6e5c5a",
+        "chunk-91c33dcf6e",
+        "chunk-88a06ea449",
+        "chunk-86e6b7e941",
+        "chunk-e44ae20b45",
+        "chunk-c9cd9cb7e1",
+        "chunk-9c1ec579e8",
+        "chunk-ac5f844525"
+      ],
+      "latency_ms": 2.8616999998121173,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  },
+  {
+    "id": "q-054",
+    "query": "云南白药现金分红方案",
+    "relevant_chunk_ids": [],
+    "category": "negative",
+    "challenge": "answer absent",
+    "relevant_count": 0,
+    "expanded_queries": [
+      "云南白药现金分红方案",
+      "云南白药 现金 分红 方案"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-ca0caf8afa",
+        "chunk-a01d7fc59e",
+        "chunk-78167a265a",
+        "chunk-8b0c9e264e",
+        "chunk-8b8e75e3e2",
+        "chunk-9f924caeb7",
+        "chunk-c1085a7e12",
+        "chunk-e44ae20b45",
+        "chunk-88a06ea449",
+        "chunk-86e6b7e941"
+      ],
+      "latency_ms": 0.15189999999165593,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-78167a265a",
+        "chunk-a01d7fc59e",
+        "chunk-ca0caf8afa",
+        "chunk-9f924caeb7",
+        "chunk-c1085a7e12",
+        "chunk-8b0c9e264e",
+        "chunk-8b8e75e3e2",
+        "chunk-86e6b7e941",
+        "chunk-ac5f844525",
+        "chunk-91c33dcf6e"
+      ],
+      "latency_ms": 3.1793000000561733,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  },
+  {
+    "id": "q-055",
+    "query": "宁德时代资产负债率",
+    "relevant_chunk_ids": [],
+    "category": "negative",
+    "challenge": "answer absent",
+    "relevant_count": 0,
+    "expanded_queries": [
+      "宁德时代资产负债率",
+      "宁德 时代 资产负债率"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-9453b70aaf",
+        "chunk-ecc16c8216",
+        "chunk-2786ae2133",
+        "chunk-5b887ea381",
+        "chunk-52e8d52f49",
+        "chunk-bbe9cf9344",
+        "chunk-9c662356af",
+        "chunk-0dbee86eb5",
+        "chunk-872d062cc3",
+        "chunk-e44ae20b45"
+      ],
+      "latency_ms": 0.1340999999683845,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-2786ae2133",
+        "chunk-ecc16c8216",
+        "chunk-5b887ea381",
+        "chunk-872d062cc3",
+        "chunk-9453b70aaf",
+        "chunk-0dbee86eb5",
+        "chunk-9c662356af",
+        "chunk-52e8d52f49",
+        "chunk-91c33dcf6e",
+        "chunk-6cf5ff6f4a"
+      ],
+      "latency_ms": 2.4272999999084277,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  },
+  {
+    "id": "q-056",
+    "query": "美的集团审计意见类型",
+    "relevant_chunk_ids": [],
+    "category": "negative",
+    "challenge": "answer absent",
+    "relevant_count": 0,
+    "expanded_queries": [
+      "美的集团审计意见类型",
+      "美的 集团 审计 意见 类型"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-51437e3a74",
+        "chunk-003d2eeeb1",
+        "chunk-812618ffe1",
+        "chunk-f08eb71828",
+        "chunk-76a9aeb66d",
+        "chunk-4ca6b62c8b",
+        "chunk-2af253edbb",
+        "chunk-3381a7136b",
+        "chunk-2f5772f184",
+        "chunk-e44ae20b45"
+      ],
+      "latency_ms": 0.14929999997548293,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-812618ffe1",
+        "chunk-003d2eeeb1",
+        "chunk-51437e3a74",
+        "chunk-76a9aeb66d",
+        "chunk-3381a7136b",
+        "chunk-2af253edbb",
+        "chunk-f08eb71828",
+        "chunk-4ca6b62c8b",
+        "chunk-2f5772f184",
+        "chunk-9c1ec579e8"
+      ],
+      "latency_ms": 2.1622000001570996,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  },
+  {
+    "id": "q-057",
+    "query": "格力电器碳排放总量",
+    "relevant_chunk_ids": [],
+    "category": "negative",
+    "challenge": "answer absent",
+    "relevant_count": 0,
+    "expanded_queries": [
+      "格力电器碳排放总量",
+      "格力电器 排放 总量"
+    ],
+    "baseline": {
+      "ranked": [
+        "chunk-708177e374",
+        "chunk-5542a04659",
+        "chunk-9e3501e160",
+        "chunk-4325f4dbd6",
+        "chunk-39a2c19892",
+        "chunk-8e6abe263e",
+        "chunk-bbd85163ab",
+        "chunk-38c3957f96",
+        "chunk-9b8994741f",
+        "chunk-e44ae20b45"
+      ],
+      "latency_ms": 0.11100000006081245,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    },
+    "current": {
+      "ranked": [
+        "chunk-708177e374",
+        "chunk-5542a04659",
+        "chunk-bbd85163ab",
+        "chunk-8e6abe263e",
+        "chunk-4325f4dbd6",
+        "chunk-9b8994741f",
+        "chunk-9e3501e160",
+        "chunk-39a2c19892",
+        "chunk-38c3957f96",
+        "chunk-88a06ea449"
+      ],
+      "latency_ms": 2.439200000026176,
+      "at5": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      },
+      "at10": {
+        "recall": 0.0,
+        "ndcg": 0.0,
+        "mrr": 0.0
+      }
+    }
+  }
+]

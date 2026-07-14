@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "metrics": [
+    {
+      "id": "vcra-retrieval-curated-v1",
+      "level": "A",
+      "metric": "Offline retrieval Recall@5 and NDCG@10",
+      "baseline": "BM25",
+      "current_result": "Recall@5 90.38% to 95.19% (+4.81pp); NDCG@10 80.08% to 85.00% (+4.91pp)",
+      "sample_size": "51 corpus chunks, 57 queries (52 positive, 5 no-answer)",
+      "run_type": "offline synthetic fixture / manually labeled queries",
+      "raw_file": "evidence/raw/retrieval_benchmark.json",
+      "reproduce": "python scripts/run_retrieval_evidence.py",
+      "limitations": "Both modes have 100% false-positive rate on five no-answer queries; not live search or real filings",
+      "forbidden_expansion": "Do not claim real-world, live provider, current filing, or production search quality."
+    },
+    {
+      "id": "vcra-fact-extraction-curated-v1",
+      "level": "A",
+      "metric": "Fact extraction micro F1",
+      "baseline": "single recognized metric + first numeric value per chunk",
+      "current_result": "P/R/F1 100.00%/93.89%/96.85% versus baseline 100.00%/34.35%/51.14%; +45.71pp F1",
+      "sample_size": "51 annotated samples, 131 expected facts, 6 negative samples",
+      "run_type": "offline synthetic fixture / independently mapped labels",
+      "raw_file": "evidence/raw/fact_extraction_benchmark.json",
+      "reproduce": "python scripts/run_fact_extraction_evidence.py",
+      "limitations": "Scores metric family, period and normalized value; not arbitrary filings, OCR or LLM facts",
+      "forbidden_expansion": "Do not claim live filing accuracy, LLM accuracy, citation accuracy, or arbitrary-document generalization."
+    },
+    {
+      "id": "vcra-grounding-coverage-v1",
+      "level": "B",
+      "metric": "Citation grounding branch coverage",
+      "baseline": "not fixed as an approved historical artifact",
+      "current_result": "report_grounding.py 96.36% statements / 88.89% branches; whole backend 87.31% / 65.90%",
+      "sample_size": "450 passing backend tests",
+      "run_type": "unit/mock/offline integration",
+      "raw_file": "evidence/raw/coverage.json",
+      "reproduce": "powershell -ExecutionPolicy Bypass -File evidence/reproduce.ps1",
+      "limitations": "Hybrid retrieval itself is only 20.00% branch covered",
+      "forbidden_expansion": "Do not present scoped grounding coverage as whole-repository or hybrid-retrieval coverage."
+    }
+  ]
+}

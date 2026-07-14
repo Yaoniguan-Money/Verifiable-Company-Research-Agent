@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-07-14T05:46:56.239785+00:00",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "machine": "AMD64",
+  "processor": "Intel64 Family 6 Model 151 Stepping 2, GenuineIntel",
+  "pytest": "pytest 8.3.3",
+  "coverage": "Coverage.py, version 7.14.0 with C extension\nFull documentation is at https://coverage.readthedocs.io/en/7.14.0",
+  "credential_presence": {
+    "DEEPSEEK_API_KEY": true,
+    "QIANFAN_API_KEY": false,
+    "QIANFAN_SECRET_KEY": false,
+    "BAIDU_API_KEY": false,
+    "DASHSCOPE_API_KEY": true
+  },
+  "credential_values_recorded": false,
+  "git_metadata_available": false
+}

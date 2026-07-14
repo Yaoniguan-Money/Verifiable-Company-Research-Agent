@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "project": "Verifiable Company Research Agent",
+  "hypotheses": [
+    {
+      "id": "H1-retrieval-quality",
+      "hypothetical_resume_sentence": "On 50+ frozen, manually labeled queries, hybrid retrieval improved Recall@5 and NDCG@10 over BM25 while retaining no-answer and regression failures.",
+      "baseline": "BM25 top-10",
+      "current": "LocalHashing dense + BM25 over deterministic query expansions + RRF + LexicalReranker",
+      "minimum_queries": 50
+    },
+    {
+      "id": "H2-fact-extraction-quality",
+      "hypothetical_resume_sentence": "On 50+ annotated financial excerpt samples, table-aware extraction improved micro F1 over a one-fact regex baseline while retaining false positives and false negatives.",
+      "baseline": "one recognized metric and first numeric value per chunk",
+      "current": "FinancialTableExtractionService plus fact rules",
+      "minimum_samples": 50
+    },
+    {
+      "id": "H3-engineering-quality",
+      "hypothetical_resume_sentence": "Fail-closed evaluation prevents missing datasets from returning fabricated scores, with branch coverage reported for citation and normalization modules.",
+      "baseline": "missing datasets silently returned 0.82/0.78/0.80",
+      "current": "missing or empty datasets raise explicit errors"
+    }
+  ],
+  "reporting": {
+    "retain_all_failures": true,
+    "no_best_run_selection": true,
+    "separate_synthetic_offline_and_live": true
+  }
+}
