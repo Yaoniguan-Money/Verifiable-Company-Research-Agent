@@ -18,15 +18,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="运行 VCRA 评测并输出 Markdown 报告")
     parser.add_argument("--threshold", type=float, default=0.75)
     parser.add_argument("--output", type=Path, default=ROOT / "data" / "eval" / "last_eval_report.md")
-    parser.add_argument("--generate-datasets", action="store_true", help="若缺评测集则先生成")
     args = parser.parse_args()
 
     eval_dir = ROOT / "data" / "eval"
-    if args.generate_datasets or not (eval_dir / "fact_extraction_eval.json").exists():
-        import runpy
-
-        runpy.run_path(str(ROOT / "scripts" / "generate_eval_datasets.py"), run_name="__main__")
-
     runner = EvaluationRunner(eval_dir)
     scores = runner.run_all()
     report = runner.generate_report(scores, threshold=args.threshold)
