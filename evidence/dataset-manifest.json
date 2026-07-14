@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "datasets": [
+    {
+      "id": "vcra-retrieval-curated-v1",
+      "file": "evidence/datasets/retrieval_curated_v1.json",
+      "corpus_chunks": 51,
+      "queries": 57,
+      "positive_queries": 52,
+      "no_answer_queries": 5,
+      "source": "data/eval/public_company_regression_fixtures.json",
+      "type": "offline synthetic financial-report excerpts with manually curated query/relevance annotations"
+    },
+    {
+      "id": "vcra-fact-extraction-curated-v1",
+      "file": "evidence/datasets/fact_extraction_curated_v1.json",
+      "samples": 51,
+      "expected_facts": 131,
+      "negative_samples": 6,
+      "source": "evidence/datasets/retrieval_curated_v1.json",
+      "type": "offline synthetic financial-report excerpts with independent metric-family/period/value annotation map"
+    }
+  ],
+  "limitations": [
+    "The source excerpts are synthetic regression fixtures, not verified current filings or real user data.",
+    "Labels were frozen before benchmark execution and no failures were removed.",
+    "Retrieval currently returns results for every no-answer query; this failure is reported, not hidden."
+  ]
+}

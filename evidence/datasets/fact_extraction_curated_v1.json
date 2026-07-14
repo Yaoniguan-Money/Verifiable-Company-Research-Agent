@@ -1,0 +1,1121 @@
+{
+  "schema_version": 1,
+  "dataset_id": "vcra-fact-extraction-curated-v1",
+  "run_type": "offline fixture / synthetic source excerpts / independently mapped labels",
+  "annotation_method": "A manually authored phrase-to-metric-family map and fixed table-column semantics; the builder imports no fact-extraction code and labels were frozen before evaluation.",
+  "limitations": [
+    "Synthetic financial excerpts, not verified current filings.",
+    "Evaluation compares metric family, period, and unit-normalized value; it does not score dimension wording.",
+    "Risk rows are retained as negative samples."
+  ],
+  "items": [
+    {
+      "id": "fact-chunk-e44ae20b45",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n研发费用 542.00亿元 419.00亿元 395.00亿元",
+      "expected": [
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2025",
+          "value": "542.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2024",
+          "value": "419.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2023",
+          "value": "395.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-e44ae20b45"
+    },
+    {
+      "id": "fact-chunk-88a06ea449",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 7771.00亿元 6023.15亿元 6023.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "7771.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "6023.15亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "6023.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-88a06ea449"
+    },
+    {
+      "id": "fact-chunk-86e6b7e941",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 402.00亿元 300.41亿元 300.00亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "402.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "300.41亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "300.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-86e6b7e941"
+    },
+    {
+      "id": "fact-chunk-2b6891477b",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n汽车、汽车相关产品及其他产品收入 6170.00亿元 4800.00亿元 4834.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "6170.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "4800.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "4834.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-2b6891477b"
+    },
+    {
+      "id": "fact-chunk-ac5f844525",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n手机部件、组装及其他产品收入 1601.00亿元 1200.00亿元 1189.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "1601.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "1200.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "1189.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-ac5f844525"
+    },
+    {
+      "id": "fact-chunk-6cf5ff6f4a",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车产能 500.00万辆",
+      "expected": [
+        {
+          "metric_family": "production_capacity",
+          "period": "2025",
+          "value": "500.00万辆"
+        }
+      ],
+      "sample_type": "single-fact",
+      "source_chunk_id": "chunk-6cf5ff6f4a"
+    },
+    {
+      "id": "fact-chunk-008a5892d5",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车产量 430.00万辆",
+      "expected": [
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "430.00万辆"
+        }
+      ],
+      "sample_type": "single-fact",
+      "source_chunk_id": "chunk-008a5892d5"
+    },
+    {
+      "id": "fact-chunk-bcdd6e5c5a",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车销量 420.00万辆",
+      "expected": [
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "420.00万辆"
+        }
+      ],
+      "sample_type": "single-fact",
+      "source_chunk_id": "chunk-bcdd6e5c5a"
+    },
+    {
+      "id": "fact-chunk-9c1ec579e8",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n乘用车 产能状况 500.00万辆 快报产量 430.00万辆 快报销量 420.00万辆 销售收入 5500.00亿元",
+      "expected": [
+        {
+          "metric_family": "production_capacity",
+          "period": "2025",
+          "value": "500.00万辆"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "430.00万辆"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "420.00万辆"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "5500.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-9c1ec579e8"
+    },
+    {
+      "id": "fact-chunk-c9cd9cb7e1",
+      "company_name": "比亚迪",
+      "text": "项目 2025年 2024年 2023年\n商用车 产能状况 30.00万辆 快报产量 18.00万辆 快报销量 17.00万辆 销售收入 300.00亿元",
+      "expected": [
+        {
+          "metric_family": "production_capacity",
+          "period": "2025",
+          "value": "30.00万辆"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "18.00万辆"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "17.00万辆"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "300.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-c9cd9cb7e1"
+    },
+    {
+      "id": "fact-chunk-91c33dcf6e",
+      "company_name": "比亚迪",
+      "text": "风险提示：行业竞争、原材料价格波动、海外市场政策变化可能影响经营表现。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-91c33dcf6e"
+    },
+    {
+      "id": "fact-chunk-ca0caf8afa",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n研发费用 5.80亿元 5.30亿元 4.90亿元",
+      "expected": [
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2025",
+          "value": "5.80亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2024",
+          "value": "5.30亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2023",
+          "value": "4.90亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-ca0caf8afa"
+    },
+    {
+      "id": "fact-chunk-a01d7fc59e",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 410.00亿元 391.00亿元 391.11亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "410.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "391.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "391.11亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-a01d7fc59e"
+    },
+    {
+      "id": "fact-chunk-9f924caeb7",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 51.00亿元 41.00亿元 40.94亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "51.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "41.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "40.94亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-9f924caeb7"
+    },
+    {
+      "id": "fact-chunk-78167a265a",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n药品事业部收入 120.00亿元 113.00亿元 108.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "120.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "113.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "108.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-78167a265a"
+    },
+    {
+      "id": "fact-chunk-8b0c9e264e",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n健康品事业部收入 260.00亿元 246.00亿元 241.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "260.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "246.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "241.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-8b0c9e264e"
+    },
+    {
+      "id": "fact-chunk-8b8e75e3e2",
+      "company_name": "云南白药",
+      "text": "项目 2025年 2024年 2023年\n中药资源事业部收入 30.00亿元 32.00亿元 42.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "30.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "32.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "42.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-8b8e75e3e2"
+    },
+    {
+      "id": "fact-chunk-c1085a7e12",
+      "company_name": "云南白药",
+      "text": "主要风险包括原材料价格波动、行业政策变化、渠道竞争和新品培育不确定性。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-c1085a7e12"
+    },
+    {
+      "id": "fact-chunk-9453b70aaf",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n研发费用 250.00亿元 220.00亿元 183.00亿元",
+      "expected": [
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2025",
+          "value": "250.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2024",
+          "value": "220.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2023",
+          "value": "183.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-9453b70aaf"
+    },
+    {
+      "id": "fact-chunk-52e8d52f49",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 4200.00亿元 3620.00亿元 4009.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "4200.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "3620.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "4009.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-52e8d52f49"
+    },
+    {
+      "id": "fact-chunk-0dbee86eb5",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 520.00亿元 507.00亿元 441.00亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "520.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "507.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "441.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-0dbee86eb5"
+    },
+    {
+      "id": "fact-chunk-bbe9cf9344",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n动力电池系统收入 3000.00亿元 2600.00亿元 2850.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "3000.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "2600.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "2850.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-bbe9cf9344"
+    },
+    {
+      "id": "fact-chunk-9c662356af",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n储能电池系统收入 900.00亿元 600.00亿元 599.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "900.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "600.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "599.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-9c662356af"
+    },
+    {
+      "id": "fact-chunk-ecc16c8216",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n动力电池产能 900.00GWh 760.00GWh 600.00GWh",
+      "expected": [
+        {
+          "metric_family": "production_capacity",
+          "period": "2025",
+          "value": "900.00GWh"
+        },
+        {
+          "metric_family": "production_capacity",
+          "period": "2024",
+          "value": "760.00GWh"
+        },
+        {
+          "metric_family": "production_capacity",
+          "period": "2023",
+          "value": "600.00GWh"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-ecc16c8216"
+    },
+    {
+      "id": "fact-chunk-2786ae2133",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n动力电池产量 650.00GWh 520.00GWh 390.00GWh",
+      "expected": [
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "650.00GWh"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2024",
+          "value": "520.00GWh"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2023",
+          "value": "390.00GWh"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-2786ae2133"
+    },
+    {
+      "id": "fact-chunk-5b887ea381",
+      "company_name": "宁德时代",
+      "text": "项目 2025年 2024年 2023年\n动力电池销量 620.00GWh 500.00GWh 380.00GWh",
+      "expected": [
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "620.00GWh"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2024",
+          "value": "500.00GWh"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2023",
+          "value": "380.00GWh"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-5b887ea381"
+    },
+    {
+      "id": "fact-chunk-872d062cc3",
+      "company_name": "宁德时代",
+      "text": "风险提示：产能扩张节奏、锂电材料价格、海外贸易政策和客户集中度变化可能影响经营表现。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-872d062cc3"
+    },
+    {
+      "id": "fact-chunk-51437e3a74",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n研发费用 160.00亿元 145.00亿元 126.00亿元",
+      "expected": [
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2025",
+          "value": "160.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2024",
+          "value": "145.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2023",
+          "value": "126.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-51437e3a74"
+    },
+    {
+      "id": "fact-chunk-f08eb71828",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 4380.00亿元 4090.00亿元 3737.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "4380.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "4090.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "3737.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-f08eb71828"
+    },
+    {
+      "id": "fact-chunk-2af253edbb",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 430.00亿元 385.00亿元 337.00亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "430.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "385.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "337.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-2af253edbb"
+    },
+    {
+      "id": "fact-chunk-76a9aeb66d",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n暖通空调收入 1900.00亿元 1760.00亿元 1610.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "1900.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "1760.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "1610.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-76a9aeb66d"
+    },
+    {
+      "id": "fact-chunk-4ca6b62c8b",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n消费电器收入 1500.00亿元 1390.00亿元 1270.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "1500.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "1390.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "1270.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-4ca6b62c8b"
+    },
+    {
+      "id": "fact-chunk-3381a7136b",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n机器人、自动化系统及其他制造业收入 350.00亿元 320.00亿元 300.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "350.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "320.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "300.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-3381a7136b"
+    },
+    {
+      "id": "fact-chunk-003d2eeeb1",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n家用空调产量 7200.00万台 6800.00万台 6200.00万台",
+      "expected": [
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "7200.00万台"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2024",
+          "value": "6800.00万台"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2023",
+          "value": "6200.00万台"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-003d2eeeb1"
+    },
+    {
+      "id": "fact-chunk-812618ffe1",
+      "company_name": "美的集团",
+      "text": "项目 2025年 2024年 2023年\n家用空调销量 7000.00万台 6600.00万台 6100.00万台",
+      "expected": [
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "7000.00万台"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2024",
+          "value": "6600.00万台"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2023",
+          "value": "6100.00万台"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-812618ffe1"
+    },
+    {
+      "id": "fact-chunk-2f5772f184",
+      "company_name": "美的集团",
+      "text": "风险提示：原材料价格波动、海外经营环境、汇率变化和渠道库存波动可能影响经营表现。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-2f5772f184"
+    },
+    {
+      "id": "fact-chunk-708177e374",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n研发费用 80.00亿元 75.00亿元 70.00亿元",
+      "expected": [
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2025",
+          "value": "80.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2024",
+          "value": "75.00亿元"
+        },
+        {
+          "metric_family": "R&D_expenditure",
+          "period": "2023",
+          "value": "70.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-708177e374"
+    },
+    {
+      "id": "fact-chunk-8e6abe263e",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 2150.00亿元 2050.00亿元 2039.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "2150.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "2050.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "2039.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-8e6abe263e"
+    },
+    {
+      "id": "fact-chunk-38c3957f96",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 320.00亿元 300.00亿元 290.00亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "320.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "300.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "290.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-38c3957f96"
+    },
+    {
+      "id": "fact-chunk-5542a04659",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n空调业务收入 1500.00亿元 1450.00亿元 1460.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "1500.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "1450.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "1460.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-5542a04659"
+    },
+    {
+      "id": "fact-chunk-bbd85163ab",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n生活电器收入 210.00亿元 195.00亿元 180.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "210.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "195.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "180.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-bbd85163ab"
+    },
+    {
+      "id": "fact-chunk-9e3501e160",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n工业制品收入 160.00亿元 145.00亿元 130.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "160.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "145.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "130.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-9e3501e160"
+    },
+    {
+      "id": "fact-chunk-4325f4dbd6",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n空调产量 6200.00万台 5900.00万台 5600.00万台",
+      "expected": [
+        {
+          "metric_family": "production_volume",
+          "period": "2025",
+          "value": "6200.00万台"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2024",
+          "value": "5900.00万台"
+        },
+        {
+          "metric_family": "production_volume",
+          "period": "2023",
+          "value": "5600.00万台"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-4325f4dbd6"
+    },
+    {
+      "id": "fact-chunk-39a2c19892",
+      "company_name": "格力电器",
+      "text": "项目 2025年 2024年 2023年\n空调销量 6000.00万台 5750.00万台 5480.00万台",
+      "expected": [
+        {
+          "metric_family": "sales_volume",
+          "period": "2025",
+          "value": "6000.00万台"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2024",
+          "value": "5750.00万台"
+        },
+        {
+          "metric_family": "sales_volume",
+          "period": "2023",
+          "value": "5480.00万台"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-39a2c19892"
+    },
+    {
+      "id": "fact-chunk-9b8994741f",
+      "company_name": "格力电器",
+      "text": "风险提示：房地产后周期需求、原材料价格、出口市场政策和渠道竞争可能影响经营表现。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-9b8994741f"
+    },
+    {
+      "id": "fact-chunk-ab92dcb00a",
+      "company_name": "五粮液",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 920.00亿元 850.00亿元 832.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue",
+          "period": "2025",
+          "value": "920.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2024",
+          "value": "850.00亿元"
+        },
+        {
+          "metric_family": "revenue",
+          "period": "2023",
+          "value": "832.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-ab92dcb00a"
+    },
+    {
+      "id": "fact-chunk-d5b761c339",
+      "company_name": "五粮液",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 340.00亿元 315.00亿元 302.00亿元",
+      "expected": [
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2025",
+          "value": "340.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2024",
+          "value": "315.00亿元"
+        },
+        {
+          "metric_family": "net_profit_parent",
+          "period": "2023",
+          "value": "302.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-d5b761c339"
+    },
+    {
+      "id": "fact-chunk-cb4ceb6ac3",
+      "company_name": "五粮液",
+      "text": "项目 2025年 2024年 2023年\n五粮液产品收入 720.00亿元 665.00亿元 628.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "720.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "665.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "628.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-cb4ceb6ac3"
+    },
+    {
+      "id": "fact-chunk-991e9f236a",
+      "company_name": "五粮液",
+      "text": "项目 2025年 2024年 2023年\n系列酒产品收入 150.00亿元 140.00亿元 136.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "150.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "140.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "136.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-991e9f236a"
+    },
+    {
+      "id": "fact-chunk-15e9fea5ff",
+      "company_name": "五粮液",
+      "text": "项目 2025年 2024年 2023年\n酒类其他产品收入 30.00亿元 25.00亿元 24.00亿元",
+      "expected": [
+        {
+          "metric_family": "revenue_segment",
+          "period": "2025",
+          "value": "30.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2024",
+          "value": "25.00亿元"
+        },
+        {
+          "metric_family": "revenue_segment",
+          "period": "2023",
+          "value": "24.00亿元"
+        }
+      ],
+      "sample_type": "multi-fact",
+      "source_chunk_id": "chunk-15e9fea5ff"
+    },
+    {
+      "id": "fact-chunk-701fda93ad",
+      "company_name": "五粮液",
+      "text": "风险提示：白酒消费需求变化、渠道库存、品牌竞争和食品安全管理要求可能影响经营表现。",
+      "expected": [],
+      "sample_type": "negative",
+      "source_chunk_id": "chunk-701fda93ad"
+    }
+  ]
+}

@@ -1,0 +1,2377 @@
+{
+  "schema_version": 1,
+  "run_type": "offline fixture / synthetic source excerpts / independently mapped labels",
+  "dataset": "evidence/datasets/fact_extraction_curated_v1.json",
+  "metric_definition": "micro exact match on (normalized metric family, period, unit-normalized value)",
+  "summary": {
+    "samples": 51,
+    "expected_facts": 131,
+    "predicted_facts": 123,
+    "baseline": {
+      "description": "single recognized metric + first numeric value per chunk",
+      "tp": 45,
+      "fp": 0,
+      "fn": 86,
+      "precision": 1.0,
+      "recall": 0.3435114503816794,
+      "f1": 0.5113636363636364
+    },
+    "current": {
+      "tp": 123,
+      "fp": 0,
+      "fn": 8,
+      "precision": 1.0,
+      "recall": 0.9389312977099237,
+      "f1": 0.9685039370078741
+    },
+    "changes": {
+      "f1_pp": 45.714030064423774
+    },
+    "negative_samples": 6,
+    "negative_false_positive_rate": 0.0
+  },
+  "results": [
+    {
+      "id": "fact-chunk-e44ae20b45",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n研发费用 542.00亿元 419.00亿元 395.00亿元",
+      "expected": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:39500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:41900000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:54200000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:54200000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:39500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:41900000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:54200000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-88a06ea449",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 7771.00亿元 6023.15亿元 6023.00亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:602300000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:602315000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:777100000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:777100000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:602300000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:602315000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:777100000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-86e6b7e941",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 402.00亿元 300.41亿元 300.00亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:30000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:30041000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:40200000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:40200000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:30000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:30041000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:40200000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-2b6891477b",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n汽车、汽车相关产品及其他产品收入 6170.00亿元 4800.00亿元 4834.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:483400000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:480000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:617000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:617000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:483400000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:480000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:617000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-ac5f844525",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n手机部件、组装及其他产品收入 1601.00亿元 1200.00亿元 1189.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:118900000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:120000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:160100000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:160100000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:118900000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:120000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:160100000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-6cf5ff6f4a",
+      "sample_type": "single-fact",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车产能 500.00万辆",
+      "expected": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:5000000:vehicle"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:5000000:vehicle"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:5000000:vehicle"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-008a5892d5",
+      "sample_type": "single-fact",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车产量 430.00万辆",
+      "expected": [
+        [
+          "production_volume",
+          "2025",
+          "vehicle:4300000:vehicle"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_volume",
+          "2025",
+          "vehicle:4300000:vehicle"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_volume",
+          "2025",
+          "vehicle:4300000:vehicle"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-bcdd6e5c5a",
+      "sample_type": "single-fact",
+      "text": "项目 2025年 2024年 2023年\n2025年乘用车销量 420.00万辆",
+      "expected": [
+        [
+          "sales_volume",
+          "2025",
+          "vehicle:4200000:vehicle"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "sales_volume",
+          "2025",
+          "vehicle:4200000:vehicle"
+        ]
+      ],
+      "predicted": [
+        [
+          "sales_volume",
+          "2025",
+          "vehicle:4200000:vehicle"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9c1ec579e8",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n乘用车 产能状况 500.00万辆 快报产量 430.00万辆 快报销量 420.00万辆 销售收入 5500.00亿元",
+      "expected": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:5000000:vehicle"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "vehicle:4300000:vehicle"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:550000000000:yuan"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "vehicle:4200000:vehicle"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:5000000:vehicle"
+        ]
+      ],
+      "predicted": [],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 3,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4
+    },
+    {
+      "id": "fact-chunk-c9cd9cb7e1",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n商用车 产能状况 30.00万辆 快报产量 18.00万辆 快报销量 17.00万辆 销售收入 300.00亿元",
+      "expected": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:300000:vehicle"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "vehicle:180000:vehicle"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:30000000000:yuan"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "vehicle:170000:vehicle"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_capacity",
+          "2025",
+          "vehicle:300000:vehicle"
+        ]
+      ],
+      "predicted": [],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 3,
+      "tp": 0,
+      "fp": 0,
+      "fn": 4
+    },
+    {
+      "id": "fact-chunk-91c33dcf6e",
+      "sample_type": "negative",
+      "text": "风险提示：行业竞争、原材料价格波动、海外市场政策变化可能影响经营表现。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-ca0caf8afa",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n研发费用 5.80亿元 5.30亿元 4.90亿元",
+      "expected": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:490000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:530000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:580000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:580000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:490000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:530000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:580000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-a01d7fc59e",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 410.00亿元 391.00亿元 391.11亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:39111000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:39100000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:41000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:41000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:39111000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:39100000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:41000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9f924caeb7",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 51.00亿元 41.00亿元 40.94亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:4094000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:4100000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:5100000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:5100000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:4094000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:4100000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:5100000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-78167a265a",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n药品事业部收入 120.00亿元 113.00亿元 108.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:10800000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:11300000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:12000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:12000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:10800000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:11300000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:12000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-8b0c9e264e",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n健康品事业部收入 260.00亿元 246.00亿元 241.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:24100000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:24600000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:26000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:26000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:24100000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:24600000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:26000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-8b8e75e3e2",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n中药资源事业部收入 30.00亿元 32.00亿元 42.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:4200000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:3200000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:4200000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:3200000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-c1085a7e12",
+      "sample_type": "negative",
+      "text": "主要风险包括原材料价格波动、行业政策变化、渠道竞争和新品培育不确定性。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9453b70aaf",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n研发费用 250.00亿元 220.00亿元 183.00亿元",
+      "expected": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:18300000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:22000000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:25000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:25000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:18300000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:22000000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:25000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-52e8d52f49",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 4200.00亿元 3620.00亿元 4009.00亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:400900000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:362000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:420000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:420000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:400900000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:362000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:420000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-0dbee86eb5",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 520.00亿元 507.00亿元 441.00亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:44100000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:50700000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:52000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:52000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:44100000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:50700000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:52000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-bbe9cf9344",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n动力电池系统收入 3000.00亿元 2600.00亿元 2850.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:285000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:260000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:300000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:300000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:285000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:260000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:300000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9c662356af",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n储能电池系统收入 900.00亿元 600.00亿元 599.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:59900000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:60000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:90000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:90000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:59900000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:60000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:90000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-ecc16c8216",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n动力电池产能 900.00GWh 760.00GWh 600.00GWh",
+      "expected": [
+        [
+          "production_capacity",
+          "2023",
+          "energy:600000:MWh"
+        ],
+        [
+          "production_capacity",
+          "2024",
+          "energy:760000:MWh"
+        ],
+        [
+          "production_capacity",
+          "2025",
+          "energy:900000:MWh"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_capacity",
+          "2025",
+          "energy:900000:MWh"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_capacity",
+          "2023",
+          "energy:600000:MWh"
+        ],
+        [
+          "production_capacity",
+          "2024",
+          "energy:760000:MWh"
+        ],
+        [
+          "production_capacity",
+          "2025",
+          "energy:900000:MWh"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-2786ae2133",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n动力电池产量 650.00GWh 520.00GWh 390.00GWh",
+      "expected": [
+        [
+          "production_volume",
+          "2023",
+          "energy:390000:MWh"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "energy:520000:MWh"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "energy:650000:MWh"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_volume",
+          "2025",
+          "energy:650000:MWh"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_volume",
+          "2023",
+          "energy:390000:MWh"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "energy:520000:MWh"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "energy:650000:MWh"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-5b887ea381",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n动力电池销量 620.00GWh 500.00GWh 380.00GWh",
+      "expected": [
+        [
+          "sales_volume",
+          "2023",
+          "energy:380000:MWh"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "energy:500000:MWh"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "energy:620000:MWh"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "sales_volume",
+          "2025",
+          "energy:620000:MWh"
+        ]
+      ],
+      "predicted": [
+        [
+          "sales_volume",
+          "2023",
+          "energy:380000:MWh"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "energy:500000:MWh"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "energy:620000:MWh"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-872d062cc3",
+      "sample_type": "negative",
+      "text": "风险提示：产能扩张节奏、锂电材料价格、海外贸易政策和客户集中度变化可能影响经营表现。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-51437e3a74",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n研发费用 160.00亿元 145.00亿元 126.00亿元",
+      "expected": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:12600000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:14500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:12600000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:14500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-f08eb71828",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 4380.00亿元 4090.00亿元 3737.00亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:373700000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:409000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:438000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:438000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:373700000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:409000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:438000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-2af253edbb",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 430.00亿元 385.00亿元 337.00亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:33700000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:38500000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:43000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:43000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:33700000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:38500000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:43000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-76a9aeb66d",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n暖通空调收入 1900.00亿元 1760.00亿元 1610.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:161000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:176000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:190000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:190000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:161000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:176000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:190000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-4ca6b62c8b",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n消费电器收入 1500.00亿元 1390.00亿元 1270.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:127000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:139000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:127000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:139000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-3381a7136b",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n机器人、自动化系统及其他制造业收入 350.00亿元 320.00亿元 300.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:30000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:32000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:35000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:35000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:30000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:32000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:35000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-003d2eeeb1",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n家用空调产量 7200.00万台 6800.00万台 6200.00万台",
+      "expected": [
+        [
+          "production_volume",
+          "2023",
+          "unit:62000000:unit"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "unit:68000000:unit"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "unit:72000000:unit"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_volume",
+          "2025",
+          "unit:72000000:unit"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_volume",
+          "2023",
+          "unit:62000000:unit"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "unit:68000000:unit"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "unit:72000000:unit"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-812618ffe1",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n家用空调销量 7000.00万台 6600.00万台 6100.00万台",
+      "expected": [
+        [
+          "sales_volume",
+          "2023",
+          "unit:61000000:unit"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "unit:66000000:unit"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "unit:70000000:unit"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "sales_volume",
+          "2025",
+          "unit:70000000:unit"
+        ]
+      ],
+      "predicted": [
+        [
+          "sales_volume",
+          "2023",
+          "unit:61000000:unit"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "unit:66000000:unit"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "unit:70000000:unit"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-2f5772f184",
+      "sample_type": "negative",
+      "text": "风险提示：原材料价格波动、海外经营环境、汇率变化和渠道库存波动可能影响经营表现。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-708177e374",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n研发费用 80.00亿元 75.00亿元 70.00亿元",
+      "expected": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:7000000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:7500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:8000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:8000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "R&D_expenditure",
+          "2023",
+          "money:7000000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2024",
+          "money:7500000000:yuan"
+        ],
+        [
+          "R&D_expenditure",
+          "2025",
+          "money:8000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-8e6abe263e",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 2150.00亿元 2050.00亿元 2039.00亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:203900000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:205000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:215000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:215000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:203900000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:205000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:215000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-38c3957f96",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 320.00亿元 300.00亿元 290.00亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:29000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:30000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:32000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:32000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:29000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:30000000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:32000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-5542a04659",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n空调业务收入 1500.00亿元 1450.00亿元 1460.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:146000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:145000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:146000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:145000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:150000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-bbd85163ab",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n生活电器收入 210.00亿元 195.00亿元 180.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:18000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:19500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:21000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:21000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:18000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:19500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:21000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9e3501e160",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n工业制品收入 160.00亿元 145.00亿元 130.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:13000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:14500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:13000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:14500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:16000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-4325f4dbd6",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n空调产量 6200.00万台 5900.00万台 5600.00万台",
+      "expected": [
+        [
+          "production_volume",
+          "2023",
+          "unit:56000000:unit"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "unit:59000000:unit"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "unit:62000000:unit"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "production_volume",
+          "2025",
+          "unit:62000000:unit"
+        ]
+      ],
+      "predicted": [
+        [
+          "production_volume",
+          "2023",
+          "unit:56000000:unit"
+        ],
+        [
+          "production_volume",
+          "2024",
+          "unit:59000000:unit"
+        ],
+        [
+          "production_volume",
+          "2025",
+          "unit:62000000:unit"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-39a2c19892",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n空调销量 6000.00万台 5750.00万台 5480.00万台",
+      "expected": [
+        [
+          "sales_volume",
+          "2023",
+          "unit:54800000:unit"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "unit:57500000:unit"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "unit:60000000:unit"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "sales_volume",
+          "2025",
+          "unit:60000000:unit"
+        ]
+      ],
+      "predicted": [
+        [
+          "sales_volume",
+          "2023",
+          "unit:54800000:unit"
+        ],
+        [
+          "sales_volume",
+          "2024",
+          "unit:57500000:unit"
+        ],
+        [
+          "sales_volume",
+          "2025",
+          "unit:60000000:unit"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-9b8994741f",
+      "sample_type": "negative",
+      "text": "风险提示：房地产后周期需求、原材料价格、出口市场政策和渠道竞争可能影响经营表现。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-ab92dcb00a",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n营业收入 合计 920.00亿元 850.00亿元 832.00亿元",
+      "expected": [
+        [
+          "revenue",
+          "2023",
+          "money:83200000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:85000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:92000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue",
+          "2025",
+          "money:92000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue",
+          "2023",
+          "money:83200000000:yuan"
+        ],
+        [
+          "revenue",
+          "2024",
+          "money:85000000000:yuan"
+        ],
+        [
+          "revenue",
+          "2025",
+          "money:92000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-d5b761c339",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n归属于上市公司股东的净利润 340.00亿元 315.00亿元 302.00亿元",
+      "expected": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:30200000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:31500000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:34000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "net_profit_parent",
+          "2025",
+          "money:34000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "net_profit_parent",
+          "2023",
+          "money:30200000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2024",
+          "money:31500000000:yuan"
+        ],
+        [
+          "net_profit_parent",
+          "2025",
+          "money:34000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-cb4ceb6ac3",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n五粮液产品收入 720.00亿元 665.00亿元 628.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:62800000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:66500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:72000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:72000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:62800000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:66500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:72000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-991e9f236a",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n系列酒产品收入 150.00亿元 140.00亿元 136.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:13600000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:14000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:15000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:15000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:13600000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:14000000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:15000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-15e9fea5ff",
+      "sample_type": "multi-fact",
+      "text": "项目 2025年 2024年 2023年\n酒类其他产品收入 30.00亿元 25.00亿元 24.00亿元",
+      "expected": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:2400000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:2500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "baseline_predicted": [
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "predicted": [
+        [
+          "revenue_segment",
+          "2023",
+          "money:2400000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2024",
+          "money:2500000000:yuan"
+        ],
+        [
+          "revenue_segment",
+          "2025",
+          "money:3000000000:yuan"
+        ]
+      ],
+      "baseline_tp": 1,
+      "baseline_fp": 0,
+      "baseline_fn": 2,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    },
+    {
+      "id": "fact-chunk-701fda93ad",
+      "sample_type": "negative",
+      "text": "风险提示：白酒消费需求变化、渠道库存、品牌竞争和食品安全管理要求可能影响经营表现。",
+      "expected": [],
+      "baseline_predicted": [],
+      "predicted": [],
+      "baseline_tp": 0,
+      "baseline_fp": 0,
+      "baseline_fn": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    }
+  ]
+}
