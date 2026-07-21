@@ -24,9 +24,9 @@
 
 ## 项目亮点
 
-- **证据优先报告**：报告中的 citations 可回查到 source/chunk 元数据。核心发现可直接追溯到年报原文段落。
+- **证据优先报告**：报告中的 citations 可回查到 source/chunk 元数据；在获取到官方披露正文时，核心发现可进一步回查到对应原文片段。
 - **Provider-neutral 设计**：LLM、Search、Embedding、Vector Store、Reranker 均通过接口选择实现，配置驱动切换。
-- **可替换 workflow engine**：LangGraph 是默认 workflow engine，16 节点 StateGraph 可扩展。
+- **可替换 workflow engine**：LangGraph 是默认 workflow engine，通过 17 个显式节点和 4 组条件分支编排来源收集、证据检索、事实抽取、校验、报告生成与合规处理。
 - **默认联网搜索**：`public_sources` 默认访问 CNINFO 等公开来源，不需要外部 API key。
 - **Hybrid RAG 检索**：Dense + BM25 + RRF 融合 + Reranker 重排，支持 ONNX/Embedding/Lexical 三后端可切换。
 - **LLM 增强事实抽取**：正则表格抽取 + LLM 语义抽取双链路。LLM 通过 Embedding 排序后依次送检、意图命中即停，补齐叙述句中的关键财务数字。
@@ -35,6 +35,23 @@
 - **双公司对比分析**：并行执行两个独立研究工作流，对比同一指标差异。
 - **合规边界清楚**：报告和 chat 输出会检查非投顾边界。
 - **实时特性开关**：前端设置页切换功能即时生效并持久化到 .env，无需重启。
+
+## 可复现评测结果
+
+项目提供冻结数据集、实验配置、原始输出、失败样本和一键复现脚本。该评测链路完全离线，不依赖外部 LLM、Embedding 或搜索 API 凭证。
+
+- **Hybrid RAG 检索**：在由 51 个合成财报片段和 57 条人工标注查询（52 条正样本、5 条 no-answer）组成的冻结数据集上，相比 BM25，Recall@5 从 90.38% 提升至 95.19%，NDCG@10 从 80.08% 提升至 85.00%。
+- **表格事实抽取**：在 51 条冻结样本、131 个预期事实上，取得 micro Precision 100.00%、Recall 93.89%、F1 96.85%。
+- **工程验证**：后端测试套件 450 项全部通过；后端测试范围语句覆盖率 87.31%、分支覆盖率 65.90%，其中 `report_grounding.py` 分支覆盖率为 88.89%。
+
+### 评测边界
+
+- 数据由合成财报式片段构成，不是真实实时年报搜索结果；
+- 结果用于验证同一冻结数据集上的检索排序与事实抽取改进，不代表线上搜索质量；
+- 5 条 no-answer 查询中，BM25 和 Hybrid Retrieval 当前均会返回误命中结果，该失败样本已保留；
+- 事实抽取结果主要覆盖结构化表格式片段，不能直接泛化到任意 PDF、OCR 文档或实时 LLM 抽取场景。
+
+完整数据集、实验配置、原始结果、失败样本和一键复现方式见 [`evidence/README.md`](./evidence/README.md)。
 
 ## Demo 截图
 
@@ -81,7 +98,7 @@ flowchart TD
 
 **Workflow 编排**
 
-- LangGraph `StateGraph`：默认 workflow engine，用显式节点和 conditional edges 表达研究流程、证据不足分支、verification review 分支、compliance rewrite / block 分支。
+- LangGraph `StateGraph`：默认 workflow engine，使用 17 个显式节点和 4 组 conditional edges。来源质量不足时记录限制并继续处理；无事实时记录证据缺口；校验风险进入审慎报告路径；合规结果进入 passed / rewrite / blocked 分支。
 - WorkflowEngine Interface：通过接口隔离 workflow 实现，避免 API 层绑定 LangGraph。
 - WorkflowFacade + ResearchDomainServices：API 层只创建任务和读取结果，图节点只负责状态流转，provider 调用、证据规则、报告组装和持久化放在 domain services。
 - Workflow audit：每个节点记录 step result，关键分支记录 WorkflowDecision，最终报告附带 audit trail。
@@ -96,7 +113,7 @@ flowchart TD
 - **Embedding**：EmbeddingProvider 生成向量，支持 DashScope/SiliconFlow 等真实 Embedding API。
 - **Vector store**：PgVector (HNSW 索引 + 无约束维度)、SQLite、InMemory 三种后端，维度校验防 mismatch。
 - **Hybrid retrieval**：Dense (DashScope cosine) + Sparse (BM25 缓存) + RRF 融合 (k=60) → Reranker 重排 → Top-K。
-- **Reranker 三后端实测**：在中文财报 chunk 检索场景下，ONNX cross-encoder (BAAI/bge-reranker-base) 全面领先——P@5=1.0, MRR=1.0, NDCG@5=1.0；Embedding API (DashScope) P@5=0.40；Lexical Jaccard P@5=0.60。ONNX 仅 527ms 推理延迟（CPU），推荐生产使用。
+- **Reranker 三后端实测**：在中文财报 chunk 检索场景下，ONNX cross-encoder (BAAI/bge-reranker-base) 表现最佳——P@5=1.0、MRR=1.0、NDCG@5=1.0；Embedding API (DashScope) P@5=0.40；Lexical Jaccard P@5=0.60。ONNX CPU 推理延迟约 527ms，适合作为当前本地优先的 Reranker 方案。
 - **Fact extraction 双链路**：正则表格抽取 (20 条规则 + 状态机) + LLM 语义抽取 (Embedding 排序 → 依次送检 → 意图命中即停)。
 - **LLM Prompt 标准化**：metric_name 映射表 (18 个中→英)、period 格式约束、禁止运算/增减幅，后处理归一化兜底。
 - **Fact verification 分层**：LLM 事实 (confidence=1.0) 直通 verified；正则事实走 cross-source 交叉验证。单位归一化消除虚假冲突。
@@ -127,7 +144,7 @@ flowchart TD
 
 **工程质量与交付**
 
-- pytest：覆盖 provider、workflow、RAG、verification、report、API、配置模板和 release 口径。
+- pytest：后端测试套件 450 项全部通过，覆盖 provider、workflow、RAG、verification、report、API、配置模板和 release 口径；后端测试范围语句覆盖率 87.31%、分支覆盖率 65.90%，其中 `report_grounding.py` 分支覆盖率为 88.89%。
 - ruff：后端和脚本 lint。
 - npm typecheck / build：前端类型检查和构建验证。
 - GitHub Actions：离线 CI 验证，不依赖真实 API key。
@@ -167,13 +184,13 @@ flowchart TD
 - LangFuse observability integration
 - secret hygiene scan / release-risk checks
 - React + Vite + TypeScript demo UI
-- pytest (413 tests, 98.2% pass rate) / ruff / GitHub Actions / Docker Compose
+- pytest（450 项后端测试全部通过）/ ruff / GitHub Actions / Docker Compose
 
 ## 快速启动
 
-！！
-作者有话说：作者还是学生，条件有限，所以很多方式没办法尝试，目前多种组合实测是外部LLM+外部search+本地ONNX模型最好用，大家可以直接使用这个方式
-！！
+> **作者说明**
+>
+> 作者目前仍是学生，受限于可用资源，尚未覆盖所有部署组合。现阶段多种组合实测中，推荐使用“外部 LLM + 外部 Search + 本地 ONNX Reranker”，在效果、成本与部署复杂度之间较为平衡。
 
 最短本地启动路线，不需要外部 key；搜索默认会访问公开网络来源：
 
@@ -249,10 +266,11 @@ Smoke 脚本：
 
 - 这些样例用于链路回归，不代表系统绑定特定企业，也不构成投资分析、评级、推荐或建议。
 - 当前是开源 MVP / reference implementation，不是生产级系统。
+- **工作流边界**：当前来源质量不足、无有效事实或跨来源校验风险不会自动触发第二轮补充检索；系统会记录证据缺口或风险原因，并在报告中保留限制。合规命中才会进入重写或拦截分支。
 - 不提供投资建议、评级、荐股、买卖建议、目标价、收益预测或持仓指导。
 - **数据来源合规**：本项目默认通过 CNINFO（巨潮资讯网）获取 A 股上市公司公开披露信息。巨潮资讯网是中国证监会指定的法定信息披露平台，其公告文件属于法定公开信息。但**自动抓取行为可能违反目标网站的服务条款**，使用者应自行评估合规风险，必要时改用本地导入模式 (`local_documents`) 或将 `SEARCH_PROVIDER` 切换为不依赖第三方抓取的 provider。本项目不提供任何规避网站访问限制的功能，也不对使用者因抓取行为产生的法律后果负责。
 - `mock` 和 `local_hashing` 只用于 dev/test，不能证明真实搜索质量或真实语义 embedding 质量。
-- `in_memory` / SQLite vector store 是本地 MVP 实现，不是生产级向量数据库。
+- `in_memory` / SQLite vector store 是本地 MVP 实现；PgVector 路径仍需结合实际部署环境完成容量、性能与稳定性验证。
 - fact extraction、verification、compliance 仍是偏规则化的 MVP 组件。
 - 外部 provider 效果受上游搜索结果、账号模型权限、网络、页面可抓取性、PDF/表格解析质量影响。
 - LangGraph 是默认 workflow engine；`WORKFLOW_ENGINE=service` 仅保留为 legacy fallback。
@@ -276,7 +294,7 @@ Smoke 脚本：
 - `docs/compliance.md`：非投顾合规护栏。
 - `docs/observability.md`：structlog 与 LangFuse 可选接入。
 
-测试、Benchmark、原始结果与复现方式见 ./evidence/README.md。
+测试、Benchmark、原始结果与复现方式见 [`evidence/README.md`](./evidence/README.md)。
 
 ## License
 
